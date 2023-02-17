@@ -110,7 +110,7 @@ const
   MODEL3DBUF = 10000;
 
   FontGL  = 2000;
-  MaxDeph = 100000.0;  // максимальная глубина
+  MaxDeph = 100000.0;  // Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї ГЈГ«ГіГЎГЁГ­Г 
 
 
   ATypePosition = $0102;
@@ -257,9 +257,9 @@ var
   NTypes: array of XTypes;
 begin
 
-// новый код
+// Г­Г®ГўГ»Г© ГЄГ®Г¤
 
-      // открываем файл и загружаем в память.
+      // Г®ГІГЄГ°Г»ГўГ ГҐГ¬ ГґГ Г©Г« ГЁ Г§Г ГЈГ°ГіГ¦Г ГҐГ¬ Гў ГЇГ Г¬ГїГІГј.
       iFileHandle := FileOpen(FileName, fmOpenRead);
       iFileLength := FileSeek(iFileHandle,0,2);
       FileSeek(iFileHandle,0,0);
@@ -270,7 +270,7 @@ begin
       FileRead(iFileHandle, Buf^, iFileLength);
       FileClose(iFileHandle);
 
-// очищаем список
+// Г®Г·ГЁГ№Г ГҐГ¬ Г±ГЇГЁГ±Г®ГЄ
 
   s := ExtractFileName(FileName);
   OutCaption := Format('%s - [%s]', [APPVER,s]);
@@ -278,26 +278,26 @@ begin
 
 //--------
       InitXomHandle;
-// Считываем данные
+// Г‘Г·ГЁГІГ»ГўГ ГҐГ¬ Г¤Г Г­Г­Г»ГҐ
       Move(Buf^,XomHandle,64);
-// Считываем количество контерйнеров
+// Г‘Г·ГЁГІГ»ГўГ ГҐГ¬ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЄГ®Г­ГІГҐГ°Г©Г­ГҐГ°Г®Гў
 //      XomHandle.NumTypes:=word(pointer(Longword(Buf)+24)^);
-// Инициализация данных
+// Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Г¤Г Г­Г­Г»Гµ
   saidx:=0;
 
-  // очистка контейнеров
+  // Г®Г·ГЁГ±ГІГЄГ  ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г®Гў
   CntrArr.Clear;
-// количество контейнеров
+// ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г®Гў
 //      XomHandle.MaxCount:=integer(pointer(Longword(Buf)+28)^);
  //     XomHandle.RootCount:=integer(pointer(Longword(Buf)+32)^);
-// Считываем индексный контейнер
+// Г‘Г·ГЁГІГ»ГўГ ГҐГ¬ ГЁГ­Г¤ГҐГЄГ±Г­Г»Г© ГЄГ®Г­ГІГҐГ©Г­ГҐГ°
       CntrArr.Count:=XomHandle.MaxCount+1;
 
       SetLength(XomHandle.TypesInfo,XomHandle.NumTypes);
       SetLength(NTypes, XomHandle.NumTypes);
 
 try
-// Цикл покойтейнерного считывания Названий контейнеров
+// Г–ГЁГЄГ« ГЇГ®ГЄГ®Г©ГІГҐГ©Г­ГҐГ°Г­Г®ГЈГ® Г±Г·ГЁГІГ»ГўГ Г­ГЁГї ГЌГ Г§ГўГ Г­ГЁГ© ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г®Гў
       for i := 0 to XomHandle.NumTypes-1 do begin
         p:=pointer(64+i*Sizeof(TXomType)+Longword(Buf));
         Move(p^,XomHandle.TypesInfo[i],Sizeof(TXomType));
@@ -312,7 +312,7 @@ try
       end;
 
       p:=pointer(Longword(Buf)+64+XomHandle.NumTypes*Sizeof(TXomType)+16);
-//Считывание с проверкой начала таблицы
+//Г‘Г·ГЁГІГ»ГўГ Г­ГЁГҐ Г± ГЇГ°Г®ГўГҐГ°ГЄГ®Г© Г­Г Г·Г Г«Г  ГІГ ГЎГ«ГЁГ¶Г»
       if Longword(p^)<>Ctnr2 then
       p:=pointer(16+4+Longword(p))else
       p:=pointer(4+Longword(p));
@@ -329,7 +329,7 @@ try
       //<table str>
       k:=Longword(p)+XomHandle.SizeStrs*4;
       XomHandle.StringTable.Add('');
-      // заполнение таблицы имен
+      // Г§Г ГЇГ®Г«Г­ГҐГ­ГЁГҐ ГІГ ГЎГ«ГЁГ¶Г» ГЁГ¬ГҐГ­
       for i:=0 to XomHandle.SizeStrs-2 do begin
         L:=longword(pointer(i*4+Longword(p)+4)^);
         s:=Utf8Decode(Pchar(pointer(k+L)));
@@ -343,7 +343,7 @@ try
       //Tree adding
 
   CntrArr[0]:=TContainer.Create(0,CntrArr,p);
-  Outpoint := false; // вылет из памяти
+  Outpoint := false; // ГўГ»Г«ГҐГІ ГЁГ§ ГЇГ Г¬ГїГІГЁ
 
   for j := 0 to XomHandle.NumTypes - 1 do
   with XomHandle.TypesInfo[j] do
@@ -379,7 +379,7 @@ try
           if saidx = XomHandle.RootCount then
                 BaseCntr := CntrArr[saidx];
 
-          if (IsCtnr) then  // ищем конец контейнера
+          if (IsCtnr) then  // ГЁГ№ГҐГ¬ ГЄГ®Г­ГҐГ¶ ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г 
 
             while (Longword(Pointer(Longword(p) + sizecount)^) <> Ctnr) do
             begin
@@ -502,9 +502,9 @@ var
   s2:Utf8String;
   SortStrings:TStringList;
 begin
-  j := LStrings.Count-1; // нулевой индекс занят
+  j := LStrings.Count-1; // Г­ГіГ«ГҐГўГ®Г© ГЁГ­Г¤ГҐГЄГ± Г§Г Г­ГїГІ
 //  p2 := VBuf;
-  p4 := Pointer(Longword(p) + j * 4);  // размер таблицы индексов текста
+  p4 := Pointer(Longword(p) + j * 4);  // Г°Г Г§Г¬ГҐГ° ГІГ ГЎГ«ГЁГ¶Г» ГЁГ­Г¤ГҐГЄГ±Г®Гў ГІГҐГЄГ±ГІГ 
   Len := 1;
   SortStrings:=TStringList.Create;
   LStrings.CaseSensitive:=true;
@@ -516,18 +516,18 @@ begin
   begin
     s  := SortStrings.Strings[i];
     Longword(Pointer((LStrings.IndexOf(s)-1) * 4 + Longword(p))^) := Longword(Len);
- //   Smallint(Pointer(i * 4 + Longword(p))^) := Smallint(Len);  // заполняем длинны в индексы
+ //   Smallint(Pointer(i * 4 + Longword(p))^) := Smallint(Len);  // Г§Г ГЇГ®Г«Г­ГїГҐГ¬ Г¤Г«ГЁГ­Г­Г» Гў ГЁГ­Г¤ГҐГЄГ±Г»
     p3 := Pointer(Longword(p4) + Len);
     s2:= Utf8Encode(s);
    // s2:=s;
     p1  := PChar(s2);
-    Move(p1^, p3^, Length(s2));// копируем текст в пямять
+    Move(p1^, p3^, Length(s2));// ГЄГ®ГЇГЁГ°ГіГҐГ¬ ГІГҐГЄГ±ГІ Гў ГЇГїГ¬ГїГІГј
     Len := Len + Length(s2) + 1;
   end;
   SortStrings.Free;
-  Longword(Pointer(Longword(p) - 12)^) := Longword(j + 1); // пишем количество слов
-  Longword(Pointer(Longword(p) - 8)^) := Longword(Len);  // длинна слов
-  p := Pointer(Longword(p4) + Len); // прыгаем после таблицы слов
+  Longword(Pointer(Longword(p) - 12)^) := Longword(j + 1); // ГЇГЁГёГҐГ¬ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® Г±Г«Г®Гў
+  Longword(Pointer(Longword(p) - 8)^) := Longword(Len);  // Г¤Г«ГЁГ­Г­Г  Г±Г«Г®Гў
+  p := Pointer(Longword(p4) + Len); // ГЇГ°Г»ГЈГ ГҐГ¬ ГЇГ®Г±Г«ГҐ ГІГ ГЎГ«ГЁГ¶Г» Г±Г«Г®Гў
 end;
 
 procedure TXom.SaveXom(Filename: String);
@@ -545,7 +545,7 @@ begin
     VirtualBufer := TMemoryStream.Create;
     n := CntrArr.Count;//Length(Containers);
 
-  VBufBegin := AllocMem(1024*1024); // берем память для строк и шапок
+  VBufBegin := AllocMem(1024*1024); // ГЎГҐГ°ГҐГ¬ ГЇГ Г¬ГїГІГј Г¤Г«Гї Г±ГІГ°Г®ГЄ ГЁ ГёГ ГЇГ®ГЄ
   VBuf := VBufBegin;
   p2:=VBuf;
 
