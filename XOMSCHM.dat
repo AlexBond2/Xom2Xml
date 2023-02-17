@@ -1,0 +1,2073 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xomSCHM Xgame="WUM">
+  <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" Xtype="XClass">
+    <XResourceDetails guid="{E77556F2-A495-491A-8563-006CE2577244}" Xver="0" Xtype="XClass">
+      <XIntResourceDetails guid="{7D889B8D-2C14-445E-961F-5E0E5520416A}" Xver="0" id="XRef">
+        <Value>XInt</Value>
+      </XIntResourceDetails>
+      <XUintResourceDetails guid="{93E5117C-8ADA-4AFB-B17A-668D0BDD15E6}" Xver="0" id="XRef">
+        <Value>XUInt</Value>
+      </XUintResourceDetails>
+      <XStringResourceDetails guid="{7CDC5872-2CA3-4FCC-AE66-431071E5CE67}" Xver="0" id="XRef">
+        <Value>XString</Value>
+      </XStringResourceDetails>
+      <XFloatResourceDetails guid="{08889D5F-8039-4CEA-BA5B-9C059AC0570E}" Xver="0" id="XRef">
+        <Value>XFloat</Value>
+      </XFloatResourceDetails>
+      <XVectorResourceDetails guid="{071F4563-8CB3-4996-B79F-B0F5CAEC9D99}" Xver="0" id="XRef">
+        <Value x="XFloat" y="XFloat" z="XFloat" />
+      </XVectorResourceDetails>
+      <XContainerResourceDetails guid="{E0B6BF20-F80B-4329-B6EB-1998ED8AEC1F}" Xver="0" id="XRef">
+        <Value href="XContainer" />
+      </XContainerResourceDetails>
+      <XColorResourceDetails guid="{7804BA7B-C6FD-4E8E-AFFF-8E266B6A5544}" Xver="0" id="XRef">
+        <Value r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+      </XColorResourceDetails>
+      <Name>XString</Name>
+      <Flags>XUInt</Flags>
+    </XResourceDetails>
+    <XDataBank guid="{93E661AC-D941-442A-A18E-E99B795879DC}" Xver="0" id="XRef">
+      <Section>XUInt8</Section>
+      <IntResources href="XIntResourceDetails" Xtype="XCollection" />
+      <UintResources href="XUintResourceDetails" Xtype="XCollection" />
+      <StringResources href="XStringResourceDetails" Xtype="XCollection" />
+      <FloatResources href="XFloatResourceDetails" Xtype="XCollection" />
+      <VectorResources href="XVectorResourceDetails" Xtype="XCollection" />
+      <ContainerResources href="XContainerResourceDetails" Xtype="XCollection" />
+      <StringTableResources href="XContainerResourceDetails" Xtype="XCollection" />
+      <ColorResources href="XColorResourceDetails" Xtype="XCollection" />
+    </XDataBank>
+    <IntegerArray guid="{8988E3A1-397F-4016-8748-B02D6A6108B1}" Xver="0" id="XRef">
+      <Integers Xtype="XCollection">XUInt</Integers>
+    </IntegerArray>
+    <WormDataContainer guid="{ED2831E7-70BD-4AC1-9311-AFEFDBA5D9E5}" Xver="0" id="XRef">
+      <Name>XString</Name>
+      <Active>XBool</Active>
+      <PlayedInGame>XBool</PlayedInGame>
+      <Position x="XFloat" y="XFloat" z="XFloat" />
+      <ForcedCameraOffset x="XFloat" y="XFloat" z="XFloat" />
+      <Velocity x="XFloat" y="XFloat" z="XFloat" />
+      <Aftertouch x="XFloat" y="XFloat" z="XFloat" />
+      <InputImpulse x="XFloat" y="XFloat" z="XFloat" />
+      <Acceleration x="XFloat" y="XFloat" z="XFloat" />
+      <SupportNormal x="XFloat" y="XFloat" z="XFloat" />
+      <Orientation x="XFloat" y="XFloat" z="XFloat" />
+      <AngularVelocity x="XFloat" y="XFloat" z="XFloat" />
+      <ControlX>XFloat</ControlX>
+      <ControlY>XFloat</ControlY>
+      <LastLogicalUpdate>XUInt</LastLogicalUpdate>
+      <SupportFrame>XUInt16</SupportFrame>
+      <SupportVoxel>XUInt16</SupportVoxel>
+      <WeaponAngle>XFloat</WeaponAngle>
+      <WeaponFuse>XUInt</WeaponFuse>
+      <WeaponIsBounceMax>XBool</WeaponIsBounceMax>
+      <WeaponHerd>XUInt</WeaponHerd>
+      <TeamIndex>XUInt8</TeamIndex>
+      <PositionInTeam>XUInt8</PositionInTeam>
+      <PhysicsOverride>XUInt</PhysicsOverride>
+      <Flags>XUInt</Flags>
+      <PhysicsState>XEnum</PhysicsState>
+      <WeaponIndex>XEnum</WeaponIndex>
+      <InitialEnergy>XInt</InitialEnergy>
+      <Energy>XUInt16</Energy>
+      <CPUFixedWeapon>XUInt8</CPUFixedWeapon>
+      <CPUActionRadius>XUInt16</CPUActionRadius>
+      <ArtilleryMode>XBool</ArtilleryMode>
+      <PoisonRate>XUInt</PoisonRate>
+      <PendingPoison>XUInt</PendingPoison>
+      <PlaceWormAtPosition>XBool</PlaceWormAtPosition>
+      <PoolDamagePending Xtype="XCollection">XInt</PoolDamagePending>
+      <SfxBankName>XString</SfxBankName>
+      <Spawn>XString</Spawn>
+      <IsParachuteSpawn>XBool</IsParachuteSpawn>
+      <IsAllowedToTakeTurn>XBool</IsAllowedToTakeTurn>
+      <GunWobblePitch>XFloat</GunWobblePitch>
+      <GunWobbleYaw>XFloat</GunWobbleYaw>
+      <LipSynchBank>XUInt8</LipSynchBank>
+      <ATT_Hat>XString</ATT_Hat>
+      <ATT_Glasses>XString</ATT_Glasses>
+      <ATT_Gloves>XString</ATT_Gloves>
+      <ATT_Tash>XString</ATT_Tash>
+      <MovedByImpulse>XBool</MovedByImpulse>
+      <GraphicalOrientation x="XFloat" y="XFloat" z="XFloat" />
+      <Scale x="XFloat" y="XFloat" z="XFloat" />
+      <LastCollisionNormal x="XFloat" y="XFloat" z="XFloat" />
+      <LogicAnimState>XUInt</LogicAnimState>
+      <SlopeAngle>XFloat</SlopeAngle>
+      <DamagePending>XInt</DamagePending>
+      <CurrentEnergy>XInt</CurrentEnergy>
+      <IsAfterTouching>XBool</IsAfterTouching>
+      <AfterTouchVector x="XFloat" y="XFloat" z="XFloat" />
+      <IsHatWearer>XBool</IsHatWearer>
+      <IsQuickWalking>XBool</IsQuickWalking>
+      <AllowBazooka>XInt8</AllowBazooka>
+      <AllowGrenade>XInt8</AllowGrenade>
+      <AllowClusterGrenade>XInt8</AllowClusterGrenade>
+      <AllowAirstrike>XInt8</AllowAirstrike>
+      <AllowDynamite>XInt8</AllowDynamite>
+      <AllowHolyHandGrenade>XInt8</AllowHolyHandGrenade>
+      <AllowBananaBomb>XInt8</AllowBananaBomb>
+      <AllowLandmine>XInt8</AllowLandmine>
+      <AllowShotgun>XInt8</AllowShotgun>
+      <AllowBaseballBat>XInt8</AllowBaseballBat>
+      <AllowProd>XInt8</AllowProd>
+      <AllowFirePunch>XInt8</AllowFirePunch>
+      <AllowHomingMissile>XInt8</AllowHomingMissile>
+      <AllowFlood>XInt8</AllowFlood>
+      <AllowSheep>XInt8</AllowSheep>
+      <AllowGasCanister>XInt8</AllowGasCanister>
+      <AllowOldWoman>XInt8</AllowOldWoman>
+      <AllowConcreteDonkey>XInt8</AllowConcreteDonkey>
+      <AllowSuperSheep>XInt8</AllowSuperSheep>
+      <AllowGirder>XInt8</AllowGirder>
+      <AllowBridgeKit>XInt8</AllowBridgeKit>
+      <AllowNinjaRope>XInt8</AllowNinjaRope>
+      <AllowParachute>XInt8</AllowParachute>
+      <AllowLowGravity>XInt8</AllowLowGravity>
+      <AllowTeleport>XInt8</AllowTeleport>
+      <AllowJetpack>XInt8</AllowJetpack>
+      <AllowSkipGo>XInt8</AllowSkipGo>
+      <AllowSurrender>XInt8</AllowSurrender>
+      <AllowChangeWorm>XInt8</AllowChangeWorm>
+      <AllowRedbull>XInt8</AllowRedbull>
+      <AllowArmour>XInt8</AllowArmour>
+      <AllowWeaponFactoryWeapon>XInt8</AllowWeaponFactoryWeapon>
+      <AllowStarburst>XInt8</AllowStarburst>
+      <AllowAlienAbduction>XInt8</AllowAlienAbduction>
+      <AllowFatkins>XInt8</AllowFatkins>
+      <AllowScouser>XInt8</AllowScouser>
+      <AllowNoMoreNails>XInt8</AllowNoMoreNails>
+      <AllowPipe>XInt8</AllowPipe>
+      <AllowPoisonArrow>XInt8</AllowPoisonArrow>
+      <AllowSentryGun>XInt8</AllowSentryGun>
+      <AllowSniperRifle>XInt8</AllowSniperRifle>
+      <AllowSuperAirstrike>XInt8</AllowSuperAirstrike>
+      <AllowBubbleTrouble>XInt8</AllowBubbleTrouble>
+      <AllowBinoculars>XInt8</AllowBinoculars>
+      <TeleportIn>XBool</TeleportIn>
+      <IsEmotional>XBool</IsEmotional>
+      <HasDrunkRedbull>XBool</HasDrunkRedbull>
+      <Armoured>XBool</Armoured>
+    </WormDataContainer>
+    <TeamDataContainer guid="{189788F2-EB54-45AD-91D1-A6BE4A3A2CCC}" Xver="0" id="XRef">
+      <Name>XString</Name>
+      <Player>XString</Player>
+      <Active>XBool</Active>
+      <WormCountStart>XUInt8</WormCountStart>
+      <TeamColour>XUInt8</TeamColour>
+      <TeamMustSurvive>XBool</TeamMustSurvive>
+      <AlliedGroup>XUInt8</AlliedGroup>
+      <DisableCPUAttack>XBool</DisableCPUAttack>
+      <IsAIControlled>XBool</IsAIControlled>
+      <RoundsWon>XUInt8</RoundsWon>
+      <GraveIndex>XUInt8</GraveIndex>
+      <WormsCountEnd>XUInt8</WormsCountEnd>
+      <Surrendered>XBool</Surrendered>
+      <ScorePoints>XUInt</ScorePoints>
+      <FlagGfxName>XString</FlagGfxName>
+      <IsCrateSpyActive>XBool</IsCrateSpyActive>
+      <Skill>XUInt8</Skill>
+      <IsLocal>XBool</IsLocal>
+      <ATT_Hat>XString</ATT_Hat>
+      <ATT_Glasses>XString</ATT_Glasses>
+      <ATT_Gloves>XString</ATT_Gloves>
+      <ATT_Tash>XString</ATT_Tash>
+      <SfxBankName>XString</SfxBankName>
+      <WormpotSuperWeapon>XEnum</WormpotSuperWeapon>
+      <DefaultCameraDistance>XEnum</DefaultCameraDistance>
+      <RankedPoints Xtype="XCollection">XUInt</RankedPoints>
+      <PlayerPoints>XUInt</PlayerPoints>
+      <WeeklyPlayerPointsGained>XInt</WeeklyPlayerPointsGained>
+      <WeeklyInitialPlayerPoints>XUInt</WeeklyInitialPlayerPoints>
+      <NumKills>XUInt</NumKills>
+      <NumDeaths>XUInt</NumDeaths>
+      <DamageTaken>XUInt</DamageTaken>
+      <DamageDealt>XUInt</DamageDealt>
+      <GamesPlayed>XUInt</GamesPlayed>
+      <GamesWon>XUInt</GamesWon>
+    </TeamDataContainer>
+    <ParticleEmitterContainer guid="{F9AD75C4-F359-4F44-A10E-C69271F98EB2}" Xver="0" id="XRef">
+      <Comment>XString</Comment>
+      <!-- Description of the emitter. PLEASE FILL THIS IN! -->
+      <EmitterType>XEnum</EmitterType>
+      <SpriteSet>XString</SpriteSet>
+      <!-- Resource ID of the  sprite used to render the perticle -->
+      <MeshSet Xtype="XCollection">XString</MeshSet>
+      <!-- Array of meshes resource ID's to use for the particles -->
+      <MeshAnimNodeName>XString</MeshAnimNodeName>
+      <!-- Animation frame(s) for XOM mesh particles. Syntax '[loop:]<NodeName1> [+|,[loop:]<NodeName2]...]. To Loop animation start with 'Loop:'. To play animations simultaneously use '+'. To play animations in sequence use ','. Any number of animations can be played -->
+      <EmitterAcceleration x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Accelaration of the EMITTER -->
+      <EmitterAccelerationRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Accelaration of the EMITTER -->
+      <EmitterIsAttachedToLand>XBool</EmitterIsAttachedToLand>
+      <!-- If set then the emmiter will die if the land directly below it disappears -->
+      <EmitterIsOfInterest>XBool</EmitterIsOfInterest>
+      <!-- If set then the current turn will not end until the emitter dies -->
+      <EmitterIsLaunchedFromWeapon>XBool</EmitterIsLaunchedFromWeapon>
+      <!-- If set then the emitter will come the end of the weapon -->
+      <EmitterLifeTime>XUInt16</EmitterLifeTime>
+      <!-- Lifetime of the emitter (in ms) -->
+      <EmitterLifeTimeRandomise>XUInt16</EmitterLifeTimeRandomise>
+      <!-- Lifetime of the emitter (in ms) -->
+      <EmitterMaxParticles>XUInt16</EmitterMaxParticles>
+      <!-- Maximum number of particles visible -->
+      <EmitterNumCollide>XUInt16</EmitterNumCollide>
+      <!-- How many of MaxParticles will collide with the ground. VERY EXPENSIVE so keep low! -->
+      <EmitterNumSpawn>XUInt16</EmitterNumSpawn>
+      <!-- Number of particles the emitter will spawn at once -->
+      <EmitterNumSpawnRadnomise>XUInt16</EmitterNumSpawnRadnomise>
+      <!-- Number of particles the emitter will spawn at once -->
+      <EmitterOriginOffset x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Position of the emitter (relative to the emitter's origin) -->
+      <EmitterOriginRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Position of the emitter (relative to the emitter's origin) -->
+      <EmitterParticleExpireFX>XString</EmitterParticleExpireFX>
+      <!-- Particle emitter to spawn when EACH particle expires - EXPENSIVE! -->
+      <EmitterParticleFX>XString</EmitterParticleFX>
+      <!-- Particle emitter effect to attatch to EACH particle - EXPENSIVE! -->
+      <EmitterSameDirectionAsWorm>XBool</EmitterSameDirectionAsWorm>
+      <!-- If set then particles will be emitted in the direction the worm is facing -->
+      <EmitterSoundFX>XString</EmitterSoundFX>
+      <!-- Sound effect to play when the emitter is created  -->
+      <EmitterSoundFXVolume>XFloat</EmitterSoundFXVolume>
+      <!-- Volume of the Sound effect -->
+      <EmitterSpawnFreq>XUInt16</EmitterSpawnFreq>
+      <!-- How frequently the emitter will spawn particles (in ms) -->
+      <EmitterSpawnFreqRansomise>XUInt16</EmitterSpawnFreqRansomise>
+      <!-- How frequently the emitter will spawn particles (in ms) -->
+      <EmitterSpawnSizeVelocity x="XFloat" y="XFloat" />
+      <EmitterStartDelay>XUInt16</EmitterStartDelay>
+      <!-- Delay before the emitter starts emitting prarticles (in ms) -->
+      <EmitterVelocity x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Velocity of the EMITTER -->
+      <EmitterVelocityRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Velocity of the EMITTER -->
+      <ParticleAcceleration x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Acceleration of the particles. (Set Y to a negative value for gravity) -->
+      <ParticleAccelerationRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Acceleration of the particles. (Set Y to a negative value for gravity) -->
+      <ParticleAlpha>XFloat</ParticleAlpha>
+      <!-- Initial alpha of the particle ( Between 0 & 1) -->
+      <ParticleAlphaFadeIn>XUInt16</ParticleAlphaFadeIn>
+      <!-- Time until the alpha value reaches the value set in the ParticleAlpha files (i.e length of fade in ) -->
+      <ParticleAlphaVelocity>XFloat</ParticleAlphaVelocity>
+      <!-- How the alpha changes over time. Set to -1 to fade out over lifetime -->
+      <ParticleAlphaVelocityDelay>XUInt16</ParticleAlphaVelocityDelay>
+      <!-- Delay before alpha velocity is applied (in ms) -->
+      <ParticleAlternateAccelerationN>XFloat</ParticleAlternateAccelerationN>
+      <ParticleAlternateAccelerationS>XFloat</ParticleAlternateAccelerationS>
+      <ParticleAnimationFrame>XUInt8</ParticleAnimationFrame>
+      <!-- Inital Animation frame of the particle -->
+      <ParticleAnimationFrameRandomise>XUInt8</ParticleAnimationFrameRandomise>
+      <!-- Inital Animation frame of the particle -->
+      <ParticleAnimationSpeed>XUInt16</ParticleAnimationSpeed>
+      <!-- Speed to animate (in ms) -->
+      <ParticleAnimationSpeedRandomize>XUInt16</ParticleAnimationSpeedRandomize>
+      <!-- Speed to animate (in ms) -->
+      <ParticleAttractor x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Position (relative to the emitter origin) that the particles attract towards -->
+      <ParticleAttractorRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Position (relative to the emitter origin) that the particles attract towards -->
+      <ParticleAttractorIsActive>XBool</ParticleAttractorIsActive>
+      <!-- Enable attract to point mode -->
+      <ParticleCanEnterWater>XBool</ParticleCanEnterWater>
+      <!-- If set to false then particles will expire when they hit the water -->
+      <ParticleCollisionFreq>XUInt16</ParticleCollisionFreq>
+      <!-- Which particles collide with the worms ie Every n particle will do collision detection -->
+      <ParticleCollisionImmuneTime>XUInt16</ParticleCollisionImmuneTime>
+      <!-- Time (in MS) until the particle can re-collide with a worm. -->
+      <ParticleCollisionMinAlpha>XFloat</ParticleCollisionMinAlpha>
+      <!-- If the alpha of the particles is below this value then don't collide with a worm -->
+      <ParticleCollisonRadius>XFloat</ParticleCollisonRadius>
+      <!-- Size of the collision sphere of the particle -->
+      <ParticleCollisonRadiusOffset x="XFloat" y="XFloat" z="XFloat" />
+      <ParticleCollisonRadiusVelocity>XFloat</ParticleCollisonRadiusVelocity>
+      <!-- How the collision sphere radius changes over time -->
+      <ParticleCollisionShowDebug>XBool</ParticleCollisionShowDebug>
+      <ParticleCollisionWormDamageMagnitude>XUInt8</ParticleCollisionWormDamageMagnitude>
+      <ParticleCollisionWormImpulseMagnitude>XFloat</ParticleCollisionWormImpulseMagnitude>
+      <ParticleCollisionWormImpulseYMagnitude>XFloat</ParticleCollisionWormImpulseYMagnitude>
+      <ParticleCollisionWormPoisonMagnitude>XUInt8</ParticleCollisionWormPoisonMagnitude>
+      <ParticleCollisionWormType>XEnum</ParticleCollisionWormType>
+      <ParticleColor r="XFloat" g="XFloat" b="XFloat" Xtype="XCollection" />
+      <!-- The colours of the particles -->
+      <ParticleColorBand Xtype="XCollection">XFloat</ParticleColorBand>
+      <!-- When to change color. This is a value between 0 & 1 representing the lifetime of the particle -->
+      <ParticleExpireShake>XBool</ParticleExpireShake>
+      <!-- Shake the camera when EACH particle dies -->
+      <ParticleExpireShakeLength>XUInt16</ParticleExpireShakeLength>
+      <!-- Length of the camera shake when EACH particle dies (in MS) -->
+      <ParticleExpireShakeMagnitude>XFloat</ParticleExpireShakeMagnitude>
+      <!-- Strength of the camera shake when EACH particle dies -->
+      <ParticleIsAlternateAcceleration>XBool</ParticleIsAlternateAcceleration>
+      <!-- If set then particles will come out fast & then quickly slow down -->
+      <ParticleIsEffectedByWind>XBool</ParticleIsEffectedByWind>
+      <!-- If set then particles will be blown by the wind -->
+      <ParticleIsSpiral>XBool</ParticleIsSpiral>
+      <!-- If set then particles will spiral upwards -->
+      <ParticleIsUnderWaterEffect>XBool</ParticleIsUnderWaterEffect>
+      <!-- If set then particles will die when the reach the water level (from under the water -->
+      <ParticleLandCollideType>XEnum</ParticleLandCollideType>
+      <!-- What to do when the particle collides with the land (NumCollide must be set too) -->
+      <ParticleLife>XUInt16</ParticleLife>
+      <!-- Lifetime of each particle (in ms) -->
+      <ParticleLifeRandomise>XUInt16</ParticleLifeRandomise>
+      <!-- Lifetime of each particle (in ms) -->
+      <ParticleMass>XFloat</ParticleMass>
+      <!-- Mass of the particles -->
+      <ParticleNumColors>XInt8</ParticleNumColors>
+      <!-- The number of colours in the particle effect -->
+      <ParticleNumFrames>XInt8</ParticleNumFrames>
+      <!-- Number of animation frames -->
+      <ParticleOrientation x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Rotation of the particle (in degrees) -->
+      <ParticleOrientationRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Rotation of the particle (in degrees) -->
+      <ParticleOrientationVelocity x="XFloat" y="XFloat" z="XFloat" />
+      <!-- How the rotation changes over time -->
+      <ParticleOrientationVelocityRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <!-- How the rotation changes over time -->
+      <ParticleSize x="XFloat" y="XFloat" />
+      <!-- Size of the particles -->
+      <ParticleSizeOriginIsCenterPoint>XBool</ParticleSizeOriginIsCenterPoint>
+      <!-- If set then the particle will be sizes around it's center point, rather than the bottom left corner -->
+      <ParticleSizeRandomise>XFloat</ParticleSizeRandomise>
+      <!-- Size of the particles -->
+      <ParticleSizeVelocity x="XFloat" y="XFloat" />
+      <!-- How the size changes over time -->
+      <ParticleSizeVelocityRandomise x="XFloat" y="XFloat" />
+      <!-- How the size changes over time -->
+      <ParticleSizeVelocityDelay>XUInt16</ParticleSizeVelocityDelay>
+      <!-- Delay until the particle starts resizing -->
+      <ParticleSizeVelocityDelayRandomise>XUInt16</ParticleSizeVelocityDelayRandomise>
+      <ParticleFinalSizeScale x="XFloat" y="XFloat" />
+      <!-- The size of the particle when it's finshed (dies). This value is a scale factor. eg set to (0.25,0.25) to make it shrink to a quater of it's original size when by the time it dies -->
+      <ParticleFinalSizeScaleRandomise>XFloat</ParticleFinalSizeScaleRandomise>
+      <ParticleSizeFadeIn>XUInt16</ParticleSizeFadeIn>
+      <!-- Time taken (in MS) to fade the size of the particles from zero to their actual size -->
+      <ParticleSizeFadeInRandomize>XUInt16</ParticleSizeFadeInRandomize>
+      <ParticleSizeFadeInDelay>XUInt16</ParticleSizeFadeInDelay>
+      <!-- Don't start fading in the size of the particles until this time -->
+      <ParticleSizeFadeInDelayRandomize>XUInt16</ParticleSizeFadeInDelayRandomize>
+      <ParticleRenderScene>XEnum</ParticleRenderScene>
+      <!-- Order in which to render the particles. Scene1 will always be rendered before Scene2 and so on -->
+      <ParticleSpiralRadius>XFloat</ParticleSpiralRadius>
+      <!-- Radius of the spiral effect -->
+      <ParticleSpiralRadiusRandomise>XFloat</ParticleSpiralRadiusRandomise>
+      <ParticleSpiralRadiusVelocity>XFloat</ParticleSpiralRadiusVelocity>
+      <!-- How fast the particles move around the spiral radius -->
+      <ParticleSpiralRadiusVelocityRandomise>XFloat</ParticleSpiralRadiusVelocityRandomise>
+      <ParticleSpiralRadiusSizeVelocity>XFloat</ParticleSpiralRadiusSizeVelocity>
+      <!-- How the spiral radius changes over time -->
+      <ParticleVelocity x="XFloat" y="XFloat" z="XFloat" />
+      <!-- Velocity of the particles -->
+      <ParticleVelocityRandomise x="XFloat" y="XFloat" z="XFloat" />
+      <ParticleVelocityIsNormalised>XBool</ParticleVelocityIsNormalised>
+    </ParticleEmitterContainer>
+    <EffectDetailsContainer guid="{885658BF-DBAB-49AC-B9B3-008FCF5E5694}" Xver="0" id="XRef">
+      <EffectNames Xtype="XCollection">XString</EffectNames>
+    </EffectDetailsContainer>
+    <ParticleMeshNamesContainer guid="{84C3D356-4D18-4E18-BCD7-603BB119B182}" Xver="0" id="XRef">
+      <MeshNames Xtype="XCollection">XString</MeshNames>
+    </ParticleMeshNamesContainer>
+    <AIParametersContainer guid="{6A0DEE10-2E94-4844-B2D4-6C39CA979C90}" Xver="0" id="XRef">
+      <WeightingThisWormValue>XFloat</WeightingThisWormValue>
+      <WeightingWormVital>XFloat</WeightingWormVital>
+      <WeightingWormHealth>XFloat</WeightingWormHealth>
+      <WeightingWormPoisoned>XFloat</WeightingWormPoisoned>
+      <WeightingWormExchange>XFloat</WeightingWormExchange>
+      <WeightingWormLastInTeam>XFloat</WeightingWormLastInTeam>
+      <WeightingWormNearbyWorms>XFloat</WeightingWormNearbyWorms>
+      <WeightingWormMilesAway>XFloat</WeightingWormMilesAway>
+      <WeightingAttack>XFloat</WeightingAttack>
+      <WeightingExplosiveSecondaryDamage>XFloat</WeightingExplosiveSecondaryDamage>
+      <WeightingExplosiveNearbyThreat>XFloat</WeightingExplosiveNearbyThreat>
+      <WeightingKillTarget>XFloat</WeightingKillTarget>
+      <WeightingMultipleUse>XFloat</WeightingMultipleUse>
+      <WeightingPunchThroughLand>XFloat</WeightingPunchThroughLand>
+      <WeightingPreferNearbyTargets>XFloat</WeightingPreferNearbyTargets>
+      <WeightingBestMissShotMultipleUse>XFloat</WeightingBestMissShotMultipleUse>
+      <WeightingPreferVariety>XFloat</WeightingPreferVariety>
+      <ShotErrorProjectile>XFloat</ShotErrorProjectile>
+      <ShotErrorDirect>XFloat</ShotErrorDirect>
+      <ShotErrorDirectNonStrafe>XFloat</ShotErrorDirectNonStrafe>
+      <DelayAtStart>XFloat</DelayAtStart>
+      <DelayBeforeFire>XFloat</DelayBeforeFire>
+      <ProjectileSweetSpotDistance>XFloat</ProjectileSweetSpotDistance>
+      <StrikeSweetSpotDistance>XFloat</StrikeSweetSpotDistance>
+      <ClusterDistanceAboveTarget>XFloat</ClusterDistanceAboveTarget>
+      <MaximumDistanceTargetConsidered>XFloat</MaximumDistanceTargetConsidered>
+      <ForbidShotsWhenMightAffectAITrigger>XFloat</ForbidShotsWhenMightAffectAITrigger>
+      <WeightingPlanScoreRandomise>XFloat</WeightingPlanScoreRandomise>
+      <AddScoreMoveIfNotMoved>XFloat</AddScoreMoveIfNotMoved>
+      <AddScoreMove>XFloat</AddScoreMove>
+      <DelayBeforeFirstMove>XFloat</DelayBeforeFirstMove>
+      <DelayBeforeNonFirstMove>XFloat</DelayBeforeNonFirstMove>
+      <RandomSmallMoveRange>XFloat</RandomSmallMoveRange>
+      <ReduceMoveScoreFurtherThan>XFloat</ReduceMoveScoreFurtherThan>
+      <AddScoreCollectSomething>XFloat</AddScoreCollectSomething>
+      <WeightCollectWeapon>XFloat</WeightCollectWeapon>
+      <WeightCollectHealth>XFloat</WeightCollectHealth>
+      <WeightCollectHealthWhenPoisoned>XFloat</WeightCollectHealthWhenPoisoned>
+      <WeightCollectUtility>XFloat</WeightCollectUtility>
+      <AllowCollectNormalCrate>XBool</AllowCollectNormalCrate>
+      <LikeToCollectHealthWhenHealthBelow>XFloat</LikeToCollectHealthWhenHealthBelow>
+      <ReduceMoveScoreIfTimeLeftLessThan>XFloat</ReduceMoveScoreIfTimeLeftLessThan>
+      <ForbidMoveIfWouldLeaveTimeLessThan>XFloat</ForbidMoveIfWouldLeaveTimeLessThan>
+      <WeightingPreferAttackHumans>XFloat</WeightingPreferAttackHumans>
+      <MemoryImproveAccuracyMatchRadius>XFloat</MemoryImproveAccuracyMatchRadius>
+      <MemoryImproveAccuracyEffect>XFloat</MemoryImproveAccuracyEffect>
+      <TargetDetailObject>XString</TargetDetailObject>
+      <AddScoreTeleport>XFloat</AddScoreTeleport>
+      <WeightStrikeSecondaryTarget>XFloat</WeightStrikeSecondaryTarget>
+      <ConsidersStrikeThrustDirection>XBool</ConsidersStrikeThrustDirection>
+      <ShotErrorStrike>XFloat</ShotErrorStrike>
+      <StrafeProgressiveErrorScale>XFloat</StrafeProgressiveErrorScale>
+      <MovementJumpForwardAllowed>XBool</MovementJumpForwardAllowed>
+      <MovementJumpBackflipAllowed>XBool</MovementJumpBackflipAllowed>
+      <MovementJumpError>XFloat</MovementJumpError>
+      <WeightTeleportDefensivePos>XFloat</WeightTeleportDefensivePos>
+      <WeightTeleportOffensivePos>XFloat</WeightTeleportOffensivePos>
+      <WeightRetreatDefensivePos>XFloat</WeightRetreatDefensivePos>
+      <WeightRetreatOffensivePos>XFloat</WeightRetreatOffensivePos>
+      <ImaginaryCrateDetailObject>XString</ImaginaryCrateDetailObject>
+      <AttractorDetailObject>XString</AttractorDetailObject>
+      <AttractorZoneRadius>XFloat</AttractorZoneRadius>
+      <MortarMaximumAimAngleAllowed>XFloat</MortarMaximumAimAngleAllowed>
+      <JetpackAboutToCrossLineLookAhead>XFloat</JetpackAboutToCrossLineLookAhead>
+      <PrefBazooka>XFloat</PrefBazooka>
+      <PrefGrenade>XFloat</PrefGrenade>
+      <PrefClusterGrenade>XFloat</PrefClusterGrenade>
+      <PrefAirstrike>XFloat</PrefAirstrike>
+      <PrefDynamite>XFloat</PrefDynamite>
+      <PrefHolyHandGrenade>XFloat</PrefHolyHandGrenade>
+      <PrefBananaBomb>XFloat</PrefBananaBomb>
+      <PrefLandmine>XFloat</PrefLandmine>
+      <PrefShotgun>XFloat</PrefShotgun>
+      <PrefBaseballBat>XFloat</PrefBaseballBat>
+      <PrefProd>XFloat</PrefProd>
+      <PrefFirePunch>XFloat</PrefFirePunch>
+      <PrefHomingMissile>XFloat</PrefHomingMissile>
+      <PrefFlood>XFloat</PrefFlood>
+      <PrefSheep>XFloat</PrefSheep>
+      <PrefGasCanister>XFloat</PrefGasCanister>
+      <PrefOldWoman>XFloat</PrefOldWoman>
+      <PrefConcreteDonkey>XFloat</PrefConcreteDonkey>
+      <PrefSuperSheep>XFloat</PrefSuperSheep>
+      <PrefGirder>XFloat</PrefGirder>
+      <PrefBridgeKit>XFloat</PrefBridgeKit>
+      <PrefNinjaRope>XFloat</PrefNinjaRope>
+      <PrefParachute>XFloat</PrefParachute>
+      <PrefLowGravity>XFloat</PrefLowGravity>
+      <PrefTeleport>XFloat</PrefTeleport>
+      <PrefJetpack>XFloat</PrefJetpack>
+      <PrefSkipGo>XFloat</PrefSkipGo>
+      <PrefSurrender>XFloat</PrefSurrender>
+      <PrefChangeWorm>XFloat</PrefChangeWorm>
+      <PrefRedbull>XFloat</PrefRedbull>
+      <PrefWeaponFactoryWeapon>XFloat</PrefWeaponFactoryWeapon>
+      <PrefStarburst>XFloat</PrefStarburst>
+      <PrefAlienAbduction>XFloat</PrefAlienAbduction>
+      <PrefFatkins>XFloat</PrefFatkins>
+      <PrefScouser>XFloat</PrefScouser>
+      <PrefNoMoreNails>XFloat</PrefNoMoreNails>
+      <PrefPipe>XFloat</PrefPipe>
+      <PrefPoisonArrow>XFloat</PrefPoisonArrow>
+      <PrefSentryGun>XFloat</PrefSentryGun>
+      <PrefSniperRifle>XFloat</PrefSniperRifle>
+      <PrefSuperAirstrike>XFloat</PrefSuperAirstrike>
+      <PrefBubbleTrouble>XFloat</PrefBubbleTrouble>
+      <PrefWeaponProjectile>XFloat</PrefWeaponProjectile>
+      <PrefWeaponDirect>XFloat</PrefWeaponDirect>
+      <PrefWeaponStrike>XFloat</PrefWeaponStrike>
+      <PrefWeaponMelee>XFloat</PrefWeaponMelee>
+      <PrefWeaponAnimal>XFloat</PrefWeaponAnimal>
+    </AIParametersContainer>
+    <LensFlareElementContainer guid="{4BE9ED7A-11FC-4B23-932E-7D54575F2060}" Xver="0" id="XRef">
+      <Scale>XFloat</Scale>
+      <Size>XFloat</Size>
+      <FadeIn>XFloat</FadeIn>
+      <Color r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+      <Type>XEnum</Type>
+    </LensFlareElementContainer>
+    <LensFlareContainer guid="{CB11E1D9-5A6A-40F3-A71E-119A660E84FE}" Xver="0" id="XRef">
+      <Active>XBool</Active>
+      <LensScale>XFloat</LensScale>
+      <FocalOffset>XFloat</FocalOffset>
+      <Elements Xtype="XCollection" href="LensFlareElementContainer" />
+    </LensFlareContainer>
+    <WormPotContainer guid="{D448836E-4812-4081-ADE8-37DF51A315FF}" Xver="0" id="XRef">
+      <PowerScale>XFloat</PowerScale>
+      <SuperScale>XFloat</SuperScale>
+      <FallingScale>XFloat</FallingScale>
+      <SlippyModeScale>XFloat</SlippyModeScale>
+      <StickyModeScale>XFloat</StickyModeScale>
+      <WindScale>XFloat</WindScale>
+      <SuperExplosives>XBool</SuperExplosives>
+      <SuperClusters>XBool</SuperClusters>
+      <SuperFirearms>XBool</SuperFirearms>
+      <SuperAnimals>XBool</SuperAnimals>
+      <SuperHand>XBool</SuperHand>
+      <DavidAndGoliath>XBool</DavidAndGoliath>
+      <FallingHurtsMore>XBool</FallingHurtsMore>
+      <DoubleDamage>XBool</DoubleDamage>
+      <LotsOfCrates>XBool</LotsOfCrates>
+      <SpecialistWorms>XBool</SpecialistWorms>
+      <NoRetreatTime>XBool</NoRetreatTime>
+      <DoubleHealthCrates>XBool</DoubleHealthCrates>
+      <WindEffectMore>XBool</WindEffectMore>
+      <OneShotOneKill>XBool</OneShotOneKill>
+      <EnergyOrEnemy>XBool</EnergyOrEnemy>
+      <CratesOnly>XBool</CratesOnly>
+      <SlippyMode>XBool</SlippyMode>
+      <StickyMode>XBool</StickyMode>
+      <WormsOnlyDrown>XBool</WormsOnlyDrown>
+      <PermanentGravity>XBool</PermanentGravity>
+      <DisableFlips>XBool</DisableFlips>
+      <RopingArtilleryWorms>XBool</RopingArtilleryWorms>
+      <WindAffectsGuns>XBool</WindAffectsGuns>
+      <PermanentQuickWalk>XBool</PermanentQuickWalk>
+      <DisableBlimp>XBool</DisableBlimp>
+      <SpawnMineEveryTurn>XBool</SpawnMineEveryTurn>
+      <RandomDestrucibleTerrain>XBool</RandomDestrucibleTerrain>
+      <HighPowerPetrolBombs>XBool</HighPowerPetrolBombs>
+      <JusticeMode>XBool</JusticeMode>
+      <JetpackEndsTurn>XBool</JetpackEndsTurn>
+      <GirdersDontEndTurn>XBool</GirdersDontEndTurn>
+      <DeathTouch>XBool</DeathTouch>
+      <NoParachuteDrops>XBool</NoParachuteDrops>
+      <MemeroyMode>XBool</MemeroyMode>
+      <VampireMode>XBool</VampireMode>
+      <VitalWorm>XBool</VitalWorm>
+      <SecretSuperWeapons>XBool</SecretSuperWeapons>
+      <DonorCard>XBool</DonorCard>
+      <GirdersOnly>XBool</GirdersOnly>
+      <WindAffectsWorms>XBool</WindAffectsWorms>
+      <WormsJumpOnly>XBool</WormsJumpOnly>
+    </WormPotContainer>
+    <WaterPlaneTweaks guid="{A7EFF5DC-D474-43EF-9351-FE812BB7C0EF}" Xver="6" id="XRef">
+      <SkyBlendColor r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+      <DiffuseTexture>XString</DiffuseTexture>
+      <NormalTexture>XString</NormalTexture>
+      <EnvironmentTexture>XString</EnvironmentTexture>
+      <NearOpacity>XFloat</NearOpacity>
+      <TextureScale>XFloat</TextureScale>
+      <SpecularFadeScale>XFloat</SpecularFadeScale>
+      <ReflectionStrength>XFloat</ReflectionStrength>
+      <ReflectionContrast>XFloat</ReflectionContrast>
+      <SpecularContrast>XFloat</SpecularContrast>
+      <SpecularPower>XFloat</SpecularPower>
+      <NormalIntensity x="XFloat" y="XFloat" z="XFloat" />
+      <NormalIntensity1 x="XFloat" y="XFloat" z="XFloat" />
+      <SubtractColourScale>XFloat</SubtractColourScale>
+      <LightDirection x="XFloat" y="XFloat" z="XFloat" />
+      <LightAmbient r="XUInt8" g="XUInt8" b="XUInt8" />
+      <LightDiffuse r="XUInt8" g="XUInt8" b="XUInt8" />
+      <LightSpecular r="XUInt8" g="XUInt8" b="XUInt8" />
+      <LightFresnel r="XUInt8" g="XUInt8" b="XUInt8" />
+      <LandSpecularPower>XFloat</LandSpecularPower>
+      <LandFresnelColour r="XUInt8" g="XUInt8" b="XUInt8" />
+      <LandFresnelPower>XFloat</LandFresnelPower>
+    </WaterPlaneTweaks>
+    <TrackCameraContainer guid="{E746407C-AB92-4641-A171-880E86B8602C}" Xver="0" id="XRef">
+      <Camera2ObjectDistance>XFloat</Camera2ObjectDistance>
+      <LookSpeed>XFloat</LookSpeed>
+      <UpSpeed>XFloat</UpSpeed>
+      <ZoomSpeed>XFloat</ZoomSpeed>
+      <MinPreferredDistance>XFloat</MinPreferredDistance>
+      <MinPosition>XFloat</MinPosition>
+      <MinTimeBetweenCuts>XUInt</MinTimeBetweenCuts>
+      <ViewPoint Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
+      <CutWhenStartOffScreen>XBool</CutWhenStartOffScreen>
+    </TrackCameraContainer>
+    <OccludingCameraPropertiesContainer guid="{51D74BFA-CA52-41A3-ABCB-A0D0F330B512}" Xver="0" Xtype="XClass" id="XRef">
+      <ChaseCameraPropertiesContainer guid="{A6FE8A24-4082-4782-8C5A-798A695CC732}" Xver="0" id="XRef">
+        <CutOnRetreat>XBool</CutOnRetreat>
+      </ChaseCameraPropertiesContainer>
+      <AntiGimScale>XFloat</AntiGimScale>
+      <DblHitThres>XInt</DblHitThres>
+      <DefaultHeight>XFloat</DefaultHeight>
+      <DistFromObject>XFloat</DistFromObject>
+      <HeightSpeed>XFloat</HeightSpeed>
+      <LkAboveSpdScale>XFloat</LkAboveSpdScale>
+      <LookAboveObject>XFloat</LookAboveObject>
+      <LookAheadScale>XFloat</LookAheadScale>
+      <LookAheadSpeed>XFloat</LookAheadSpeed>
+      <LookUpdateSpeed>XFloat</LookUpdateSpeed>
+      <MaxHeight>XFloat</MaxHeight>
+      <MaxLkAheadDist>XFloat</MaxLkAheadDist>
+      <MaxLookAboveObj>XFloat</MaxLookAboveObj>
+      <MinHeight>XFloat</MinHeight>
+      <MinLookAt>XFloat</MinLookAt>
+      <MinPosition>XFloat</MinPosition>
+      <MinZoomDist>XFloat</MinZoomDist>
+      <MouseXSpeed>XFloat</MouseXSpeed>
+      <MouseYSpeed>XFloat</MouseYSpeed>
+      <OccDestSize>XFloat</OccDestSize>
+      <OccHeightSpeed>XFloat</OccHeightSpeed>
+      <OcclusionSize>XFloat</OcclusionSize>
+      <OccYawSpeed>XFloat</OccYawSpeed>
+      <OccZoomInSpeed>XFloat</OccZoomInSpeed>
+      <OccZoomOutSpeed>XFloat</OccZoomOutSpeed>
+      <TimeBeforeZoomOut>XUInt</TimeBeforeZoomOut>
+      <PosUpdateSpeed>XFloat</PosUpdateSpeed>
+      <StartYaw>XFloat</StartYaw>
+      <UpUpdateSpeed>XFloat</UpUpdateSpeed>
+      <YawSpeed>XFloat</YawSpeed>
+      <ZoomOffsetDist>XFloat</ZoomOffsetDist>
+      <TailOffset x="XFloat" y="XFloat" z="XFloat" />
+      <HeadOffset x="XFloat" y="XFloat" z="XFloat" />
+      <ResetYaw>XBool</ResetYaw>
+      <OccInnerTestPoints>XUInt</OccInnerTestPoints>
+      <OccZoomPctge>XFloat</OccZoomPctge>
+      <ShowDebugDots>XBool</ShowDebugDots>
+    </OccludingCameraPropertiesContainer>
+    <FlyCameraPropertiesContainer guid="{90B14B7E-56D2-4E88-93E6-CD92007A486D}" Xver="0" id="XRef">
+      <LagBehind>XFloat</LagBehind>
+      <LookAhead>XFloat</LookAhead>
+      <LookSpeed>XFloat</LookSpeed>
+      <MinLookAt>XFloat</MinLookAt>
+      <MinPosition>XFloat</MinPosition>
+      <PosSpeed>XFloat</PosSpeed>
+      <UpSpeed>XFloat</UpSpeed>
+      <Cut>XBool</Cut>
+      <PosRate>XFloat</PosRate>
+      <PauseDuration>XUInt</PauseDuration>
+      <FinalDistance>XFloat</FinalDistance>
+    </FlyCameraPropertiesContainer>
+    <SimpleCameraContainer guid="{D3C5ACB8-95E3-4CCB-8FCE-A9ED3997F989}" Xver="0" id="XRef">
+      <PosUpdateSpeed>XFloat</PosUpdateSpeed>
+      <LookUpdateSpeed>XFloat</LookUpdateSpeed>
+    </SimpleCameraContainer>
+    <TeamPersistDataContainer guid="{915EA34F-1A83-436F-B694-7E32180A7590}" Xver="0" id="XRef">
+      <RoundsWon>XUInt</RoundsWon>
+    </TeamPersistDataContainer>
+    <ChatMessagesContainer guid="{90E0A02B-91B4-4F2F-BF26-474469134E6A}" Xver="0" id="XRef">
+      <Sender Xtype="XCollection">XString</Sender>
+      <Content Xtype="XCollection">XString</Content>
+      <Colour Xtype="XCollection">XUInt</Colour>
+      <Scope Xtype="XCollection">XUInt</Scope>
+    </ChatMessagesContainer>
+    <CrateDataContainer guid="{6339DE08-C416-49F2-B133-B26960B96541}" Xver="0" id="XRef">
+      <Type>XString</Type>
+      <Contents>XString</Contents>
+      <NumContents>XInt</NumContents>
+      <Index>XInt</Index>
+      <LifetimeSec>XFloat</LifetimeSec>
+      <GroundSnap>XInt</GroundSnap>
+      <Parachute>XInt</Parachute>
+      <Spawn>XString</Spawn>
+      <FallSpeed>XFloat</FallSpeed>
+      <Gravity>XInt</Gravity>
+      <TeamDestructible>XInt</TeamDestructible>
+      <TeamCollectable>XInt</TeamCollectable>
+      <UXB>XInt</UXB>
+      <Hitpoints>XInt</Hitpoints>
+      <Pushable>XInt</Pushable>
+      <RandomSpawnPos>XInt</RandomSpawnPos>
+      <CanDropFromChute>XInt</CanDropFromChute>
+      <WaitTillLanded>XInt</WaitTillLanded>
+      <TrackCam>XInt</TrackCam>
+      <Scale>XFloat</Scale>
+      <Showered>XInt</Showered>
+      <DelayMillisec>XInt</DelayMillisec>
+      <LifetimeTurns>XInt</LifetimeTurns>
+      <AddToWormInventory>XInt</AddToWormInventory>
+      <CustomGraphic>XString</CustomGraphic>
+    </CrateDataContainer>
+    <FlagDataContainer guid="{E773A429-E48A-4BA4-8671-FF87A3B25802}" Xver="0" id="XRef">
+      <TextResource>XString</TextResource>
+      <TargaName>XString</TargaName>
+    </FlagDataContainer>
+    <InputDetailsContainer guid="{A560E066-92AB-43C2-8E71-46E834F5DF80}" Xver="0" id="XRef">
+      <Type>XEnum</Type>
+      <Key>XUInt</Key>
+      <JoystickAxis>XUInt</JoystickAxis>
+    </InputDetailsContainer>
+    <InputEventMappingContainer guid="{744E7B30-ED00-4C46-A45D-870CD35281D8}" Xver="0" id="XRef">
+      <Message>XString</Message>
+      <FEResourceID>XString</FEResourceID>
+      <AllowedDuplacates Xtype="XCollection">XUInt8</AllowedDuplacates>
+      <InputMappings Xtype="XCollection" href="InputDetailsContainer" />
+      <Group>XUInt8</Group>
+    </InputEventMappingContainer>
+    <InputMappingDetails guid="{3921267B-3EC6-4C69-B7DD-199AEDEB715C}" Xver="0" id="XRef">
+      <InputEventMappings Xtype="XCollection" href="InputEventMappings" />
+    </InputMappingDetails>
+    <FMVTextLine guid="{3921267B-3EC6-4C69-B7DD-154AEDEB715C}" Xver="0" id="XRef">
+      <TextID>XString</TextID>
+      <TimeOffset>XUInt</TimeOffset>
+    </FMVTextLine>
+    <FMVSubTiles guid="{3921267B-3EC6-4C69-B7DD-154BCDEB715C}" Xver="0" id="XRef">
+      <FMV>XEnum</FMV>
+      <TextLines Xtype="XCollection" href="FMVTextLine" />
+    </FMVSubTiles>
+    <CreditsFMVs guid="{D7DE64D7-E3E5-4C77-A7F4-71A093E22070}" Xver="0" id="XRef">
+      <MovieName Xtype="XCollection">XString</MovieName>
+    </CreditsFMVs>
+    <BaseWeaponContainer guid="{5B2340F7-B7CA-4CD5-9B6E-71DDD8AD4588}" Xver="0" Xtype="XClass" id="XRef">
+      <PayloadWeaponPropertiesContainer guid="{C2371351-3EBE-47C7-988B-2C2BCF215593}" Xver="2" id="XRef" Xtype="XClass">
+        <JumpingPayloadWeaponPropertiesContainer guid="{87C477B8-0353-42B8-A2EA-03363F5FFF51}" Xver="0" id="XRef" Xtype="XClass">
+          <FlyingPayloadWeaponPropertiesContainer guid="{A05E3A33-AE89-4D06-BA6B-C4327E18F31D}" Xver="0" id="XRef">
+            <MaxPitchSpeed>XFloat</MaxPitchSpeed>
+            <PitchAcceleration>XFloat</PitchAcceleration>
+            <Inertia>XFloat</Inertia>
+            <MaxYawSpeed>XFloat</MaxYawSpeed>
+            <YawAcceleration>XFloat</YawAcceleration>
+            <MaxRollSpeed>XFloat</MaxRollSpeed>
+            <RollAcceleration>XFloat</RollAcceleration>
+            <FlyingSpeed>XFloat</FlyingSpeed>
+            <MaxWorldYawSpeed>XFloat</MaxWorldYawSpeed>
+            <BlendTowardsHorizontal>XFloat</BlendTowardsHorizontal>
+            <BlendTowardsVertical>XFloat</BlendTowardsVertical>
+            <MaxAutoRollSpeed>XFloat</MaxAutoRollSpeed>
+            <AutoRollAcceleration>XFloat</AutoRollAcceleration>
+            <AutoRollDelay>XUInt</AutoRollDelay>
+            <YawAnimSpeed>XFloat</YawAnimSpeed>
+            <RollAnimSpeed>XFloat</RollAnimSpeed>
+            <AnimYaw>XString</AnimYaw>
+            <AnimRoll>XString</AnimRoll>
+            <FlyingGraphicsResourceID>XString</FlyingGraphicsResourceID>
+            <FlyingLaunchSfx>XString</FlyingLaunchSfx>
+            <FlyingLoopSfx>XString</FlyingLoopSfx>
+            <AnimFly>XString</AnimFly>
+            <AnimFall>XString</AnimFall>
+          </FlyingPayloadWeaponPropertiesContainer>
+          <SmallJumpHorizontalSpeed>XFloat</SmallJumpHorizontalSpeed>
+          <SmallJumpMinVerticalSpeed>XFloat</SmallJumpMinVerticalSpeed>
+          <SmallJumpMaxVerticalSpeed>XFloat</SmallJumpMaxVerticalSpeed>
+          <BigJumpHorizontalSpeed>XFloat</BigJumpHorizontalSpeed>
+          <BigJumpMinVerticalSpeed>XFloat</BigJumpMinVerticalSpeed>
+          <BigJumpMaxVerticalSpeed>XFloat</BigJumpMaxVerticalSpeed>
+          <MaxDrop>XFloat</MaxDrop>
+          <ReturnProbability>XFloat</ReturnProbability>
+          <MinTimeForSafeJump>XUInt</MinTimeForSafeJump>
+        </JumpingPayloadWeaponPropertiesContainer>
+        <HomingPayloadWeaponPropertiesContainer guid="{4BBF45B4-2E45-4AE2-8AA1-B30AD29A7AA4}" Xver="0" id="XRef">
+          <OrientationProportion>XFloat</OrientationProportion>
+          <Stage1Duration>XUInt</Stage1Duration>
+          <Stage2Duration>XUInt</Stage2Duration>
+          <Stage3Duration>XUInt</Stage3Duration>
+          <MaxHomingSpeed>XFloat</MaxHomingSpeed>
+          <HomingAcceleration>XFloat</HomingAcceleration>
+          <AvoidsLand>XBool</AvoidsLand>
+          <VerticalLandAvoidanceDistance>XFloat</VerticalLandAvoidanceDistance>
+          <ForwardLandAvoidanceDistance>XFloat</ForwardLandAvoidanceDistance>
+          <VerticalLandAvoidanceForce>XFloat</VerticalLandAvoidanceForce>
+          <ForwardLandAvoidanceForce>XFloat</ForwardLandAvoidanceForce>
+        </HomingPayloadWeaponPropertiesContainer>
+        <IsAimedWeapon>XBool</IsAimedWeapon>
+        <IsPoweredWeapon>XBool</IsPoweredWeapon>
+        <IsTargetingWeapon>XBool</IsTargetingWeapon>
+        <IsControlledBomber>XBool</IsControlledBomber>
+        <IsBomberWeapon>XBool</IsBomberWeapon>
+        <IsDirectionalWeapon>XBool</IsDirectionalWeapon>
+        <IsHoming>XBool</IsHoming>
+        <IsLowGravity>XBool</IsLowGravity>
+        <IsLaunchedFromWorm>XBool</IsLaunchedFromWorm>
+        <HasAdjustableFuse>XBool</HasAdjustableFuse>
+        <HasAdjustableBounce>XBool</HasAdjustableBounce>
+        <HasAdjustableHerd>XBool</HasAdjustableHerd>
+        <IsAffectedByGravity>XBool</IsAffectedByGravity>
+        <IsAffectedByWind>XBool</IsAffectedByWind>
+        <EndTurnImmediate>XBool</EndTurnImmediate>
+        <UseParabolicRetical>XBool</UseParabolicRetical>
+        <ColliderFlags>XUInt</ColliderFlags>
+        <CameraId Xtype="XCollection">XString</CameraId>
+        <PayloadGraphicsResourceID>XString</PayloadGraphicsResourceID>
+        <Payload2ndGraphicsResourceID>XString</Payload2ndGraphicsResourceID>
+        <Scale>XFloat</Scale>
+        <Radius>XFloat</Radius>
+        <AnimTravel>XString</AnimTravel>
+        <AnimSmallJump>XString</AnimSmallJump>
+        <AnimBigJump>XString</AnimBigJump>
+        <AnimArm>XString</AnimArm>
+        <AnimSplashdown>XString</AnimSplashdown>
+        <AnimSink>XString</AnimSink>
+        <AnimIntermediate>XString</AnimIntermediate>
+        <AnimImpact>XString</AnimImpact>
+        <DirectionBlend>XFloat</DirectionBlend>
+        <FuseTimerGraphicOffset>XFloat</FuseTimerGraphicOffset>
+        <FuseTimerScale>XFloat</FuseTimerScale>
+        <BasePower>XFloat</BasePower>
+        <MaxPower>XFloat</MaxPower>
+        <MinTerminalVelocity>XFloat</MinTerminalVelocity>
+        <MaxTerminalVelocity>XFloat</MaxTerminalVelocity>
+        <LogicalLaunchZOffset>XFloat</LogicalLaunchZOffset>
+        <LogicalLaunchYOffset>XFloat</LogicalLaunchYOffset>
+        <OrientationOption>XUInt</OrientationOption>
+        <SpinSpeed>XFloat</SpinSpeed>
+        <InterPayloadDelay>XUInt</InterPayloadDelay>
+        <MinAimAngle>XFloat</MinAimAngle>
+        <MaxAimAngle>XFloat</MaxAimAngle>
+        <DetonatesOnLandImpact>XBool</DetonatesOnLandImpact>
+        <DetonatesOnExpiry>XBool</DetonatesOnExpiry>
+        <DetonatesOnObjectImpact>XBool</DetonatesOnObjectImpact>
+        <DetonatesOnWormImpact>XBool</DetonatesOnWormImpact>
+        <DetonatesAtRest>XBool</DetonatesAtRest>
+        <DetonatesOnFirePress>XBool</DetonatesOnFirePress>
+        <DetonatesWhenCantJump>XBool</DetonatesWhenCantJump>
+        <DetonateMultiEffect>XEnum</DetonateMultiEffect>
+        <WormCollideResponse>XEnum</WormCollideResponse>
+        <WormDamageMagnitude>XFloat</WormDamageMagnitude>
+        <ImpulseMagnitude>XFloat</ImpulseMagnitude>
+        <WormDamageRadius>XFloat</WormDamageRadius>
+        <LandDamageRadius>XFloat</LandDamageRadius>
+        <ImpulseRadius>XFloat</ImpulseRadius>
+        <ImpulseOffset>XFloat</ImpulseOffset>
+        <Mass>XFloat</Mass>
+        <WormImpactDamage>XFloat</WormImpactDamage>
+        <MaxPowerUp>XUInt</MaxPowerUp>
+        <TangentialMinBounceDamping>XFloat</TangentialMinBounceDamping>
+        <ParallelMinBounceDamping>XFloat</ParallelMinBounceDamping>
+        <TangentialMaxBounceDamping>XFloat</TangentialMaxBounceDamping>
+        <ParallelMaxBounceDamping>XFloat</ParallelMaxBounceDamping>
+        <SkimsOnWater>XBool</SkimsOnWater>
+        <MinSpeedForSkim>XFloat</MinSpeedForSkim>
+        <MaxAngleForSkim>XFloat</MaxAngleForSkim>
+        <SkimDamping x="XFloat" y="XFloat" z="XFloat" />
+        <SinkDepth>XFloat</SinkDepth>
+        <NumStrikeBombs>XUInt</NumStrikeBombs>
+        <NumBomblets>XUInt</NumBomblets>
+        <BombletMaxConeAngle>XFloat</BombletMaxConeAngle>
+        <BombletMaxSpeed>XFloat</BombletMaxSpeed>
+        <BombletMinSpeed>XFloat</BombletMinSpeed>
+        <BombletWeaponName>XString</BombletWeaponName>
+        <FxLocator>XString</FxLocator>
+        <ArielFx>XString</ArielFx>
+        <DetonationFx>XString</DetonationFx>
+        <DetonationSfx>XString</DetonationSfx>
+        <ExpiryFx>XString</ExpiryFx>
+        <SplashFx>XString</SplashFx>
+        <SplishFx>XString</SplishFx>
+        <SinkingFx>XString</SinkingFx>
+        <BounceFx>XString</BounceFx>
+        <StopFxAtRest>XBool</StopFxAtRest>
+        <BounceSfx>XString</BounceSfx>
+        <PreDetonationSfx>XString</PreDetonationSfx>
+        <ArmSfx1Shot>XString</ArmSfx1Shot>
+        <ArmSfxLoop>XString</ArmSfxLoop>
+        <LaunchSfx>XString</LaunchSfx>
+        <LoopSfx>XString</LoopSfx>
+        <BigJumpSfx>XString</BigJumpSfx>
+        <WalkSfx>XString</WalkSfx>
+        <TrailBitmap>XString</TrailBitmap>
+        <TrailLocator1>XString</TrailLocator1>
+        <TrailLocator2>XString</TrailLocator2>
+        <TrailLength>XUInt</TrailLength>
+        <AttachedMesh>XString</AttachedMesh>
+        <AttachedMeshScale>XFloat</AttachedMeshScale>
+        <StartsArmed>XBool</StartsArmed>
+        <ArmOnImpact>XBool</ArmOnImpact>
+        <ArmingCourtesyTime>XUInt</ArmingCourtesyTime>
+        <PreDetonationTime>XUInt</PreDetonationTime>
+        <ArmingRadius>XFloat</ArmingRadius>
+        <LifeTime>XInt</LifeTime>
+        <IsFuseDisplayed>XBool</IsFuseDisplayed>
+      </PayloadWeaponPropertiesContainer>
+      <SentryGunWeaponPropertiesContainer guid="{B1CE4F52-CA38-4C8C-84DE-1B1A89CE42D8}" Xver="0" id="XRef">
+        <ActivatedFx>XString</ActivatedFx>
+        <ReloadFx>XString</ReloadFx>
+        <PreExplosionFx>XString</PreExplosionFx>
+        <DamageFx>XString</DamageFx>
+        <ExplosionFx>XString</ExplosionFx>
+        <FireFx>XString</FireFx>
+        <SplishFx>XString</SplishFx>
+        <SplashFx>XString</SplashFx>
+        <SinkingFx>XString</SinkingFx>
+        <ReloadSfx>XString</ReloadSfx>
+        <ExplosionSfx>XString</ExplosionSfx>
+        <FireSfx>XString</FireSfx>
+        <SplashSfx>XString</SplashSfx>
+        <ShotImpulseMagnitude>XFloat</ShotImpulseMagnitude>
+        <ShotImpulseRadius>XFloat</ShotImpulseRadius>
+        <ShotLandDamageMagnitude>XFloat</ShotLandDamageMagnitude>
+        <ShotLandDamageRadius>XFloat</ShotLandDamageRadius>
+        <ShotWormDamageMagnitude>XFloat</ShotWormDamageMagnitude>
+        <ShotWormDamageRadius>XFloat</ShotWormDamageRadius>
+        <WeaponDamageRadius>XFloat</WeaponDamageRadius>
+        <WeaponDamageMagnitude>XFloat</WeaponDamageMagnitude>
+        <DeathWormDamageMagnitude>XFloat</DeathWormDamageMagnitude>
+        <DeathWormDamageRadius>XFloat</DeathWormDamageRadius>
+        <DeathLandDamageRadius>XFloat</DeathLandDamageRadius>
+        <DeathImpulseMagnitude>XFloat</DeathImpulseMagnitude>
+        <DeathImpulseRadius>XFloat</DeathImpulseRadius>
+        <MaxWeaponTemp>XFloat</MaxWeaponTemp>
+        <TempDelta>XFloat</TempDelta>
+        <WeaponReloadTime>XUInt</WeaponReloadTime>
+        <MinWeaponRange>XFloat</MinWeaponRange>
+        <MaxWeaponRange>XFloat</MaxWeaponRange>
+        <LogicalLaunchZOffset>XFloat</LogicalLaunchZOffset>
+        <CollisionRadius>XFloat</CollisionRadius>
+        <TurretRotationalVelocity>XFloat</TurretRotationalVelocity>
+        <WeaponHealth>XFloat</WeaponHealth>
+      </SentryGunWeaponPropertiesContainer>
+      <GunWeaponPropertiesContainer guid="{F9C1BAB6-7CBF-402B-ADA6-239E6103AFF9}" Xver="0" id="XRef">
+        <IsAimedWeapon>XBool</IsAimedWeapon>
+        <IsAffectedByGravity>XBool</IsAffectedByGravity>
+        <IsAffectedByWind>XBool</IsAffectedByWind>
+        <bCanDamageLand>XBool</bCanDamageLand>
+        <bCanMoveBetweenShots>XBool</bCanMoveBetweenShots>
+        <ImpulseIsNormal>XBool</ImpulseIsNormal>
+        <DamageIsPercentage>XBool</DamageIsPercentage>
+        <LaserEffect>XBool</LaserEffect>
+        <Sniper>XBool</Sniper>
+        <NumberOfBullets>XUInt</NumberOfBullets>
+        <DischargeTime>XUInt</DischargeTime>
+        <Range>XUInt</Range>
+        <WaitForSoundDelay>XUInt</WaitForSoundDelay>
+        <Accuracy>XFloat</Accuracy>
+        <WormDamageMagnitude>XFloat</WormDamageMagnitude>
+        <WormPoisonMagnitude>XFloat</WormPoisonMagnitude>
+        <LandDamageMagnitude>XFloat</LandDamageMagnitude>
+        <ImpulseMagnitude>XFloat</ImpulseMagnitude>
+        <BulletRadius>XFloat</BulletRadius>
+        <MinAimAngle>XFloat</MinAimAngle>
+        <MaxAimAngle>XFloat</MaxAimAngle>
+        <WormDamageRadius>XFloat</WormDamageRadius>
+        <LandDamageRadius>XFloat</LandDamageRadius>
+        <ImpulseRadius>XFloat</ImpulseRadius>
+        <LogicalLaunchYOffset>XFloat</LogicalLaunchYOffset>
+        <DischargeFX>XString</DischargeFX>
+        <DischargeEndFX>XString</DischargeEndFX>
+        <SecondaryDischargeFX>XString</SecondaryDischargeFX>
+        <SecondaryDischargeFXLocator>XString</SecondaryDischargeFXLocator>
+        <DischargeSoundFX>XString</DischargeSoundFX>
+        <DischargeEndSoundFX>XString</DischargeEndSoundFX>
+        <WormCollisionFX>XString</WormCollisionFX>
+        <LandCollisionFX>XString</LandCollisionFX>
+        <WaterCollisionFX>XString</WaterCollisionFX>
+        <LogicalPositionOffset x="XFloat" y="XFloat" z="XFloat" />
+        <ImpulseDirection x="XFloat" y="XFloat" z="XFloat" />
+        <DischargeFXZOffset>XFloat</DischargeFXZOffset>
+        <KickSize>XFloat</KickSize>
+        <KickFrequency>XUInt</KickFrequency>
+      </GunWeaponPropertiesContainer>
+      <MeleeWeaponPropertiesContainer guid="{1BF4BCE3-706A-4C82-9D9E-DDED39D35AF4}" Xver="0" id="XRef">
+        <IsAimedWeapon>XBool</IsAimedWeapon>
+        <DamageIsPercentage>XBool</DamageIsPercentage>
+        <WormIsWeapon>XBool</WormIsWeapon>
+        <InstantKill>XBool</InstantKill>
+        <AccuracyMeter>XBool</AccuracyMeter>
+        <MeleeType>XEnum</MeleeType>
+        <Radius>XFloat</Radius>
+        <MinAimAngle>XFloat</MinAimAngle>
+        <MaxAimAngle>XFloat</MaxAimAngle>
+        <DischargeFX>XString</DischargeFX>
+        <DischargeSoundFX>XString</DischargeSoundFX>
+        <WormCollisionFX>XString</WormCollisionFX>
+        <LandCollisionFX>XString</LandCollisionFX>
+        <WXAnimWindup>XString</WXAnimWindup>
+        <LogicalPositionOffset x="XFloat" y="XFloat" z="XFloat" />
+        <ImpulseDirection x="XFloat" y="XFloat" z="XFloat" />
+        <LogicalLaunchYOffset>XFloat</LogicalLaunchYOffset>
+        <WormDamageMagnitude>XFloat</WormDamageMagnitude>
+        <LandDamageMagnitude>XFloat</LandDamageMagnitude>
+        <ImpulseMagnitude>XFloat</ImpulseMagnitude>
+        <WormDamageRadius>XFloat</WormDamageRadius>
+        <LandDamageRadius>XFloat</LandDamageRadius>
+        <ImpulseRadius>XFloat</ImpulseRadius>
+      </MeleeWeaponPropertiesContainer>
+      <DisplayName>XString</DisplayName>
+      <WeaponGraphicsResourceID>XString</WeaponGraphicsResourceID>
+      <WeaponType>XEnum</WeaponType>
+      <DefaultPreference>XFloat</DefaultPreference>
+      <CurrentPreference>XFloat</CurrentPreference>
+      <LaunchDelay>XUInt</LaunchDelay>
+      <PostLaunchDelay>XUInt</PostLaunchDelay>
+      <FirstPersonOffset x="XFloat" y="XFloat" z="XFloat" />
+      <FirstPersonScale x="XFloat" y="XFloat" z="XFloat" />
+      <FirstPersonFiringParticleEffect>XString</FirstPersonFiringParticleEffect>
+      <HoldParticleFX>XString</HoldParticleFX>
+      <DisplayInFirstPerson>XBool</DisplayInFirstPerson>
+      <CanBeFiredWhenWormMoving>XBool</CanBeFiredWhenWormMoving>
+      <RumbleLight>XUInt8</RumbleLight>
+      <RumbleHeavy>XUInt8</RumbleHeavy>
+      <CanBeUsedWhenTailNailed>XBool</CanBeUsedWhenTailNailed>
+      <RetreatTimeOverride>XInt</RetreatTimeOverride>
+      <WXAnimDraw>XString</WXAnimDraw>
+      <WXAnimAim>XString</WXAnimAim>
+      <WXAnimFire>XString</WXAnimFire>
+      <WXAnimHolding>XString</WXAnimHolding>
+      <WXAnimEndFire>XString</WXAnimEndFire>
+      <WXAnimTaunt>XString</WXAnimTaunt>
+      <WXAnimTargetSelected>XString</WXAnimTargetSelected>
+      <HoldLoopSfx>XString</HoldLoopSfx>
+      <EquipSfx>XString</EquipSfx>
+    </BaseWeaponContainer>
+    <WeaponInventory guid="{51D60608-EF41-4231-B649-BC908D1ACC74}" Xver="0" id="XRef">
+      <Bazooka>XInt8</Bazooka>
+      <Grenade>XInt8</Grenade>
+      <ClusterGrenade>XInt8</ClusterGrenade>
+      <Airstrike>XInt8</Airstrike>
+      <Dynamite>XInt8</Dynamite>
+      <HolyHandGrenade>XInt8</HolyHandGrenade>
+      <BananaBomb>XInt8</BananaBomb>
+      <Landmine>XInt8</Landmine>
+      <Shotgun>XInt8</Shotgun>
+      <BaseballBat>XInt8</BaseballBat>
+      <Prod>XInt8</Prod>
+      <FirePunch>XInt8</FirePunch>
+      <HomingMissile>XInt8</HomingMissile>
+      <Flood>XInt8</Flood>
+      <Sheep>XInt8</Sheep>
+      <GasCanister>XInt8</GasCanister>
+      <OldWoman>XInt8</OldWoman>
+      <ConcreteDonkey>XInt8</ConcreteDonkey>
+      <SuperSheep>XInt8</SuperSheep>
+      <Girder>XInt8</Girder>
+      <BridgeKit>XInt8</BridgeKit>
+      <NinjaRope>XInt8</NinjaRope>
+      <Parachute>XInt8</Parachute>
+      <Teleport>XInt8</Teleport>
+      <Jetpack>XInt8</Jetpack>
+      <SkipGo>XInt8</SkipGo>
+      <Surrender>XInt8</Surrender>
+      <ChangeWorm>XInt8</ChangeWorm>
+      <Redbull>XInt8</Redbull>
+      <WeaponFactoryWeapon>XInt8</WeaponFactoryWeapon>
+      <Starburst>XInt8</Starburst>
+      <AlienAbduction>XInt8</AlienAbduction>
+      <Fatkins>XInt8</Fatkins>
+      <Scouser>XInt8</Scouser>
+      <NoMoreNails>XInt8</NoMoreNails>
+      <Pipe>XInt8</Pipe>
+      <PoisonArrow>XInt8</PoisonArrow>
+      <SentryGun>XInt8</SentryGun>
+      <SniperRifle>XInt8</SniperRifle>
+      <SuperAirstrike>XInt8</SuperAirstrike>
+      <BubbleTrouble>XInt8</BubbleTrouble>
+      <Binoculars>XInt8</Binoculars>
+    </WeaponInventory>
+    <WeaponDelays guid="{CF6FB3A9-AB16-4885-8F1B-19D00A4F56AE}" Xver="0" id="XRef">
+      <Bazooka>XUInt8</Bazooka>
+      <Grenade>XUInt8</Grenade>
+      <ClusterGrenade>XUInt8</ClusterGrenade>
+      <Airstrike>XUInt8</Airstrike>
+      <Dynamite>XUInt8</Dynamite>
+      <HolyHandGrenade>XUInt8</HolyHandGrenade>
+      <BananaBomb>XUInt8</BananaBomb>
+      <Landmine>XUInt8</Landmine>
+      <Shotgun>XUInt8</Shotgun>
+      <BaseballBat>XUInt8</BaseballBat>
+      <Prod>XUInt8</Prod>
+      <FirePunch>XUInt8</FirePunch>
+      <HomingMissile>XUInt8</HomingMissile>
+      <Flood>XUInt8</Flood>
+      <Sheep>XUInt8</Sheep>
+      <GasCanister>XUInt8</GasCanister>
+      <OldWoman>XUInt8</OldWoman>
+      <ConcreteDonkey>XUInt8</ConcreteDonkey>
+      <SuperSheep>XUInt8</SuperSheep>
+      <Girder>XUInt8</Girder>
+      <BridgeKit>XUInt8</BridgeKit>
+      <NinjaRope>XUInt8</NinjaRope>
+      <Parachute>XUInt8</Parachute>
+      <LowGravity>XUInt8</LowGravity>
+      <Teleport>XUInt8</Teleport>
+      <Jetpack>XUInt8</Jetpack>
+      <SkipGo>XUInt8</SkipGo>
+      <Surrender>XUInt8</Surrender>
+      <ChangeWorm>XUInt8</ChangeWorm>
+      <Redbull>XUInt8</Redbull>
+      <WeaponFactoryWeapon>XUInt8</WeaponFactoryWeapon>
+      <Starburst>XUInt8</Starburst>
+      <AlienAbduction>XUInt8</AlienAbduction>
+      <Fatkins>XUInt8</Fatkins>
+      <Scouser>XUInt8</Scouser>
+      <NoMoreNails>XUInt8</NoMoreNails>
+      <Pipe>XUInt8</Pipe>
+      <PoisonArrow>XUInt8</PoisonArrow>
+      <SentryGun>XUInt8</SentryGun>
+      <SniperRifle>XUInt8</SniperRifle>
+      <SuperAirstrike>XUInt8</SuperAirstrike>
+      <BubbleTrouble>XUInt8</BubbleTrouble>
+      <Binoculars>XUInt8</Binoculars>
+    </WeaponDelays>
+    <MineFactoryContainer guid="{0BEF2245-D0AB-42F8-8F5F-2BBB6543A8DD}" Xver="2" id="XRef">
+      <NumMineActivation>XUInt8</NumMineActivation>
+      <NumTurnsInactive>XUInt8</NumTurnsInactive>
+      <SafeRadiusPadding>XFloat</SafeRadiusPadding>
+      <DamageMagnitude>XFloat</DamageMagnitude>
+      <ImpulseMagnitude>XFloat</ImpulseMagnitude>
+      <WormDamageRadius>XFloat</WormDamageRadius>
+      <LandDamageRadius>XFloat</LandDamageRadius>
+      <ImpulseRadius>XFloat</ImpulseRadius>
+    </MineFactoryContainer>
+    <StringQueue guid="{EF7622CA-AC76-47EA-A427-27A98E90AF08}" Xver="0" id="XRef">
+      <Size>XUInt</Size>
+      <Queue Xtype="XCollection">XString</Queue>
+      <Front>XUInt</Front>
+      <Back>XUInt</Back>
+      <Count>XUInt</Count>
+    </StringQueue>
+    <WeaponFactoryContainer guid="{204236A5-4DF4-4F60-9097-4FA887D5C74D}" Xver="0" id="XRef">
+      <Name>XString</Name>
+      <Type>XEnum</Type>
+      <Detonate>XEnum</Detonate>
+      <Homing>XBool</Homing>
+      <HomingAvoidLand>XBool</HomingAvoidLand>
+      <EffectedByWind>XBool</EffectedByWind>
+      <FireOnGround>XBool</FireOnGround>
+      <Poison>XBool</Poison>
+      <RetreatTime>XInt</RetreatTime>
+      <WormDamageRadius>XFloat</WormDamageRadius>
+      <WormDamageMagnitude>XFloat</WormDamageMagnitude>
+      <LandDamageRadius>XFloat</LandDamageRadius>
+      <ProjectileCollisionRadius>XFloat</ProjectileCollisionRadius>
+      <Push>XFloat</Push>
+      <FuseTime>XInt</FuseTime>
+      <GraphicalResourceID Xtype="XCollection">XString</GraphicalResourceID>
+      <GraphicalLocatorID Xtype="XCollection">XString</GraphicalLocatorID>
+      <LaunchFX>XString</LaunchFX>
+      <ArielFX>XString</ArielFX>
+      <DetonationFX>XString</DetonationFX>
+      <PayloadResourceId>XEnum</PayloadResourceId>
+      <ProjectileLaunchType>XEnum</ProjectileLaunchType>
+      <ProjectilePowersUp>XBool</ProjectilePowersUp>
+      <ProjectileNumClusters>XUInt</ProjectileNumClusters>
+      <ProjectileMaxPower>XFloat</ProjectileMaxPower>
+      <ClusterSpread>XFloat</ClusterSpread>
+      <ClusterMaxSpeed>XFloat</ClusterMaxSpeed>
+    </WeaponFactoryContainer>
+    <SavedLevel guid="{9437D04D-6FA0-4F50-ADBA-10B79180C6BE}" Xver="0" id="XRef">
+      <seed>XUInt</seed>
+      <levelName>XString</levelName>
+      <theme>XString</theme>
+    </SavedLevel>
+    <SavedLevelCollective guid="{5B184CE7-A35D-4EAF-B521-8FF7E6B4BFCF}" Xver="0" id="XRef">
+      <Teams Xtype="XCollection" href="SavedLevel" />
+    </SavedLevelCollective>
+    <StoreWeaponFactory guid="{E32F2CB5-133A-4F1C-B64A-81B897302E82}" Xver="0" id="XRef">
+      <StockWeapon>XBool</StockWeapon>
+      <Weapon href="WeaponFactoryContainer" />
+      <Cluster href="WeaponFactoryContainer" />
+    </StoreWeaponFactory>
+    <WeaponFactoryCollective guid="{29974AB2-2EF8-4E3D-B798-F58D3F3607FF}" Xver="0" id="XRef">
+      <Weapons Xtype="XCollection" href="StoreWeaponFactory" />
+    </WeaponFactoryCollective>
+    <WeaponFactoryCostContainer guid="{64AABA32-6319-409D-8D94-B2CB5B4FB2FB}" Xver="0" Xtype="XClass">
+      <WeaponFactoryAirstrikeCostContainer guid="{7758F5EF-436F-4D52-B771-D40F3152D0EF}" Xver="0" id="XRef">
+        <BombletCost>XFloat</BombletCost>
+        <WindCost>XFloat</WindCost>
+        <DetonateImpactCost>XFloat</DetonateImpactCost>
+        <DetonateAtRestCost>XFloat</DetonateAtRestCost>
+        <PoisonCost>XFloat</PoisonCost>
+        <LandDamageRadiusCost>XFloat</LandDamageRadiusCost>
+        <PushCostCost>XFloat</PushCostCost>
+        <WormDamageCost>XFloat</WormDamageCost>
+      </WeaponFactoryAirstrikeCostContainer>
+      <WeaponFactoryLanchedCostContainer guid="{0F4C7347-D342-4CFD-AA55-4C59182405FE}" Xver="0" id="XRef">
+        <MaxPowerCost>XFloat</MaxPowerCost>
+        <PowersUpCost>XFloat</PowersUpCost>
+        <HomingCost>XFloat</HomingCost>
+        <HomingAvoidLandCost>XFloat</HomingAvoidLandCost>
+        <FuseAdjustableCost>XFloat</FuseAdjustableCost>
+        <ClustersCost>XFloat</ClustersCost>
+        <ClusterSpreadCost>XFloat</ClusterSpreadCost>
+        <ClusterDetonateImpactCost>XFloat</ClusterDetonateImpactCost>
+        <ClusterDetonateRest>XFloat</ClusterDetonateRest>
+        <ClusterLandDamageRadiusCost>XFloat</ClusterLandDamageRadiusCost>
+        <ClusterPushCostCost>XFloat</ClusterPushCostCost>
+        <ClusterWormDamageCost>XFloat</ClusterWormDamageCost>
+        <WindCost>XFloat</WindCost>
+        <PoisonCost>XFloat</PoisonCost>
+        <LandDamageRadiusCost>XFloat</LandDamageRadiusCost>
+        <PushCostCost>XFloat</PushCostCost>
+        <WormDamageCost>XFloat</WormDamageCost>
+      </WeaponFactoryLanchedCostContainer>
+      <WeaponFactoryThrownCostContainer guid="{60AB9C20-7EB7-44CE-A8E8-136B18FF1AE9}" Xver="0" id="XRef">
+        <MaxPowerCost>XFloat</MaxPowerCost>
+        <ClustersCost>XFloat</ClustersCost>
+        <ClusterSpreadCost>XFloat</ClusterSpreadCost>
+        <ClusterDetonateImpactCost>XFloat</ClusterDetonateImpactCost>
+        <ClusterDetonateRest>XFloat</ClusterDetonateRest>
+        <ClusterLandDamageRadiusCost>XFloat</ClusterLandDamageRadiusCost>
+        <ClusterPushCostCost>XFloat</ClusterPushCostCost>
+        <ClusterWormDamageCost>XFloat</ClusterWormDamageCost>
+        <WindCost>XFloat</WindCost>
+        <DetonateImpactCost>XFloat</DetonateImpactCost>
+        <DetonateUserCost>XFloat</DetonateUserCost>
+        <DetonateAtRestCost>XFloat</DetonateAtRestCost>
+        <FuseAdjustableCost>XFloat</FuseAdjustableCost>
+        <PoisonCost>XFloat</PoisonCost>
+        <LandDamageRadiusCost>XFloat</LandDamageRadiusCost>
+        <PushCostCost>XFloat</PushCostCost>
+        <WormDamageCost>XFloat</WormDamageCost>
+      </WeaponFactoryThrownCostContainer>
+    </WeaponFactoryCostContainer>
+    <StoredTeamData guid="{786AB455-6313-4DC6-A1A3-A54B67D52CDE}" Xver="4" id="XRef">
+      <TeamName>XString</TeamName>
+      <Worm Xtype="XCollection">XString</Worm>
+      <NewTeam>XUInt</NewTeam>
+      <Skill>XInt</Skill>
+      <Grave>XInt</Grave>
+      <SWeapon>XInt</SWeapon>
+      <Flag>XString</Flag>
+      <Speech>XString</Speech>
+      <InGame>XBool</InGame>
+      <Player>XString</Player>
+      <SecretWeapon href="WeaponFactoryContainer" />
+      <SecretWeaponCluster href="WeaponFactoryContainer" />
+      <CustomWeapon>XString</CustomWeapon>
+      <Hat>XString</Hat>
+      <Gloves>XString</Gloves>
+      <Glasses>XString</Glasses>
+      <Tash>XString</Tash>
+      <ClothingChanged>XUInt</ClothingChanged>
+    </StoredTeamData>
+    <GameInitData guid="{B833D806-C366-4005-AE0A-95F80E7A4B4A}" Xver="2" id="XRef">
+      <NumberOfTeams>XUInt</NumberOfTeams>
+      <AllyToStart>XInt</AllyToStart>
+      <AllyTeam0>XInt</AllyTeam0>
+      <AllyTeam1>XInt</AllyTeam1>
+      <AllyTeam2>XInt</AllyTeam2>
+      <AllyTeam3>XInt</AllyTeam3>
+      <T1_Name>XString</T1_Name>
+      <T1_Player>XString</T1_Player>
+      <T1_NumOfWorms>XUInt</T1_NumOfWorms>
+      <T1_W1_Name>XString</T1_W1_Name>
+      <T1_W2_Name>XString</T1_W2_Name>
+      <T1_W3_Name>XString</T1_W3_Name>
+      <T1_W4_Name>XString</T1_W4_Name>
+      <T1_W5_Name>XString</T1_W5_Name>
+      <T1_W6_Name>XString</T1_W6_Name>
+      <T1_Skill>XInt</T1_Skill>
+      <T1_Grave>XInt</T1_Grave>
+      <T1_SWeapon>XInt</T1_SWeapon>
+      <T1_Flag>XString</T1_Flag>
+      <T1_Speech>XString</T1_Speech>
+      <T1_IsLocal>XBool</T1_IsLocal>
+      <T1_AlliedGroup>XUInt</T1_AlliedGroup>
+      <T1_FirstWorm>XInt</T1_FirstWorm>
+      <T1_Handicap>XInt</T1_Handicap>
+      <T1_HatAttachment>XString</T1_HatAttachment>
+      <T1_GlovesAttachment>XString</T1_GlovesAttachment>
+      <T1_GlassesAttachment>XString</T1_GlassesAttachment>
+      <T1_TashAttachment>XString</T1_TashAttachment>
+      <T1_CustomWeapon href="StoreWeaponFactory" />
+      <T2_Name>XString</T2_Name>
+      <T2_Player>XString</T2_Player>
+      <T2_NumOfWorms>XUInt</T2_NumOfWorms>
+      <T2_W1_Name>XString</T2_W1_Name>
+      <T2_W2_Name>XString</T2_W2_Name>
+      <T2_W3_Name>XString</T2_W3_Name>
+      <T2_W4_Name>XString</T2_W4_Name>
+      <T2_W5_Name>XString</T2_W5_Name>
+      <T2_W6_Name>XString</T2_W6_Name>
+      <T2_Skill>XInt</T2_Skill>
+      <T2_Grave>XInt</T2_Grave>
+      <T2_SWeapon>XInt</T2_SWeapon>
+      <T2_Flag>XString</T2_Flag>
+      <T2_Speech>XString</T2_Speech>
+      <T2_IsLocal>XBool</T2_IsLocal>
+      <T2_AlliedGroup>XUInt</T2_AlliedGroup>
+      <T2_FirstWorm>XInt</T2_FirstWorm>
+      <T2_Handicap>XInt</T2_Handicap>
+      <T2_HatAttachment>XString</T2_HatAttachment>
+      <T2_GlovesAttachment>XString</T2_GlovesAttachment>
+      <T2_GlassesAttachment>XString</T2_GlassesAttachment>
+      <T2_TashAttachment>XString</T2_TashAttachment>
+      <T2_CustomWeapon href="StoreWeaponFactory" />
+      <T3_Name>XString</T3_Name>
+      <T3_Player>XString</T3_Player>
+      <T3_NumOfWorms>XUInt</T3_NumOfWorms>
+      <T3_W1_Name>XString</T3_W1_Name>
+      <T3_W2_Name>XString</T3_W2_Name>
+      <T3_W3_Name>XString</T3_W3_Name>
+      <T3_W4_Name>XString</T3_W4_Name>
+      <T3_W5_Name>XString</T3_W5_Name>
+      <T3_W6_Name>XString</T3_W6_Name>
+      <T3_Skill>XInt</T3_Skill>
+      <T3_Grave>XInt</T3_Grave>
+      <T3_SWeapon>XInt</T3_SWeapon>
+      <T3_Flag>XString</T3_Flag>
+      <T3_Speech>XString</T3_Speech>
+      <T3_IsLocal>XBool</T3_IsLocal>
+      <T3_AlliedGroup>XUInt</T3_AlliedGroup>
+      <T3_FirstWorm>XInt</T3_FirstWorm>
+      <T3_Handicap>XInt</T3_Handicap>
+      <T3_HatAttachment>XString</T3_HatAttachment>
+      <T3_GlovesAttachment>XString</T3_GlovesAttachment>
+      <T3_GlassesAttachment>XString</T3_GlassesAttachment>
+      <T3_TashAttachment>XString</T3_TashAttachment>
+      <T3_CustomWeapon href="StoreWeaponFactory" />
+      <T4_Name>XString</T4_Name>
+      <T4_Player>XString</T4_Player>
+      <T4_NumOfWorms>XUInt</T4_NumOfWorms>
+      <T4_W1_Name>XString</T4_W1_Name>
+      <T4_W2_Name>XString</T4_W2_Name>
+      <T4_W3_Name>XString</T4_W3_Name>
+      <T4_W4_Name>XString</T4_W4_Name>
+      <T4_W5_Name>XString</T4_W5_Name>
+      <T4_W6_Name>XString</T4_W6_Name>
+      <T4_Skill>XInt</T4_Skill>
+      <T4_Grave>XInt</T4_Grave>
+      <T4_SWeapon>XInt</T4_SWeapon>
+      <T4_Flag>XString</T4_Flag>
+      <T4_Speech>XString</T4_Speech>
+      <T4_IsLocal>XBool</T4_IsLocal>
+      <T4_AlliedGroup>XUInt</T4_AlliedGroup>
+      <T4_FirstWorm>XInt</T4_FirstWorm>
+      <T4_Handicap>XInt</T4_Handicap>
+      <T4_HatAttachment>XString</T4_HatAttachment>
+      <T4_GlovesAttachment>XString</T4_GlovesAttachment>
+      <T4_GlassesAttachment>XString</T4_GlassesAttachment>
+      <T4_TashAttachment>XString</T4_TashAttachment>
+      <T4_CustomWeapon href="StoreWeaponFactory" />
+    </GameInitData>
+    <HighScoreData guid="{9058B1ED-0667-4431-BC6B-7E566C8CBCE4}" Xver="0" id="XRef">
+      <WinnerName>XString</WinnerName>
+      <WinnerTime>XUInt</WinnerTime>
+    </HighScoreData>
+    <TeamDataColective guid="{557C1139-EAF9-49BF-998D-05D852598655}" Xver="0" id="XRef">
+      <Teams Xtype="XCollection" href="StoredTeamData" />
+      <HighScores Xtype="XCollection" href="HighScoreData" />
+    </TeamDataColective>
+    <WeaponSettingsData guid="{14AC2E16-1690-4397-BA75-204DAC1C563F}" Xver="0" id="XRef">
+      <Ammo>XInt</Ammo>
+      <Crate>XInt</Crate>
+      <Delay>XInt</Delay>
+    </WeaponSettingsData>
+    <AssistedShotTweaks guid="{BD260467-F836-4B39-8BE7-810F960DF3EE}" Xver="0" id="XRef">
+      <ChangeInPitch>XFloat</ChangeInPitch>
+      <!-- The range of pitch values.  Checks from -ChangeInPitch to +ChangeInPitch -->
+      <ChangeInYaw>XFloat</ChangeInYaw>
+      <!-- The range of yaw values.  Checks from -ChangeInYaw to +ChangeInYaw -->
+      <ChangeInPower>XFloat</ChangeInPower>
+      <!-- The range of power values.  Checks from -ChangeInPower to +ChangeInPower -->
+      <NumPowerChecks>XUInt</NumPowerChecks>
+      <!-- The number of values to check either side of the original power value -->
+      <NumPitchChecks>XUInt</NumPitchChecks>
+      <!-- The number of values to check either side of the original pitch value -->
+      <NumYawChecks>XUInt</NumYawChecks>
+      <!-- The number of values to check either side of the original yaw value -->
+    </AssistedShotTweaks>
+    <SchemeData guid="{3969DD6B-AF1A-40BF-BF2C-21E37C4BFCFE}" Xver="2" id="XRef">
+      <Name>XString</Name>
+      <Permanent>XBool</Permanent>
+      <Lock>XString</Lock>
+      <Airstrike href="WeaponSettingsData" />
+      <BananaBomb href="WeaponSettingsData" />
+      <BaseballBat href="WeaponSettingsData" />
+      <Bazooka href="WeaponSettingsData" />
+      <ClusterGrenade href="WeaponSettingsData" />
+      <ConcreteDonkey href="WeaponSettingsData" />
+      <CrateShower href="WeaponSettingsData" />
+      <CrateSpy href="WeaponSettingsData" />
+      <DoubleDamage href="WeaponSettingsData" />
+      <Dynamite href="WeaponSettingsData" />
+      <FirePunch href="WeaponSettingsData" />
+      <GasCanister href="WeaponSettingsData" />
+      <Girder href="WeaponSettingsData" />
+      <Grenade href="WeaponSettingsData" />
+      <HolyHandGrenade href="WeaponSettingsData" />
+      <HomingMissile href="WeaponSettingsData" />
+      <Jetpack href="WeaponSettingsData" />
+      <Landmine href="WeaponSettingsData" />
+      <NinjaRope href="WeaponSettingsData" />
+      <OldWoman href="WeaponSettingsData" />
+      <Parachute href="WeaponSettingsData" />
+      <Prod href="WeaponSettingsData" />
+      <SelectWorm href="WeaponSettingsData" />
+      <Sheep href="WeaponSettingsData" />
+      <Shotgun href="WeaponSettingsData" />
+      <SkipGo href="WeaponSettingsData" />
+      <SuperSheep href="WeaponSettingsData" />
+      <Redbull href="WeaponSettingsData" />
+      <Flood href="WeaponSettingsData" />
+      <Armour href="WeaponSettingsData" />
+      <WeaponFactoryWeapon href="WeaponSettingsData" />
+      <AlienAbduction href="WeaponSettingsData" />
+      <Fatkins href="WeaponSettingsData" />
+      <Scouser href="WeaponSettingsData" />
+      <NoMoreNails href="WeaponSettingsData" />
+      <PoisonArrow href="WeaponSettingsData" />
+      <SentryGun href="WeaponSettingsData" />
+      <SniperRifle href="WeaponSettingsData" />
+      <SuperAirstrike href="WeaponSettingsData" />
+      <BubbleTrouble href="WeaponSettingsData" />
+      <Starburst href="WeaponSettingsData" />
+      <Surrender href="WeaponSettingsData" />
+      <Binoculars href="WeaponSettingsData" />
+      <MineLayerMystery href="WeaponSettingsData" />
+      <MineTripletMystery href="WeaponSettingsData" />
+      <BarrelTripletMystery href="WeaponSettingsData" />
+      <FloodMystery href="WeaponSettingsData" />
+      <DisarmMystery href="WeaponSettingsData" />
+      <TeleportMystery href="WeaponSettingsData" />
+      <QuickWalkMystery href="WeaponSettingsData" />
+      <LowGravityMystery href="WeaponSettingsData" />
+      <DoubleTurnTimeMystery href="WeaponSettingsData" />
+      <HealthMystery href="WeaponSettingsData" />
+      <DamageMystery href="WeaponSettingsData" />
+      <SuperHealthMystery href="WeaponSettingsData" />
+      <SpecialWeaponMystery href="WeaponSettingsData" />
+      <BadPoisonMystery href="WeaponSettingsData" />
+      <GoodPoisonMystery href="WeaponSettingsData" />
+      <AssistedShotLevel>XString</AssistedShotLevel>
+      <ArtileryMode>XInt</ArtileryMode>
+      <TeleportIn>XInt</TeleportIn>
+      <Wins>XInt</Wins>
+      <WormSelect>XInt</WormSelect>
+      <WormHealth>XInt</WormHealth>
+      <RoundTime>XInt</RoundTime>
+      <TurnTime>XInt</TurnTime>
+      <Objects>XInt</Objects>
+      <RandomCrateChancePerTurn>XInt</RandomCrateChancePerTurn>
+      <MysteryChance>XInt</MysteryChance>
+      <WeaponChance>XInt</WeaponChance>
+      <UtilityChance>XInt</UtilityChance>
+      <HealthChance>XInt</HealthChance>
+      <HealthInCrates>XInt</HealthInCrates>
+      <Stockpiling>XInt</Stockpiling>
+      <SuddenDeath>XInt</SuddenDeath>
+      <WaterSpeed>XInt</WaterSpeed>
+      <DisplayTime>XInt</DisplayTime>
+      <LandTime>XInt</LandTime>
+      <RopeTime>XInt</RopeTime>
+      <FallDamage>XInt</FallDamage>
+      <HotSeat>XInt</HotSeat>
+      <Special>XInt</Special>
+      <MineFuse>XInt</MineFuse>
+      <HelpPanelDelay>XInt</HelpPanelDelay>
+      <MineFactoryOn>XBool</MineFactoryOn>
+      <TelepadsOn>XBool</TelepadsOn>
+      <WindMaxStrength>XInt</WindMaxStrength>
+    </SchemeData>
+    <SchemeColective guid="{DF13401E-8FC6-4450-8C7F-55C672A72725}" Xver="0" id="XRef">
+      <Schemes Xtype="XCollection" href="SchemeData" />
+    </SchemeColective>
+    <SoundBankData guid="{8B0C11FE-D7C9-4DB2-8B4A-1600E8FC0C3F}" Xver="0" id="XRef">
+      <NameID>XString</NameID>
+      <RealName>XString</RealName>
+      <Lock>XString</Lock>
+      <LanguageBank>XBool</LanguageBank>
+    </SoundBankData>
+    <SoundBankColective guid="{5417323D-AC30-44F1-ACC2-B5C4606B39AD}" Xver="0" id="XRef">
+      <SoundBanks Xtype="XCollection" href="SoundBankData" />
+    </SoundBankColective>
+    <LevelDetails guid="{C4A116AE-350A-4F59-A6B5-24501BD5A38B}" Xver="0" id="XRef">
+      <LevelName>XString</LevelName>
+      <ScriptName>XString</ScriptName>
+      <DataBank>XString</DataBank>
+      <Theme>XString</Theme>
+      <CustomTheme>XString</CustomTheme>
+      <LandFile>XString</LandFile>
+      <TimeOfDay>XString</TimeOfDay>
+      <Particles>XString</Particles>
+      <LevelType>XEnum</LevelType>
+      <Brief>XString</Brief>
+      <Image>XString</Image>
+      <LevelNumber>XUInt</LevelNumber>
+      <Lock>XString</Lock>
+      <LongestWins>XBool</LongestWins>
+      <AIPathNodeStartYOffset>XFloat</AIPathNodeStartYOffset>
+      <AIPathNodeCollisionStep>XFloat</AIPathNodeCollisionStep>
+    </LevelDetails>
+    <WXFE_BaseItemDesc guid="{E04AAD39-5951-444A-B2AE-D9B385F321A8}" Xver="0" Xtype="XClass">
+      <WXFE_BaseGfxItemDesc guid="{7B35FE75-83C0-42B3-8723-760F80D319F2}" Xver="0" Xtype="XClass">
+        <WXFE_MenuDescription guid="{68985378-2DA0-4338-A894-4A63AEDD111A}" Xver="0" id="XRef">
+          <BorderType>XEnum</BorderType>
+          <BorderAutoSize>XBool</BorderAutoSize>
+          <BorderEdgeSize>XFloat</BorderEdgeSize>
+          <Messages_BeforeMenuDisplayed Xtype="XCollection">XString</Messages_BeforeMenuDisplayed>
+          <Messages_AfterMenuDisplayed Xtype="XCollection">XString</Messages_AfterMenuDisplayed>
+          <Messages_MenuGoingAway Xtype="XCollection">XString</Messages_MenuGoingAway>
+          <Messages_CancelPressed Xtype="XCollection">XString</Messages_CancelPressed>
+          <Messages_AcceptPressed Xtype="XCollection">XString</Messages_AcceptPressed>
+          <DefaultSelectedItem>XString</DefaultSelectedItem>
+          <FullScreenColour r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+        </WXFE_MenuDescription>
+        <WXFE_BaseInputItemDesc guid="{95D6084D-848B-4B6C-A00B-B066C08CE00D}" Xver="0" Xtype="XClass">
+          <WXFE_TrophyCabinetDesc guid="{D0CF6B19-EB17-4B35-AA5E-BC64BF2D1CEA}" Xver="0" id="XRef">
+            <Mesh href="WXFE_MeshObjectDesc" />
+            <Trophies Xtype="XCollection" href="WXFE_TrophyDesc" />
+          </WXFE_TrophyCabinetDesc>
+          <WXFE_TrophyDesc guid="{5733AA3B-FC87-4080-AFB5-429FC6670F49}" Xver="0" id="XRef">
+            <AwardIndex>XUInt</AwardIndex>
+          </WXFE_TrophyDesc>
+          <WXFE_BriefingDesc guid="{B78D9C3F-A758-4A76-91DF-22A42CD0B734}" Xver="0" id="XRef">
+            <Briefing_Font>XString</Briefing_Font>
+            <Briefing_DataId>XString</Briefing_DataId>
+            <Briefing_FontSize>XFloat</Briefing_FontSize>
+            <Briefing_Colour_Front>XEnum</Briefing_Colour_Front>
+            <Briefing_Colour_Back>XEnum</Briefing_Colour_Back>
+            <Briefing_TextAnim>XEnum</Briefing_TextAnim>
+            <Continue_Font>XString</Continue_Font>
+            <Continue_DataId>XString</Continue_DataId>
+            <Continue_FontSize>XFloat</Continue_FontSize>
+            <Continue_Colour_Front>XEnum</Continue_Colour_Front>
+            <Continue_Colour_Back>XEnum</Continue_Colour_Back>
+            <Continue_TextAnim>XEnum</Continue_TextAnim>
+            <Border_Type>XEnum</Border_Type>
+            <Border_Size>XFloat</Border_Size>
+            <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+            <MaximumHeight>XFloat</MaximumHeight>
+            <Icon_Id>XString</Icon_Id>
+            <Icon_OnTheLeft>XBool</Icon_OnTheLeft>
+            <Icon_Scale_X>XFloat</Icon_Scale_X>
+            <Icon_Scale_Y>XFloat</Icon_Scale_Y>
+            <ControlPositionAdjustment>XEnum</ControlPositionAdjustment>
+          </WXFE_BriefingDesc>
+          <WXFE_TextBoxDesc guid="{4A3CDCFF-A548-4298-833F-9A5537968442}" Xver="2" id="XRef" Xtype="XClass">
+            <WXFE_ButtonHelpDesc guid="{C7B0F5D3-02EF-4028-8A06-3A2822F0B927}" Xver="0" id="XRef" />
+            <WXFE_TextEditBoxDesc guid="{5FE05D5A-5CA5-4721-9EF9-2CFC137EFF89}" Xver="0" id="XRef">
+              <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+              <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+              <Messages_Edited Xtype="XCollection">XString</Messages_Edited>
+              <Messages_NewChar Xtype="XCollection">XString</Messages_NewChar>
+              <MaxTextWidthChars>XUInt</MaxTextWidthChars>
+              <MaxTextWidthPixels>XUInt</MaxTextWidthPixels>
+              <PassWord>XBool</PassWord>
+              <InvalidChars>XString</InvalidChars>
+              <AutoActive>XBool</AutoActive>
+              <NumbersOnly>XBool</NumbersOnly>
+              <SoftwareKeyboardTitleID>XString</SoftwareKeyboardTitleID>
+            </WXFE_TextEditBoxDesc>
+            <FontName>XString</FontName>
+            <TextGameDataId>XString</TextGameDataId>
+            <Border_Normal>XEnum</Border_Normal>
+            <Border_Disabled>XEnum</Border_Disabled>
+            <Border_Highlight>XEnum</Border_Highlight>
+            <Border_Active>XEnum</Border_Active>
+            <Justification>XEnum</Justification>
+            <BorderSize>XFloat</BorderSize>
+            <AutoScrollSpeed>XFloat</AutoScrollSpeed>
+            <AutoScrollDelay>XUInt</AutoScrollDelay>
+            <AutoScale>XBool</AutoScale>
+            <Colour_Front>XEnum</Colour_Front>
+            <Colour_Front_Edit>XEnum</Colour_Front_Edit>
+            <Colour_Front_Highlight>XEnum</Colour_Front_Highlight>
+            <Colour_Front_Disabled>XEnum</Colour_Front_Disabled>
+            <Colour_Back_Highlight>XEnum</Colour_Back_Highlight>
+            <Colour_Back_Disabled>XEnum</Colour_Back_Disabled>
+            <Colour_Back_Edit>XEnum</Colour_Back_Edit>
+            <Colour_Back>XEnum</Colour_Back>
+            <TextAnim>XEnum</TextAnim>
+            <TextAnimSeed>XUInt</TextAnimSeed>
+            <VisibilityId>XString</VisibilityId>
+          </WXFE_TextBoxDesc>
+          <WXFE_HowToPlayTextBoxDesc guid="{478578ED-FB26-4681-8A82-FA775372C6D3}" Xver="0" id="XRef">
+            <FontName>XString</FontName>
+            <TextGameDataId>XString</TextGameDataId>
+            <Border_Normal>XEnum</Border_Normal>
+            <Border_Disabled>XEnum</Border_Disabled>
+            <Border_Highlight>XEnum</Border_Highlight>
+            <Border_Active>XEnum</Border_Active>
+            <Justification>XEnum</Justification>
+            <BorderSize>XFloat</BorderSize>
+            <Colour_Front>XEnum</Colour_Front>
+            <Colour_Back>XEnum</Colour_Back>
+          </WXFE_HowToPlayTextBoxDesc>
+          <WXFE_MenuButtonDesc guid="{F7B36378-2255-4D96-B580-905FFD84E072}" Xver="0" id="XRef">
+            <ResourceName>XString</ResourceName>
+            <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+            <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+            <Border_Normal>XEnum</Border_Normal>
+            <Border_Disabled>XEnum</Border_Disabled>
+            <Border_Highlight>XEnum</Border_Highlight>
+            <SquareButton>XBool</SquareButton>
+            <BorderBehind>XBool</BorderBehind>
+            <OnRelease>XBool</OnRelease>
+            <ColourFRONT_Normal>XEnum</ColourFRONT_Normal>
+            <ColourFRONT_Highlight>XEnum</ColourFRONT_Highlight>
+            <ColourFRONT_Disabled>XEnum</ColourFRONT_Disabled>
+            <ColourBACK_Normal>XEnum</ColourBACK_Normal>
+            <ColourBACK_Highlight>XEnum</ColourBACK_Highlight>
+            <ColourBACK_Disabled>XEnum</ColourBACK_Disabled>
+          </WXFE_MenuButtonDesc>
+          <WXFE_InputDesc guid="{3D2D5A5B-6FF6-46B1-930A-0FE3C8DFFE18}" Xver="0" id="XRef">
+            <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+            <Messages_Cancel Xtype="XCollection">XString</Messages_Cancel>
+            <Messages_Left Xtype="XCollection">XString</Messages_Left>
+            <Messages_Right Xtype="XCollection">XString</Messages_Right>
+            <Messages_Up Xtype="XCollection">XString</Messages_Up>
+            <Messages_Down Xtype="XCollection">XString</Messages_Down>
+          </WXFE_InputDesc>
+          <WXFE_FlagObjectDesc guid="{AD824964-E95A-48EC-8D0A-9E6D794E842A}" Xver="0" id="XRef">
+            <FlagID>XString</FlagID>
+            <Lighting>XBool</Lighting>
+            <FlagScale x="XFloat" y="XFloat" z="XFloat" />
+            <FlagPosition x="XFloat" y="XFloat" z="XFloat" />
+            <FlagOrientation x="XFloat" y="XFloat" z="XFloat" />
+            <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+            <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+            <Border_Normal>XEnum</Border_Normal>
+            <Border_Disabled>XEnum</Border_Disabled>
+            <Border_Highlight>XEnum</Border_Highlight>
+          </WXFE_FlagObjectDesc>
+          <WXFE_ListControlDesc guid="{861CE5C6-040A-4CB4-B613-66173D877279}" Xver="0" id="XRef">
+            <GameDataId>XString</GameDataId>
+            <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+            <BorderSize>XFloat</BorderSize>
+            <AutoScroll>XBool</AutoScroll>
+            <LoopContents>XFloat</LoopContents>
+            <SortContents>XBool</SortContents>
+            <Border_Normal>XEnum</Border_Normal>
+            <Border_Disabled>XEnum</Border_Disabled>
+            <Border_Highlight>XEnum</Border_Highlight>
+            <Arrow_ScaleX>XFloat</Arrow_ScaleX>
+            <Arrow_ScaleY>XFloat</Arrow_ScaleY>
+            <Arrow_Colour_Normal r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+            <Arrow_Colour_Highlight r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+            <Arrow_Colour_ShadowNormal r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+            <Arrow_Colour_ShadowHighlight r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+            <IndexID>XString</IndexID>
+          </WXFE_ListControlDesc>
+          <WXFE_ListDetailDesc guid="{9A3EE3AF-972E-4423-8A69-0951762C1661}" Xver="0" id="XRef">
+            <ListDataId>XString</ListDataId>
+            <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+            <Index>XInt</Index>
+          </WXFE_ListDetailDesc>
+          <WXFE_LandscapeBoxDesc guid="{F4FAF0BC-9826-448C-A814-E77CD40D9289}" Xver="0" id="XRef">
+            <ResourceId>XString</ResourceId>
+            <SeedId>XString</SeedId>
+            <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+            <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+            <Messages_RightMouse Xtype="XCollection">XString</Messages_RightMouse>
+            <FinishedRenderingID>XString</FinishedRenderingID>
+            <Border_Normal>XEnum</Border_Normal>
+            <Border_Highlight>XEnum</Border_Highlight>
+            <Border_Disabled>XEnum</Border_Disabled>
+          </WXFE_LandscapeBoxDesc>
+          <WXFE_GalleryThumbDesc guid="{26AC8CA9-266E-48E2-BE68-D88F0742D302}" Xver="0" id="XRef">
+            <GalleryId>XUInt</GalleryId>
+            <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+            <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+            <Messages_RightMouse Xtype="XCollection">XString</Messages_RightMouse>
+            <Border_Normal>XEnum</Border_Normal>
+            <Border_Highlight>XEnum</Border_Highlight>
+            <Border_Disabled>XEnum</Border_Disabled>
+          </WXFE_GalleryThumbDesc>
+          <WXFE_WormPotControlDesc guid="{28DA8483-144F-49B1-BDEB-E0A2804ECE42}" Xver="0" id="XRef">
+            <Mesh href="WXFE_MeshObjectDesc" />
+          </WXFE_WormPotControlDesc>
+          <WXFE_SoftwareKeyBoardDesc guid="{5BFE8595-33B9-4CD9-8AF4-F7BAAEDB7E54}" Xver="0" id="XRef">
+            <SoftwareKeyBoardDataID>XString</SoftwareKeyBoardDataID>
+            <Messages_FinishedUsing Xtype="XCollection">XString</Messages_FinishedUsing>
+          </WXFE_SoftwareKeyBoardDesc>
+          <ToolTipId>XString</ToolTipId>
+          <Navigate_Left>XString</Navigate_Left>
+          <Navigate_Right>XString</Navigate_Right>
+          <Navigate_Up>XString</Navigate_Up>
+          <Navigate_Down>XString</Navigate_Down>
+          <Anim_Activated>XEnum</Anim_Activated>
+          <Anim_Highlighted>XEnum</Anim_Highlighted>
+          <Audio_Activated>XEnum</Audio_Activated>
+          <Audio_Highlighted>XEnum</Audio_Highlighted>
+        </WXFE_BaseInputItemDesc>
+        <WXFE_MeshObjectDesc guid="{84918BED-AF97-4D9F-B414-F2FE52F5EAAF}" Xver="0" id="XRef" Xtype="XClass">
+          <WXFE_MeshObjectParticleDesc guid="{700EF95C-141F-4DAD-803F-5A3EF1B4E185}" Xver="0" id="XRef">
+            <EffectNames Xtype="XCollection">XString</EffectNames>
+            <LocatorNames Xtype="XCollection">XString</LocatorNames>
+            <SpawnDelay Xtype="XCollection">XUInt</SpawnDelay>
+            <SpawnLoopTime Xtype="XCollection">XUInt</SpawnLoopTime>
+            <ParticleLayerOffset>XInt</ParticleLayerOffset>
+          </WXFE_MeshObjectParticleDesc>
+          <MeshName>XString</MeshName>
+          <Anim_In_Mesh>XString</Anim_In_Mesh>
+          <Audio_In_Mesh>XString</Audio_In_Mesh>
+          <Delay_In_Mesh>XUInt</Delay_In_Mesh>
+          <Anim_Spot_Mesh>XString</Anim_Spot_Mesh>
+          <Audio_Spot_Mesh>XString</Audio_Spot_Mesh>
+          <Anim_Out_Mesh>XString</Anim_Out_Mesh>
+          <Audio_Out_Mesh>XString</Audio_Out_Mesh>
+          <Delay_Out_Mesh>XUInt</Delay_Out_Mesh>
+          <Anim_Looping_Mesh>XString</Anim_Looping_Mesh>
+          <Audio_Looping_Mesh>XString</Audio_Looping_Mesh>
+          <Lighting>XBool</Lighting>
+          <ScaleResourceID>XString</ScaleResourceID>
+          <PositionResourceID>XString</PositionResourceID>
+          <OrientationResourceID>XString</OrientationResourceID>
+          <WaitingGfxResource>XString</WaitingGfxResource>
+          <WaitingScale x="XFloat" y="XFloat" z="XFloat" />
+          <WaitingPosition x="XFloat" y="XFloat" z="XFloat" />
+          <WaitTime>XUInt</WaitTime>
+        </WXFE_MeshObjectDesc>
+        <WXFE_PlayerRepresentationObjectDesc guid="{23E7EA02-5505-445A-B963-C1C16EFD09CF}" Xver="0" id="XRef">
+          <TeamIndex>XUInt</TeamIndex>
+          <AvatarPosition x="XFloat" y="XFloat" z="XFloat" />
+          <AvatarScale x="XFloat" y="XFloat" z="XFloat" />
+        </WXFE_PlayerRepresentationObjectDesc>
+        <WXFE_WormDesc guid="{3253DF16-DAEB-484B-8197-C3A9A79BA88F}" Xver="0" id="XRef" Xtype="XClass">
+          <WXFE_ShopDesc guid="{6D7FB2A4-E92A-438E-8AA5-87A141D1B24B}" Xver="2" id="XRef">
+            <ShopMeshName>XString</ShopMeshName>
+            <DissapointingSale>XUInt</DissapointingSale>
+            <ExceptionalSale>XUInt</ExceptionalSale>
+            <WormOffset x="XFloat" y="XFloat" z="XFloat" />
+          </WXFE_ShopDesc>
+          <Hat>XString</Hat>
+          <Glasses>XString</Glasses>
+          <Tash>XString</Tash>
+          <Gloves>XString</Gloves>
+          <Interest>XString</Interest>
+          <Mood>XString</Mood>
+          <Anim>XString</Anim>
+          <Coyness>XFloat</Coyness>
+          <EyeZone>XFloat</EyeZone>
+          <BlendRate>XFloat</BlendRate>
+          <RandomAnims Xtype="XCollection">XString</RandomAnims>
+          <MinElapsTimeSecs>XUInt</MinElapsTimeSecs>
+          <MaxElapsTimeSecs>XUInt</MaxElapsTimeSecs>
+        </WXFE_WormDesc>
+        <WXFE_ImageViewDesc guid="{FFABD5F7-4D16-4A3D-B491-99F369D42676}" Xver="0" id="XRef">
+          <Border>XEnum</Border>
+          <ImageId>XString</ImageId>
+          <DefaultImageId>XString</DefaultImageId>
+          <Colour r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+          <WaitTime>XUInt</WaitTime>
+        </WXFE_ImageViewDesc>
+        <WXFE_GalleryImageDesc guid="{CBDA750A-523E-4ECA-9A9B-F7ED992FBC31}" Xver="0" id="XRef">
+          <Border>XEnum</Border>
+          <GalleryId>XUInt</GalleryId>
+        </WXFE_GalleryImageDesc>
+        <WXFE_WeaponFactoryMeshDesc guid="{1C128EA0-A1E0-4ABA-8F4F-FCD080A6E8E2}" Xver="0" id="XRef" />
+        <WXFE_GetControllerInputDesc guid="{14349DE5-162F-4F5D-8662-BF4CFAB9D9BB}" Xver="0" id="XRef" />
+        <WXFE_ScrollingTextDesc guid="{9425CB7B-6A24-4AB3-A261-BE9AB1C196BF}" Xver="0" id="XRef" Xtype="XClass">
+          <WXFE_NewsFeedScrollingTextDesc guid="{715C9EA1-9B5F-4C27-AE97-10193DBD2101}" Xver="0" id="XRef" />
+          <Border>XEnum</Border>
+          <TextResourceID>XString</TextResourceID>
+          <Font>XString</Font>
+          <Colour_Front>XEnum</Colour_Front>
+          <Colour_Back>XEnum</Colour_Back>
+          <Speed>XFloat</Speed>
+          <Wrap>XBool</Wrap>
+          <ScrollForward>XBool</ScrollForward>
+          <AlwaysScroll>XBool</AlwaysScroll>
+          <DisplayInvites>XBool</DisplayInvites>
+          <DisplayFriendRequest>XBool</DisplayFriendRequest>
+        </WXFE_ScrollingTextDesc>
+        <WXFE_TitleControlDesc guid="{12DF4AB2-A925-4013-86CC-354DB371F024}" Xver="0" id="XRef">
+          <TextResourceID>XString</TextResourceID>
+          <FrontColour>XEnum</FrontColour>
+          <BackColour>XEnum</BackColour>
+          <TextAnim>XEnum</TextAnim>
+          <TextAnimSeed>XUInt</TextAnimSeed>
+        </WXFE_TitleControlDesc>
+        <Position x="XFloat" y="XFloat" z="XFloat" />
+        <Scale x="XFloat" y="XFloat" z="XFloat" />
+        <Orientation x="XFloat" y="XFloat" z="XFloat" />
+        <Anim_Incoming>XEnum</Anim_Incoming>
+        <Anim_Outgoing>XEnum</Anim_Outgoing>
+        <Anim_Spot>XString</Anim_Spot>
+        <Audio_Incoming>XEnum</Audio_Incoming>
+        <Audio_Outgoing>XEnum</Audio_Outgoing>
+        <Audio_Spot>XString</Audio_Spot>
+        <Delay_Incoming>XUInt</Delay_Incoming>
+        <Delay_Outgoing>XUInt</Delay_Outgoing>
+        <FontSizeOverride>XFloat</FontSizeOverride>
+        <LayerOffset>XInt</LayerOffset>
+        <LOCKED>XBool</LOCKED>
+      </WXFE_BaseGfxItemDesc>
+      <ItemName>XString</ItemName>
+      <EnableId>XString</EnableId>
+      <ControllerId>XString</ControllerId>
+      <ChildrenItems Xtype="XCollection" href="WXFE_BaseItemDesc" />
+    </WXFE_BaseItemDesc>
+    <WXFE_ListBoxContents guid="{D4A0710F-31EF-48AE-8CF5-E698CA2DC61A}" Xver="2" id="XRef">
+      <Rows Xtype="XCollection" href="WXFE_ListBoxRows" />
+      <TotalRows>XUInt</TotalRows>
+      <VirtualOffset>XUInt</VirtualOffset>
+      <VirtualEnabled>XBool</VirtualEnabled>
+      <CallBack>XUInt</CallBack>
+    </WXFE_ListBoxContents>
+    <WXFE_ListBoxRows guid="{0F301358-8484-4CC2-82BC-9D461D33F295}" Xver="0" id="XRef">
+      <Border_Normal>XEnum</Border_Normal>
+      <Border_Highlight>XEnum</Border_Highlight>
+      <Border_Disabled>XEnum</Border_Disabled>
+      <BorderFitContents>XBool</BorderFitContents>
+      <Anim_Highlight>XEnum</Anim_Highlight>
+      <Anim_Clicked>XEnum</Anim_Clicked>
+      <Messages_Selected Xtype="XCollection">XString</Messages_Selected>
+      <Messages_RightClick Xtype="XCollection">XString</Messages_RightClick>
+      <Messages_Highlighted Xtype="XCollection">XString</Messages_Highlighted>
+      <Messages_Left Xtype="XCollection">XString</Messages_Left>
+      <Messages_Right Xtype="XCollection">XString</Messages_Right>
+      <Orientation x="XFloat" y="XFloat" z="XFloat" />
+      <RowHeight>XFloat</RowHeight>
+      <BorderHeightAdjust>XFloat</BorderHeightAdjust>
+      <BorderWidthAdjust>XFloat</BorderWidthAdjust>
+      <GapBetweenItems>XFloat</GapBetweenItems>
+      <Decorative>XBool</Decorative>
+      <Sort>XString</Sort>
+      <Index>XString</Index>
+      <Enable>XString</Enable>
+      <Columns Xtype="XCollection" href="WXFE_Columns" />
+    </WXFE_ListBoxRows>
+    <WXFE_Columns guid="{4D5E3E49-7DB9-4A94-B7D9-FA604A27A91D}" Xver="0" Xtype="XClass">
+      <WXFE_StringColumns guid="{271D7D0C-DD19-481B-96A5-5D9A247DB648}" Xver="0" Xtype="XClass" id="XRef">
+        <WXFE_StringTableColumns guid="{D045FA22-4C0E-4E4C-8591-E3AE04A380A1}" Xver="0" id="XRef">
+          <CallBack>XBool</CallBack>
+        </WXFE_StringTableColumns>
+        <Text>XString</Text>
+        <Font>XString</Font>
+        <FontSize>XFloat</FontSize>
+        <Width>XFloat</Width>
+        <WidthIsInPercent>XBool</WidthIsInPercent>
+        <ScaleTextToFit>XBool</ScaleTextToFit>
+        <KeepWhiteSpace>XBool</KeepWhiteSpace>
+        <Justification>XEnum</Justification>
+        <ColourFRONT_Normal>XEnum</ColourFRONT_Normal>
+        <ColourFRONT_Highlight>XEnum</ColourFRONT_Highlight>
+        <ColourFRONT_Disabled>XEnum</ColourFRONT_Disabled>
+        <ColourBACK_Normal>XEnum</ColourBACK_Normal>
+        <ColourBACK_Highlight>XEnum</ColourBACK_Highlight>
+        <ColourBACK_Disabled>XEnum</ColourBACK_Disabled>
+        <TextAnim>XEnum</TextAnim>
+        <TextAnimSeed>XUInt</TextAnimSeed>
+        <KeepJustification>XBool</KeepJustification>
+      </WXFE_StringColumns>
+      <WXFE_IconColumns guid="{8781559B-037F-4582-A00C-F394014A13F2}" Xver="0" id="XRef" Xtype="XClass">
+        <WXFE_HighlightIconColumns guid="{5CC11512-1B0C-4CA6-B371-D614DC235600}" Xver="0" id="XRef">
+          <TakeUpSpaceWhenNotHighlight>XBool</TakeUpSpaceWhenNotHighlight>
+        </WXFE_HighlightIconColumns>
+        <IconName>XString</IconName>
+        <ScaleX>XFloat</ScaleX>
+        <ScaleY>XFloat</ScaleY>
+        <AutoScale>XBool</AutoScale>
+        <WidthAdjust>XFloat</WidthAdjust>
+        <InvisibleToBorder>XBool</InvisibleToBorder>
+        <Colour_Normal r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+        <Colour_Highlight r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+        <Colour_Disabled r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+        <Messages Xtype="XCollection">XString</Messages>
+      </WXFE_IconColumns>
+      <WXFE_PowerColumns guid="{DD34E511-7F87-48A4-AEFE-FA16DB864E3E}" Xver="0" id="XRef">
+        <PowerNumber>XFloat</PowerNumber>
+        <PowerResource>XString</PowerResource>
+        <ScaleY>XFloat</ScaleY>
+        <ScaleX>XFloat</ScaleX>
+        <Style>XEnum</Style>
+        <Messages Xtype="XCollection">XString</Messages>
+      </WXFE_PowerColumns>
+      <WXFE_GapColumns guid="{B7C539C6-3F5D-48CF-916D-49BD2B57DE99}" Xver="0" id="XRef">
+        <GapWidth>XFloat</GapWidth>
+        <ExpandToFitAvailableSpace>XBool</ExpandToFitAvailableSpace>
+        <GapType>XEnum</GapType>
+        <Colour_Normal r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+        <Colour_Highlight r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+        <Colour_Disabled r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+      </WXFE_GapColumns>
+    </WXFE_Columns>
+    <WXFE_AttachmentOffsets guid="{02258054-7093-4593-92CE-062EA403CFCD}" Xver="0" id="XRef">
+      <PositionOffset x="XFloat" y="XFloat" z="XFloat" />
+      <OrientationOffset x="XFloat" y="XFloat" z="XFloat" />
+      <ScaleOffset x="XFloat" y="XFloat" z="XFloat" />
+    </WXFE_AttachmentOffsets>
+    <WXFE_WormAttachments guid="{12EFA2E6-5C40-4E65-B31B-EDA1447493DF}" Xver="0" id="XRef">
+      <MeshID>XString</MeshID>
+      <FrontEndMeshID>XString</FrontEndMeshID>
+      <MeshTextNameID>XString</MeshTextNameID>
+      <Glasses>XBool</Glasses>
+      <Tash>XBool</Tash>
+      <Type>XEnum</Type>
+      <Offsets Xtype="XCollection" href="WXFE_AttachmentOffsets" />
+      <FrontEndOffsets href="WXFE_AttachmentOffsets" />
+      <Lock>XString</Lock>
+      <Eyebrow>XBool</Eyebrow>
+    </WXFE_WormAttachments>
+    <WXFE_LevelDetails guid="{3230B3A2-DA5A-4284-95C6-061B42A1D795}" Xver="1" id="XRef">
+      <Frontend_Name>XString</Frontend_Name>
+      <Frontend_Briefing>XString</Frontend_Briefing>
+      <Frontend_Image>XString</Frontend_Image>
+      <Level_ScriptName>XString</Level_ScriptName>
+      <Level_FileName>XString</Level_FileName>
+      <Objectives>XString</Objectives>
+      <Level_Number>XUInt</Level_Number>
+      <Level_Type>XEnum</Level_Type>
+      <Lock>XString</Lock>
+      <Theme_Type>XEnum</Theme_Type>
+      <Preview_Type>XEnum</Preview_Type>
+      <BonusTime>XUInt</BonusTime>
+      <LevelSection>XEnum</LevelSection>
+    </WXFE_LevelDetails>
+    <WXFE_UnlockableItem guid="{5BCB1272-BF48-4A9F-A2D3-D121A982D73A}" Xver="3" id="XRef">
+      <Type>XEnum</Type>
+      <State>XEnum</State>
+      <DescriptionName>XString</DescriptionName>
+      <Value>XUInt</Value>
+      <UnlockRequirements Xtype="XCollection">XString</UnlockRequirements>
+      <UnlockRequirementsMet>XBool</UnlockRequirementsMet>
+      <DLCPack>XUInt</DLCPack>
+      <UnlockedAttachments Xtype="XCollection">XString</UnlockedAttachments>
+    </WXFE_UnlockableItem>
+    <WXFE_SoftwareKeyBoardData guid="{0673906C-A20B-4C44-91DF-9914ECE4851E}" Xver="0" id="XRef">
+      <TextGameDataId>XString</TextGameDataId>
+      <Messages_Edited Xtype="XCollection">XString</Messages_Edited>
+      <Messages_NewChar Xtype="XCollection">XString</Messages_NewChar>
+      <MaxTextWidthChars>XUInt</MaxTextWidthChars>
+      <MaxTextWidthPixels>XUInt</MaxTextWidthPixels>
+      <InvalidChars>XString</InvalidChars>
+      <NumbersOnly>XBool</NumbersOnly>
+      <SoftwareKeyboardTitleID>XString</SoftwareKeyboardTitleID>
+      <FontSize>XFloat</FontSize>
+      <AutoClear>XBool</AutoClear>
+    </WXFE_SoftwareKeyBoardData>
+    <ShotStatsCollective guid="{AB5EB90D-9BC4-4ED6-9231-F5C0091B21D4}" Xver="0" id="XRef">
+      <Shots Xtype="XCollection" href="StatsContainer" />
+    </ShotStatsCollective>
+    <StatsContainer guid="{DFBC5413-8036-4F71-8371-6F3B5D8763ED}" Xver="0" id="XRef">
+      <Values Xtype="XCollection">XUInt</Values>
+    </StatsContainer>
+    <StoredStatsCollective guid="{F7561D25-D390-4BF9-A7E3-E673D675CE03}" Xver="0" id="XRef">
+      <WormStats Xtype="XCollection" href="StatsContainer" />
+      <TeamStats Xtype="XCollection" href="StatsContainer" />
+      <TeamNames Xtype="XCollection">XString</TeamNames>
+    </StoredStatsCollective>
+    <DamageStatsContainer guid="{57F9F694-9FBC-4CE1-81D0-0B32D8C65AE9}" Xver="0" id="XRef">
+      <RecipientTasks Xtype="XCollection">XUInt</RecipientTasks>
+      <SenderTasks Xtype="XCollection">XUInt</SenderTasks>
+      <WeaponNames Xtype="XCollection">XUInt</WeaponNames>
+    </DamageStatsContainer>
+    <TeamAwardsContainer guid="{261477BB-C044-4CAC-A418-908FE9075CF8}" Xver="0" id="XRef">
+      <AwardsReceived Xtype="XCollection">XUInt</AwardsReceived>
+    </TeamAwardsContainer>
+    <CachedLeaderBoardWrite guid="{77338CE9-666C-4B59-96A5-6666A5E227BB}" Xver="0" id="XRef">
+      <HavePosted>XBool</HavePosted>
+      <AmCurrentlyPosting>XBool</AmCurrentlyPosting>
+      <IsValid>XBool</IsValid>
+      <Value>XUInt</Value>
+    </CachedLeaderBoardWrite>
+    <AchievementsProgressContainer guid="{5CAC850B-FA1F-4014-B330-4F6C643278D0}" Xver="8" id="XRef">
+      <OnlineRankedMatchesWon Xtype="XCollection">XUInt</OnlineRankedMatchesWon>
+      <TotalWormsKilled>XUInt</TotalWormsKilled>
+      <EasterEggsFound>XUInt</EasterEggsFound>
+      <OnlineMatchesCompleted>XUInt</OnlineMatchesCompleted>
+      <TotalWeaponFactoryDamage>XUInt</TotalWeaponFactoryDamage>
+      <FourPlayerMatchesPlayed>XUInt</FourPlayerMatchesPlayed>
+      <RankedUpProgress>XUInt</RankedUpProgress>
+      <WormicideProgress>XUInt</WormicideProgress>
+      <GenghisWormProgress>XUInt</GenghisWormProgress>
+      <LovesAChallengeProgress>XUInt</LovesAChallengeProgress>
+      <DaveyJonesProgress>XUInt</DaveyJonesProgress>
+      <DaveyJonesReturnsProgress>XUInt</DaveyJonesReturnsProgress>
+      <FingerOfDeathProgress>XUInt</FingerOfDeathProgress>
+      <EmbraceTheDarknessProgress>XUInt</EmbraceTheDarknessProgress>
+      <DoingItSoloProgress>XUInt</DoingItSoloProgress>
+      <NoChallengeAtAllProgress>XUInt</NoChallengeAtAllProgress>
+      <TimeForAChallengeProgress>XUInt</TimeForAChallengeProgress>
+      <ClockWatchingProgress>XUInt</ClockWatchingProgress>
+      <ClockWatchingPS3Progress>XUInt</ClockWatchingPS3Progress>
+      <AlexanderTheWormProgress>XUInt</AlexanderTheWormProgress>
+      <ILoveNewProgress Xtype="XCollection">XUInt</ILoveNewProgress>
+      <DedicatedRankerProgress Xtype="XCollection">XUInt</DedicatedRankerProgress>
+      <FeelThePowerOfTheDarksideProgress>XUInt</FeelThePowerOfTheDarksideProgress>
+      <TutorialsDone>XUInt</TutorialsDone>
+      <AllTutorialsDone>XBool</AllTutorialsDone>
+      <AllMissionsDone>XBool</AllMissionsDone>
+      <WelcomeMovieViewed>XBool</WelcomeMovieViewed>
+      <StoryMissionsCompleted Xtype="XCollection">XUInt</StoryMissionsCompleted>
+      <StoryChapter>XUInt</StoryChapter>
+      <w3dMissionsComplete>XUInt</w3dMissionsComplete>
+      <w3dMissionsCompleteExtra>XUInt</w3dMissionsCompleteExtra>
+      <CachedLBData Xtype="XCollection" href="CachedLeaderBoardWrite" />
+    </AchievementsProgressContainer>
+    <ProfileAchievementsContainer guid="{77338CE9-60CC-4B59-96A5-9FC6A5E227BB}" Xver="0" id="XRef">
+      <ProfileProgress Xtype="XCollection" href="AchievementsProgressContainer" />
+    </ProfileAchievementsContainer>
+    <EFMV_BaseEventContainer guid="{55EB8B41-9172-4A15-92D0-792701337F39}" Xver="0" Xtype="XClass">
+      <EFMV_WormBaseEventContainer guid="{F3018E72-7A9D-4EBE-9448-C5A76B7D407D}" Xver="0" Xtype="XClass">
+        <EFMV_WormEmoteEventContainer guid="{5374B83D-2DA8-4A79-A3AB-C9755ABED7F1}" Xver="0" id="XRef">
+          <Emote>XString</Emote>
+          <!-- Emote name -->
+          <PermittedEyeMovement>XFloat</PermittedEyeMovement>
+          <!-- Permitted Eye Movement (degrees) -->
+          <BlendTime>XFloat</BlendTime>
+          <!-- Blend time (seconds) -->
+          <Coyness>XFloat</Coyness>
+          <!-- Coyness (desired eye deviation, in degrees) -->
+          <AllowBlink>XBool</AllowBlink>
+          <!-- Blinking Allowed -->
+        </EFMV_WormEmoteEventContainer>
+        <EFMV_WormLookAtEventContainer guid="{72DD7488-BAB0-42D7-A9A6-62F672E76DCE}" Xver="0" id="XRef">
+          <TargetCastMember>XInt8</TargetCastMember>
+          <!-- Target cast member (from 0, -1 = camera) -->
+        </EFMV_WormLookAtEventContainer>
+        <EFMV_WormGestureAtEventContainer guid="{4D0F64A9-5E54-4210-85F4-7A792DAA8F3B}" Xver="0" id="XRef">
+          <TargetCastMember>XInt8</TargetCastMember>
+          <!-- Target cast member (from 0, -1 = camera) -->
+        </EFMV_WormGestureAtEventContainer>
+        <EFMV_PlayAnimationEventContainer guid="{5B60E54E-10FC-4AFF-9720-29DF3FBB30D7}" Xver="0" id="XRef">
+          <Animation>XString</Animation>
+          <!-- Animation name -->
+        </EFMV_PlayAnimationEventContainer>
+        <EFMV_StopAnimationEventContainer guid="{CDC3CB77-EAF2-499B-BE64-022746DF1797}" Xver="0" id="XRef">
+          <BlendTime>XFloat</BlendTime>
+          <!-- Time over which to blend animation out (in milliseconds -->
+        </EFMV_StopAnimationEventContainer>
+        <EFMV_CastActorEventContainer guid="{C502D0DF-E37C-41CC-A2C2-3E50B2B479EA}" Xver="0" id="XRef">
+          <ActorName>XString</ActorName>
+          <!-- Allocate named actor to this track -->
+        </EFMV_CastActorEventContainer>
+        <EFMV_TriggerSpeechEventContainer guid="{022F37EF-955C-4750-B494-8665ED182F72}" Xver="2" id="XRef">
+          <Speech>XString</Speech>
+          <!-- The ID of the speech (use "*filename" minus the file extension to play a level based EFMV sample) -->
+          <FullVolume>XBool</FullVolume>
+          <!-- Force Full Volume (play at camera pos) -->
+          <Duration>XUInt</Duration>
+        </EFMV_TriggerSpeechEventContainer>
+        <EFMV_SpawnAccessoryEventContainer guid="{75D7CD93-E273-4253-9F92-957FCC8E46AD}" Xver="0" id="XRef">
+          <ResourceId>XString</ResourceId>
+          <!-- The resource ID of the accessory -->
+          <AttachmentPoint>XString</AttachmentPoint>
+          <!-- The name of the attachment point -->
+        </EFMV_SpawnAccessoryEventContainer>
+        <EFMV_SpawnParticleEventContainer guid="{B43F95B4-92A6-4B09-8F4B-CD3569A70BB8}" Xver="0" id="XRef">
+          <ResourceId>XString</ResourceId>
+          <!-- The name of the effect -->
+          <AttachmentPoint>XString</AttachmentPoint>
+          <!-- The name of the attachment point -->
+        </EFMV_SpawnParticleEventContainer>
+        <EFMV_ClearAccessoryEventContainer guid="{9AA59378-C138-4320-B790-8350D4818CF1}" Xver="0" id="XRef" />
+        <EFMV_ThreatenWormEventContainer guid="{12992931-84A0-4B3B-BDB5-873AF44D0E3B}" Xver="0" id="XRef">
+          <Threatened>XBool</Threatened>
+          <!-- Threat status true or false -->
+        </EFMV_ThreatenWormEventContainer>
+      </EFMV_WormBaseEventContainer>
+      <EFMV_PathCameraEventContainer guid="{5A4EAA2F-97E1-4472-B641-4DE655836F35}" Xver="0" id="XRef">
+        <PositionKnotList>XString</PositionKnotList>
+        <!-- Comma separarted list of points camera will move through (detail object names) -->
+        <LookAtKnotList>XString</LookAtKnotList>
+        <!-- Comma separated list of points you want to look at (detail object names) -->
+        <LoopPosition>XBool</LoopPosition>
+        <!-- Does the camera move in a loop? -->
+        <LoopLookAt>XBool</LoopLookAt>
+        <!-- Does the camera loop through its look at points? -->
+        <PositionSteps>XUInt</PositionSteps>
+        <!-- How many steps to make between two points (less=faster) -->
+        <LookAtSteps>XUInt</LookAtSteps>
+        <!-- How many steps to make between two look at points (less=faster) -->
+        <PositionTension>XFloat</PositionTension>
+        <!-- How tight is the position curve? -->
+        <LookAtTension>XFloat</LookAtTension>
+        <!-- How tight is the look at curve? -->
+        <DrawDebugDots>XBool</DrawDebugDots>
+        <!-- Does this camera leave a trail of dots in the editor? -->
+      </EFMV_PathCameraEventContainer>
+      <EFMV_CommentEventContainer guid="{C2C2BE5A-928B-49DB-A506-0450CEB68691}" Xver="0" id="XRef">
+        <Comment>XString</Comment>
+        <!-- What is the ID of the comment? -->
+        <Duration>XUInt</Duration>
+        <!-- How long should it be displayed for? -->
+      </EFMV_CommentEventContainer>
+      <EFMV_CreateBordersEventContainer guid="{7F4F778F-AA06-4352-986A-336ECD158C4E}" Xver="0" id="XRef" />
+      <EFMV_DeleteBordersEventContainer guid="{C3C0225F-D46F-4D67-8E92-3689A5788E9E}" Xver="0" id="XRef" />
+      <Tag>XString</Tag>
+      <!-- Your name for this event -->
+      <Time>XUInt</Time>
+      <!-- Event trigger time -->
+      <Critical>XBool</Critical>
+      <!-- Trigger this event even if movie cancelled -->
+    </EFMV_BaseEventContainer>
+    <EFMV_TrackContainer guid="{7C00266B-F84F-4A1A-B155-09FB46B4C583}" Xver="0" id="XRef">
+      <Tag>XString</Tag>
+      <Event Xtype="XCollection" href="EFMV_BaseEventContainer" />
+    </EFMV_TrackContainer>
+    <EFMV_MovieContainer guid="{3F3CB912-0AF9-40D8-97DE-995479746DDD}" Xver="0" id="XRef">
+      <Tag>XString</Tag>
+      <Track Xtype="XCollection" href="EFMV_TrackContainer" />
+    </EFMV_MovieContainer>
+  </XContainer>
+</xomSCHM>
