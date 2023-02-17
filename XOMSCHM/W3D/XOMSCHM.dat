@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xomSCHM Xgame="W3D">
   <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" Xtype="XClass">
+    <XNode guid="{BF1E8B2B-025D-4EB2-B937-05575E5771D3}" Xver="0" id="XClass">
+      <XInteriorNode guid="{8BE307A9-B705-4753-9D80-55F01B2122F8}" Xver="0" id="XRef">
+        <LandFrameStore guid="{05D6D0F7-BC9E-4BB6-AAEF-FC9477DEBFA1}" Xver="0" id="XRef">
+          <Name>XString</Name>
+          <Position x="XFloat" y="XFloat" z="XFloat" />
+          <Orientation x="XFloat" y="XFloat" z="XFloat" />
+          <Scale x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexXVec x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexYVec x="XFloat" y="XFloat" z="XFloat" />
+          <WallTexXVec x="XFloat" y="XFloat" z="XFloat" />
+          <WallTexYVec x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexOffset x="XFloat" y="XFloat" />
+          <WallTexOffset x="XFloat" y="XFloat" />
+          <CentreOffset x="XFloat" y="XFloat" z="XFloat" />
+          <EdgeOffset1 Xtype="XCollection" Xpack="true">XVector2f</EdgeOffset1>
+          <EdgeOffset2 Xtype="XCollection" Xpack="true">XVector2f</EdgeOffset2>
+          <XSize>XUInt8</XSize>
+          <YSize>XUInt8</YSize>
+          <ZSize>XUInt8</ZSize>
+          <HeightMap Xtype="XCollection" Xpack="true">XFloat</HeightMap>
+          <EdgeCrinkle>XBool</EdgeCrinkle>
+          <EdgeFalloff>XBool</EdgeFalloff>
+          <PeturbCliffs>XFloat</PeturbCliffs>
+          <Visible>XBool</Visible>
+          <SmoothShading>XBool</SmoothShading>
+          <Tint r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+          <Voxels Xtype="XCollection" Xpack="true">XUIntHex</Voxels>
+          <Details href="DetailEntityStore" Xtype="XCollection" />
+        </LandFrameStore>
+        <Children href="XContainer" Xtype="XCollection" />
+      </XInteriorNode>
+      <DetailEntityStore guid="{7522BAA6-3384-42B0-9000-990BD92940BB}" Xver="0" id="XRef">
+        <Name>XString</Name>
+        <ResourceName>XString</ResourceName>
+        <Position x="XFloat" y="XFloat" z="XFloat" />
+        <Orientation x="XFloat" y="XFloat" z="XFloat" />
+        <VoxelPos x="XFloat" y="XFloat" z="XFloat" />
+        <Scale x="XFloat" y="XFloat" z="XFloat" />
+      </DetailEntityStore>
+      <Bounds x="XFloat" y="XFloat" z="XFloat" Radius="XFloat" />
+      <BoundMode>XEnum</BoundMode>
+      <Name>XString</Name>
+    </XNode>
     <WeaponInventory guid="{51D60608-EF41-4231-B649-BC908D1ACC74}" Xver="0" id="XRef">
       <Bazooka>XInt8</Bazooka>
       <Grenade>XInt8</Grenade>
