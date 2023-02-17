@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xomSCHM Xgame="W3D">
+  <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" Xtype="XClass">
+    <XNode guid="{BF1E8B2B-025D-4EB2-B937-05575E5771D3}" Xver="0" id="XClass">
+      <XInteriorNode guid="{8BE307A9-B705-4753-9D80-55F01B2122F8}" Xver="0" id="XRef">
+        <LandFrameStore guid="{05D6D0F7-BC9E-4BB6-AAEF-FC9477DEBFA1}" Xver="0" id="XRef">
+          <Name>XString</Name>
+          <Position x="XFloat" y="XFloat" z="XFloat" />
+          <Orientation x="XFloat" y="XFloat" z="XFloat" />
+          <Scale x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexXVec x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexYVec x="XFloat" y="XFloat" z="XFloat" />
+          <WallTexXVec x="XFloat" y="XFloat" z="XFloat" />
+          <WallTexYVec x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexOffset x="XFloat" y="XFloat" />
+          <WallTexOffset x="XFloat" y="XFloat" />
+          <CentreOffset x="XFloat" y="XFloat" z="XFloat" />
+          <EdgeOffset1 Xtype="XCollection" Xpack="true">XVector2f</EdgeOffset1>
+          <EdgeOffset2 Xtype="XCollection" Xpack="true">XVector2f</EdgeOffset2>
+          <XSize>XUInt8</XSize>
+          <YSize>XUInt8</YSize>
+          <ZSize>XUInt8</ZSize>
+          <HeightMap Xtype="XCollection" Xpack="true">XFloat</HeightMap>
+          <EdgeCrinkle>XBool</EdgeCrinkle>
+          <EdgeFalloff>XBool</EdgeFalloff>
+          <PeturbCliffs>XFloat</PeturbCliffs>
+          <Visible>XBool</Visible>
+          <SmoothShading>XBool</SmoothShading>
+          <Tint r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+          <Voxels Xtype="XCollection" Xpack="true">XUIntHex</Voxels>
+          <Details href="DetailEntityStore" Xtype="XCollection" />
+        </LandFrameStore>
+        <Children href="XContainer" Xtype="XCollection" />
+      </XInteriorNode>
+      <DetailEntityStore guid="{7522BAA6-3384-42B0-9000-990BD92940BB}" Xver="0" id="XRef">
+        <Name>XString</Name>
+        <ResourceName>XString</ResourceName>
+        <Position x="XFloat" y="XFloat" z="XFloat" />
+        <Orientation x="XFloat" y="XFloat" z="XFloat" />
+        <VoxelPos x="XFloat" y="XFloat" z="XFloat" />
+        <Scale x="XFloat" y="XFloat" z="XFloat" />
+      </DetailEntityStore>
+      <Bounds x="XFloat" y="XFloat" z="XFloat" Radius="XFloat" />
+      <BoundMode>XEnum</BoundMode>
+      <Name>XString</Name>
+    </XNode>
+    <XResourceDetails guid="{E77556F2-A495-491A-8563-006CE2577244}" Xver="0" Xtype="XClass">
+      <XIntResourceDetails guid="{7D889B8D-2C14-445E-961F-5E0E5520416A}" Xver="0" id="XRef">
+        <Value>XInt</Value>
+      </XIntResourceDetails>
+      <XUintResourceDetails guid="{93E5117C-8ADA-4AFB-B17A-668D0BDD15E6}" Xver="0" id="XRef">
+        <Value>XUInt</Value>
+      </XUintResourceDetails>
+      <XStringResourceDetails guid="{7CDC5872-2CA3-4FCC-AE66-431071E5CE67}" Xver="0" id="XRef">
+        <Value>XString</Value>
+      </XStringResourceDetails>
+      <XFloatResourceDetails guid="{08889D5F-8039-4CEA-BA5B-9C059AC0570E}" Xver="0" id="XRef">
+        <Value>XFloat</Value>
+      </XFloatResourceDetails>
+      <XVectorResourceDetails guid="{071F4563-8CB3-4996-B79F-B0F5CAEC9D99}" Xver="0" id="XRef">
+        <Value x="XFloat" y="XFloat" z="XFloat" />
+      </XVectorResourceDetails>
+      <XContainerResourceDetails guid="{E0B6BF20-F80B-4329-B6EB-1998ED8AEC1F}" Xver="0" id="XRef">
+        <Value href="XContainer" />
+      </XContainerResourceDetails>
+      <XColorResourceDetails guid="{7804BA7B-C6FD-4E8E-AFFF-8E266B6A5544}" Xver="0" id="XRef">
+        <Value r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+      </XColorResourceDetails>
+      <Name>XString</Name>
+      <Flags>XUInt</Flags>
+    </XResourceDetails>
+    <XDataBank guid="{93E661AC-D941-442A-A18E-E99B795879DC}" Xver="0" id="XRef">
+      <Section>XUInt8</Section>
+      <IntResources href="XIntResourceDetails" Xtype="XCollection" />
+      <UintResources href="XUintResourceDetails" Xtype="XCollection" />
+      <StringResources href="XStringResourceDetails" Xtype="XCollection" />
+      <FloatResources href="XFloatResourceDetails" Xtype="XCollection" />
+      <VectorResources href="XVectorResourceDetails" Xtype="XCollection" />
+      <ContainerResources href="XContainerResourceDetails" Xtype="XCollection" />
+      <StringTableResources href="XContainerResourceDetails" Xtype="XCollection" />
+      <ColorResources href="XColorResourceDetails" Xtype="XCollection" />
+    </XDataBank>
+  </XContainer>
+</xomSCHM>
