@@ -5,7 +5,6 @@ interface
 uses IdGlobal, SysUtils, Classes,
   Math, XomCntrLibTwk, NativeXml, TntClasses;
 
-
 type TXomType = packed record
         aType:array [0..3] of Char;
         bType:integer;
@@ -93,9 +92,25 @@ type
     function SearchType(XType:XTypes; var index:Integer):Boolean;
   end;
 
-
-type
   TStringArray = array of string;
+
+  TKeyValue = record
+    Key: string;
+    Value: Integer;
+  end;
+
+  TKeyValues = array of TKeyValue;
+
+  TKeyValueList = class
+    constructor Create;
+    destructor Destroy; override;
+  private
+    FKeys: TKeyValues;
+    function GetValue(const Name: string): Integer;
+    procedure SetValue(const Name: string; Value: Integer);
+  public
+    property Values[const Name: string]: Integer read GetValue write SetValue;
+  end;
 
 function StringListFromStrings(const Strings: array of string;Size:integer): TStringList;
 
@@ -1261,6 +1276,11 @@ begin
               Inc(Longword(p2), 5);
               IsCtnr := false;
             end;
+            LandFrameStore:
+            begin
+              p2 := Pointer(Longword(p) + 7);
+              Name := GetStr128(p2);
+            end;
             PC_LandFrame:
             begin
               p2 := Pointer(Longword(p) + 7);
@@ -1350,7 +1370,7 @@ begin
             DetailEntityStore:
             begin
               p2 := Pointer(Longword(p) + 7);
-              s:=TestByte128(p2);
+              Name:=GetStr128(p2);
               TestByte128(p2);
               Inc(Longword(p2), 4*3*4);//pos,rot,clip,size
               Inc(Longword(p2), 4*2+4*3+1);
@@ -1394,8 +1414,11 @@ end;
 // XML part
 
 const
-  XCheckedValues : array [0..10] of String = ('XInt','XUInt','XInt8','XUInt8',
-    'XInt16','XUInt16','XString','XFloat','XBool','XString','XEnum');
+  NTYPES = 12;
+
+  XCheckedValues : array [0..NTYPES] of String = ('XInt','XUInt','XInt8','XUInt8',
+    'XInt16','XUInt16','XString','XFloat','XBool','XString','XEnum',
+    'XVector2f','XUIntHex');
 var
 XGlobid:Integer=0;
 
@@ -1410,7 +1433,7 @@ var
   var n:integer;
   begin
     Result:=true;
-    for n:=0 to 10 do
+    for n:=0 to NTYPES do
       if XValue = XCheckedValues[n] then exit;
     Result:=false;
   end;
@@ -1424,13 +1447,21 @@ var
     end else if XValue='XUInt' then begin
       Result:=Format('%d', [Cardinal(p2^)]);
       Inc(Longword(p2), 4);
+    end else if XValue='XUIntHex' then begin
+      Result:=IntToHex(Cardinal(p2^), 8);
+      Inc(Longword(p2), 4);
     end else if XValue='XBool' then begin
-      Result:=Format('%s', [BoolToStr(Boolean(byte(p2^)), true)]);
+      Result:=Format('%s', [LowerCase(BoolToStr(Boolean(byte(p2^)), true))]);
       Inc(Longword(p2));
     end else if XValue='XString' then begin
       Result:=Utf8Encode(GetStr128(p2));
     end else if XValue='XFloat' then begin
       Result:=FloatToStrF(Single(p2^),ffGeneral,7,7);
+      Inc(Longword(p2), 4);
+    end else if XValue='XVector2f' then begin
+      Result:=FloatToStrF(Single(p2^),ffGeneral,7,7);
+      Inc(Longword(p2), 4);
+      Result:=Result + ' ' + FloatToStrF(Single(p2^),ffGeneral,7,7);
       Inc(Longword(p2), 4);
     end else if XValue='XEnum' then begin
       Result:=Format('%d', [Cardinal(p2^)]);
@@ -1452,12 +1483,37 @@ var
        WriteLn(Format('Error: Out of container when read %s of XContainer[%d]: %s',[XValue, XCntr.Index, PCharXTypes[XCntr.Xtype]]));
        Halt;
     end;
-  Except 
+  Except
       on E : Exception do   begin
        WriteLn(Format('Error: Try read %s of XContainer[%d]: %s',[XValue, XCntr.Index, PCharXTypes[XCntr.Xtype]]));
        Halt;
     end;
     end;
+  end;
+
+  procedure AddPropPack(XSNode:TXmlNode; n:Integer);
+  var
+  XValueType:String;
+  s,XValue: UTF8String;
+  XStNode: TsdCharData;
+  XNode: TsdElement;
+  i:Integer;
+  begin
+      if Length(XSNode.Value)>0 then  //< >Value</ >
+      begin
+        XValueType:=XSNode.Value;
+        if CheckXValue(XValueType) then begin
+          XNode := TsdElement.CreateParent(XML,XCont);
+          XNode.Name:=XSNode.Name;
+          XNode.NodeClosingStyle := ncFull;
+          XStNode := TsdCharData.CreateParent(XML,XNode);
+          s:='';
+          for i := 1 to n do
+            s := s + XReadValue(XValueType)+' ';
+          XStNode.Value := Trim(s);
+          XNode.AttributeAdd('Xpack',format('%d', [n]));
+        end;
+      end;
   end;
 
   procedure AddProp(XSNode:TXmlNode);
@@ -1506,6 +1562,7 @@ var
   var
   XValueType:String;
   i,n:Integer;
+  Xpack:String;
   begin
  //   try
       if XSNode.AttributeCount = 0 then   // >Value<
@@ -1515,7 +1572,11 @@ var
        if XSNode.AttributeValueByName['guid']<>'' then exit;
        XValueType:=XSNode.AttributeValueByName['Xtype'];
        if XValueType='XCollection' then begin
+          Xpack:=XSNode.AttributeValueByName['Xpack'];
           n := GetSize128(p2);
+          if Xpack='true' then
+             AddPropPack(XSNode, n)
+          else
           for i := 1 to n do
              AddProp(XSNode);
        end else
@@ -1553,7 +1614,13 @@ begin
    XRef:= XName;
    XGlobid:=0;
   end else begin
-    XRef:=  format('%s-%d',[XName,XGlobid]); // GetNameID
+    if (SXCont.Name='LandFrameStore') or
+      (SXCont.Name='DetailEntityStore') then
+      begin
+        XName:=XCntr.Name;
+        if XName='' then XName:='id';
+      end;
+    XRef:= format('%s-%d',[XName,XGlobid]);  // GetNameID
     XCntr.XRef:= XRef;
     Inc(XGlobid);
   end;
@@ -1755,18 +1822,21 @@ begin
   Result := StrToFloatDef(S, aDef);
 end;
 
+
+
 procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXmlNode);
     var
       XCont,XClass:TXmlNode;
       Buf:TMemoryStream;
       XName: String;
       e,Zero: integer;
+      LocalIndex:TKeyValueList;
 
   function CheckXValue(XValue:String):Boolean;
   var n:integer;
   begin
     Result:=true;
-    for n:=0 to 10 do
+    for n:=0 to NTYPES do
       if XValue = XCheckedValues[n] then exit;
     Result:=false;
   end;
@@ -1789,6 +1859,9 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       Buf.Write(xi,4);
     end else if XValueType='XUInt' then begin
       xui:= StrToCard(XValue);
+      Buf.Write(xui,4);
+    end else if XValueType='XUIntHex' then begin
+      xui:= StrToCard('$'+XValue);
       Buf.Write(xui,4);
     end else if XValueType='XBool' then begin
       xb:=IfThen(StrToBool(XValue),1,0);
@@ -1821,6 +1894,32 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
        Halt;
     end;
     end;
+  end;
+
+  procedure WritePropPack(XSNode,XCont:TXmlNode; Buf:TMemoryStream);
+  var
+  XValueType, XValue: UTF8String;
+  XValues:TStringList;
+  i,len:Integer;
+  begin
+      if Length(XSNode.Value)>0 then  //< >Value</ >
+      begin
+        XValueType:=XSNode.Value;
+        if CheckXValue(XValueType) then begin
+          if XCont.Value='' then
+            XValue:=''
+          else
+            XValue :=sdReplaceString(TsdText(XCont.Nodes[1]).GetCoreValue);
+          XValues := TStringList.Create;
+          XValues.Delimiter := ' ';
+          XValues.DelimitedText := XValue;
+          len := XValues.Count-1;
+          if XValueType = 'XVector2f' then XValueType:='XFloat';
+          for i:=0 to len do
+            XWriteValue(XValueType,XValues[i],Buf);
+          XValues.Free;
+        end;
+      end;
   end;
 
   procedure WriteProp(XSNode,XCont:TXmlNode; Buf:TMemoryStream);
@@ -1867,6 +1966,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
   i,n:Integer;
   NodeList: TList;
   XNode: TXmlNode;
+  Xpack:String;
 
     procedure CheckXNode;
     begin
@@ -1879,20 +1979,38 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
   begin
       if XSNode.AttributeCount = 0 then   // >Value<
       begin
-        XNode:=XCont.NodeByName(XSNode.Name);
+        NodeList:= TList.Create;
+        XCont.NodesByName(XSNode.Name,NodeList);
+        if NodeList.Count = 1 then
+          i:=0
+        else
+          i:=LocalIndex.Values[XSNode.Name];
+        XNode:=TXmlNode(NodeList[i]);
+        NodeList.Clear;
+       // XNode:=XCont.NodeByName(XSNode.Name);
         CheckXNode;
         WriteProp(XSNode,XNode,Buf);
       end else begin
        if XSNode.AttributeValueByName['guid']<>'' then exit;
        XValueType:=XSNode.AttributeValueByName['Xtype'];
        if XValueType='XCollection' then begin
-          NodeList:= TList.Create;
-          XCont.NodesByName(XSNode.Name,NodeList);
-          n := NodeList.Count;
-          WriteXByte(Buf,n);
-          for i := 0 to n-1 do
+          Xpack:=XSNode.AttributeValueByName['Xpack'];
+          if Xpack = 'true' then begin
+           XNode:=XCont.NodeByName(XSNode.Name);
+           n := StrToInt(XNode.AttributeValueByName['Xpack']);
+           WriteXByte(Buf,n);
+           if n>0 then
+             WritePropPack(XSNode,XNode,Buf);
+          end
+          else begin
+           NodeList:= TList.Create;
+           XCont.NodesByName(XSNode.Name,NodeList);
+           n := NodeList.Count;
+           WriteXByte(Buf,n);
+           for i := 0 to n-1 do
              WriteProp(XSNode,TXmlNode(NodeList[i]),Buf);
-          NodeList.Clear;
+           NodeList.Clear;
+          end;
        end else begin
            XNode:=XCont.NodeByName(XSNode.Name);
            CheckXNode;
@@ -1915,6 +2033,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       if XCntr.Update then exit;
       if LogXML then Writeln(format('%s [%d]',[XCntr.Name,index]));
       XCont:=TXmlNode(XCntr.Point);
+      LocalIndex := TKeyValueList.Create;
       Buf := TMemoryStream.Create;
       Zero:=0;
       Buf.Write(zero, 3);
@@ -1927,6 +2046,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       XCntr.Point:=nil;
       XCntr.WriteBuf(Buf);
       Buf.Free;
+      LocalIndex.Free;
 end;
 
 
@@ -2036,7 +2156,50 @@ begin
     Result.Add(Strings[i]);
 end;
 
+{ TKeyValueList }
 
+constructor TKeyValueList.Create;
+begin
+  SetLength(FKeys,0);
+end;
 
+destructor TKeyValueList.Destroy;
+begin
+  FKeys:=nil;
+  inherited;
+end;
+
+function TKeyValueList.GetValue(const Name: string): Integer;
+var
+  i,n:integer;
+begin
+  n := Length(FKeys);
+  for i:=0 to n-1 do
+    if FKeys[i].Key = Name then begin
+      Result := FKeys[i].Value;
+      Inc(FKeys[i].Value);
+      Exit;
+    end;
+  SetLength(FKeys,n+1);
+  FKeys[n].Key := Name;
+  FKeys[n].Value := 0;
+  Result := FKeys[n].Value;
+  Inc(FKeys[n].Value);
+end;
+
+procedure TKeyValueList.SetValue(const Name: string; Value: Integer);
+var
+  i,n:integer;
+begin
+  n := Length(FKeys);
+  for i:=0 to n-1 do
+    if FKeys[i].Key = Name then begin
+      FKeys[i].Value := Value;
+      Exit;
+    end;
+  SetLength(FKeys, n+1);
+  FKeys[n].Key := Name;
+  FKeys[n].Value := Value;
+end;
 
 end.
