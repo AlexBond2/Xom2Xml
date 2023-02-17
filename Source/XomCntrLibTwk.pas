@@ -1048,11 +1048,11 @@ type
     destructor Destroy; override;
     public
     Index: integer;
-    Point: Pointer; // ссылка на точку в памяти
-    Size: Integer; // размер контейнера       
-    Update: Boolean; // обновлен
-    CTNR: Boolean; // имеет заголовок
-    Xtype: XTypes; // тип контейнера
+    Point: Pointer; // Г±Г±Г»Г«ГЄГ  Г­Г  ГІГ®Г·ГЄГі Гў ГЇГ Г¬ГїГІГЁ
+    Size: Integer; // Г°Г Г§Г¬ГҐГ° ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г        
+    Update: Boolean; // Г®ГЎГ­Г®ГўГ«ГҐГ­
+    CTNR: Boolean; // ГЁГ¬ГҐГҐГІ Г§Г ГЈГ®Г«Г®ГўГ®ГЄ
+    Xtype: XTypes; // ГІГЁГЇ ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г 
     Name: String;
     CntrArr: TContainers;
     TypeIndex: Integer;
