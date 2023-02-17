@@ -1,68 +1,3 @@
-{ unit NativeXml
-
-  This is a small-footprint implementation to read and write XML documents
-  natively from Delpi Object Pascal code. NativeXml has very fast parsing speeds.
-
-  You can use this code to read XML documents from files, streams or strings.
-  The load routine generates events that can be used to display load progress
-  on the fly.
-
-  Note #1: this unit is a completely redesigned implementation of legacy NativeXml.
-
-  Note #2: any external encoding (ANSI, UTF16, etc) is converted to an internal
-  encoding that is always UTF8. NativeXml uses Utf8String as string type internally,
-  and converts from strings with external encoding in the parsing process.
-  When writing, Utf8String strings are converted to the external encoding strings,
-  if the encoding was set beforehand, or defaults to UTF8 if no encoding was set.
-
-  Note #3: the character data is always normalized inside the document (just a $0A
-  instead of $0D$0A in Windows for end-of-lines). If EolStyle = esCRLF, the
-  data is un-normalized before it gets consumed. If you need no un-normalisation
-  (and after all it is non-optimal) you can use EolStyle = esLF (default).
-
-  Note #4: Binary XML: Since NativeXml v4.00, you can use the binary file format of
-  NativeXml, named BXM.
-  BXM has these advantages:
-  - No need to parse the plain text-based XML file.
-  - The binary format avoids repeated instances of duplicate strings and
-    thus allows a compact representation of all the XML element types.
-    Furthermore, the stringtable is sorted by frequency before storing
-    BXM to file, which compacts the format even more (smaller indices for
-    more frequent strings, so less space in the file).
-  - BXM allows options "none" (no compression), "zlib" (zlib compression,
-    aka "deflate"), and other compression schemes based on event handlers.
-    This allows for ~50% of the total conventional xml size for "none" and
-    ~15% of the size for "zlib". So a huge size reduction.
-  - In (near) future, BXM will allow other data formats besides "string",
-    e.g. data formats Date, DateTime, Base64Binary, HexBinary and Decimal.
-    This will reduce the binary size even more, esp for xml files that use
-    Base64 for binary content.
-  - My aim is to keep the BXM file format backwards compatible, so you can
-    always open BXM files based on earlier versions.
-  - BXM allows external encryption/compression thru event handlers. f.i. AES
-    encryption is handled in functions TNativeXml.AeszEncode / AeszDecode.
-
-  Author: Nils Haeck M.Sc.
-  Creation Date: 01apr2003
-  Major Rewrite: 10nov2010
-
-  Contributor(s):
-    Marius Z: devised and helped with the LINQ-like stackable NodeNewXYZ
-      functions in TNativeXml
-    Stefan Glienke: TDateTime methods use GetTimeZoneInformation
-    Hans-Dieter Karl (hdk): added additional Ansi/Wide/Int64/DateTime functions, some fixes
-
-  It is NOT allowed under ANY circumstances to publish, alter or copy this code
-  without accepting the license conditions in accompanying LICENSE.txt
-  first!
-
-  This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF
-  ANY KIND, either express or implied.
-
-  Please visit http://www.simdesign.nl/xml.html for more information.
-
-  Copyright (c) 2003 - 2011 Simdesign B.V. (www.simdesign.nl)
-}
 unit NativeXml;
 
 interface
@@ -2026,7 +1961,7 @@ var
 {$endif MSWINDOWS}
   cDefaultExternalEncoding:        TsdStringEncoding   = seUTF8;
   cDefaultFixStructuralErrors:     boolean             = False;
-  cDefaultIndentString:            Utf8String          = #$09; // tab
+  cDefaultIndentString:            Utf8String          = '  '; // tab
   cDefaultNodeClosingStyle:        TsdNodeClosingStyle = ncClose;
   cDefaultSortAttributes:          boolean             = False;
   cDefaultSplitSecondDigits:       integer             = 0;
@@ -2091,6 +2026,7 @@ function sdCharsetToStringEncoding(ACharset: Utf8String): TsdStringEncoding;
 function sdCodepageToCharset(ACodepage: integer): Utf8String;
 
 function Utf8CompareText(const S1, S2: Utf8String): integer;
+function Utf8CompareStr(const S1, S2: Utf8String): integer; // #FIX Case sensitivity
 
 // type conversions
 
@@ -2292,6 +2228,12 @@ begin
   Result := sdWideToUtf8(W);
 end;
 
+function Utf8CompareStr(const S1, S2: Utf8String): integer; // #FIX
+begin
+  // AnsiCompareStr is case-sensitive
+  Result := AnsiCompareStr(AnsiString(S1), AnsiString(S2));
+end;
+
 function TXmlNode.GetAttributeByName(const AName: Utf8String): TsdAttribute;
 var
   i: integer;
@@ -2300,7 +2242,8 @@ begin
   for i := 0 to GetAttributeCount - 1 do
   begin
     A := GetAttributes(i);
-    if Utf8CompareText(A.Name, AName) = 0 then
+    //if Utf8CompareText(A.Name, AName) = 0 then    
+    if Utf8CompareStr(A.Name, AName) = 0 then   // #FIX Case
     begin
       Result := A;
       exit;
@@ -2580,7 +2523,8 @@ var
   i: integer;
 begin
   for i := 0 to GetNodeCount - 1 do
-    if Utf8CompareText(GetNodes(i).Name, AName) = 0 then
+    if Utf8CompareStr(GetNodes(i).Name, AName) = 0 then // #FIX Case
+    //if Utf8CompareText(GetNodes(i).Name, AName) = 0 then
     begin
       Result := GetNodes(i);
       exit;
@@ -4721,6 +4665,7 @@ begin
 
   s := P.ReadStringUntilChar('<');
   CharDataString := sdRigthTrim(s);
+  if s=#$A then CharDataString := s;    // #FIX NL
   if length(CharDataString) > 0 then
   begin
     // Insert CharData node
@@ -4728,7 +4673,7 @@ begin
     {$ifdef SOURCEPOS}
     CharDataNode.FSourcePos := SourcePos;
     {$endif SOURCEPOS}
-    CharDataNode.FValueID := AddString(CharDataString);
+    CharDataNode.FValueID := AddString(s); //AddString(CharDataString);
     NodeAdd(CharDataNode);
 
     // ParseIntermediateData can be called multiple times from ParseElementList.
@@ -10134,5 +10079,3 @@ initialization
   GetXmlFormatSettings;
 
 end.
-
-
