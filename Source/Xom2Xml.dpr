@@ -14,7 +14,7 @@ uses
   
 var
   FileName, OFilename :String;
-  guid, help, schema, log, isxid, outfile: boolean;
+  guid, help, schema, log, isxid, outfile, clear: boolean;
 
 procedure ExportXML(FileName: String; schmnode : TXmlNode);
 var
@@ -40,6 +40,7 @@ begin
   //XML.ExternalEncoding := seUTF8;
 
   xomArchive := XML.Root;
+  if not clear then begin
  // Types
   xomTypes := XML.NodeNew('xomTypes');
 
@@ -50,6 +51,7 @@ begin
   end;
 
   xomArchive.NodeAdd(xomTypes);
+  end;
  // Objects
   xomObjects := XML.NodeNew('xomObjects');
 
@@ -150,9 +152,11 @@ begin
   guid:=FindCmdLineSwitch('g');
   help:=FindCmdLineSwitch('h');
   log:=FindCmdLineSwitch('l');
+  clear:=FindCmdLineSwitch('cl');
   isxid:=FindCmdLineSwitch('id');
   schema:=FindCmdLineSwitch('schm');
   outfile:=FindCmdLineSwitch('out');
+  if clear then isxid := false;
   WUM:=true;
   W3D:=false;
   schmfile:='XOMSCHM.dat';
@@ -180,8 +184,8 @@ begin
   end;
   if (Filename='') or help then begin
     // show help
-    Writeln('Xom2Xml version 1.1');
-    Writeln('Copyright 2022 AlexBond');
+    Writeln('Xom2Xml version 1.2');
+    Writeln('Copyright 2023 AlexBond');
     Writeln;
     Writeln('Usage:');
     Writeln('   Xom2Xml <filename> [options]');
@@ -197,6 +201,7 @@ begin
     Writeln('                 The default is XOMSCHM.dat scheme file');
     Writeln('   -out <file>   Sets output filename to save');
     Writeln('   -l            Logs process of reading');
+    Writeln('   -cl           Export XML in game format');
 
    // Writeln('   -g       Save GUID info from xom as xml');
     Writeln;
