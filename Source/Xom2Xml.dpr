@@ -6,9 +6,11 @@ program Xom2Xml;
 uses
   SysUtils,
   Classes,
-  XomLibTwk, XomCntrLibTwk,
+  XomLibTwk,
+  XomCntrLibTwk,
   NativeXml;
-  //,EncdDecd;
+
+//,EncdDecd;
   
 var
   FileName, OFilename :String;
@@ -178,8 +180,8 @@ begin
   end;
   if (Filename='') or help then begin
     // show help
-    Writeln('Xom2Xml version 1.0');
-    Writeln('Copyright 2021 AlexBond');
+    Writeln('Xom2Xml version 1.1');
+    Writeln('Copyright 2022 AlexBond');
     Writeln;
     Writeln('Usage:');
     Writeln('   Xom2Xml <filename> [options]');

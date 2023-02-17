@@ -3,7 +3,7 @@ unit XomLibTwk;
 interface
 
 uses IdGlobal, SysUtils, Classes,
-  Math, XomCntrLibTwk, NativeXml;
+  Math, XomCntrLibTwk, NativeXml, TntClasses;
 
 
 type TXomType = packed record
@@ -33,7 +33,7 @@ type TXomHandle = packed record
         Strs:array[0..3]of char;
         SizeStrs:Integer;
         LenStrs:Integer;
-        StringTable:TStringList;
+        StringTable:TTntStringList;
         end;
 
   TIndex = record
@@ -80,9 +80,9 @@ type
     procedure LoadFromXML(xomTypes, xomObjects, XContainer:TXmlNode);
     procedure InitXomHandle;
     procedure SaveXomHandle(var p:pointer);
-    procedure SaveStringTable(var p:Pointer;LStrings:TStringList);
-    procedure WriteXName(var Memory:TMemoryStream; Name:String);
-    function GetStr128(var p:Pointer): string;
+    procedure SaveStringTable(var p:Pointer;LStrings:TTntStringList);
+    procedure WriteXString(var Memory:TMemoryStream; XString:Utf8String);
+    function GetStr128(var p:Pointer): WideString;
     function GetIdx128(var p:Pointer):Integer;
     function GetSize128(var p:Pointer):Integer;
     function CopyType(XType:XTypes):TXomType;
@@ -110,7 +110,7 @@ const
   MODEL3DBUF = 10000;
 
   FontGL  = 2000;
-  MaxDeph = 100000.0;  // Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї ГЈГ«ГіГЎГЁГ­Г 
+  MaxDeph = 100000.0;  // максимальная глубина
 
 
   ATypePosition = $0102;
@@ -199,17 +199,19 @@ begin
 end;
 
 
-procedure TXom.WriteXName(var Memory:TMemoryStream; Name:String);
+procedure TXom.WriteXString(var Memory:TMemoryStream; XString:Utf8String);
 var
     Index,i:integer;
+    XName: WideString;
 begin
-        Index:=-1;
+    Index:=-1;
+    XName:= UTF8Decode(XString);
     for i:=0 to XomHandle.StringTable.Count-1 do
-      if XomHandle.StringTable[i]=Name then
+      if XomHandle.StringTable[i]=XName then
                 begin Index:=i; break; end;
 
     if Index=-1 then begin
-        Index:=XomHandle.StringTable.Add(Name);
+        Index:=XomHandle.StringTable.Add(XName);
     end;
     WriteXByte(Memory,Index);
 end;
@@ -229,7 +231,7 @@ begin
 result:= TestByte128(p);
 end;
 
-function TXom.GetStr128(var p:Pointer): string;
+function TXom.GetStr128(var p:Pointer): WideString;
 var
 indx: Integer;
 
@@ -247,6 +249,7 @@ end;
 procedure TXom.LoadXomFileName(FileName: string; var OutCaption: string;ShowProgress:boolean=true);
 var
   s: string;
+  ws: WideString;
   sizecount, sizeoffset, i, j, MaxInx, LenSTR : Integer;
   P, p2: Pointer;
   Xi: XTypes;
@@ -257,9 +260,9 @@ var
   NTypes: array of XTypes;
 begin
 
-// Г­Г®ГўГ»Г© ГЄГ®Г¤
+// новый код
 
-      // Г®ГІГЄГ°Г»ГўГ ГҐГ¬ ГґГ Г©Г« ГЁ Г§Г ГЈГ°ГіГ¦Г ГҐГ¬ Гў ГЇГ Г¬ГїГІГј.
+      // открываем файл и загружаем в память.
       iFileHandle := FileOpen(FileName, fmOpenRead);
       iFileLength := FileSeek(iFileHandle,0,2);
       FileSeek(iFileHandle,0,0);
@@ -270,7 +273,7 @@ begin
       FileRead(iFileHandle, Buf^, iFileLength);
       FileClose(iFileHandle);
 
-// Г®Г·ГЁГ№Г ГҐГ¬ Г±ГЇГЁГ±Г®ГЄ
+// очищаем список
 
   s := ExtractFileName(FileName);
   OutCaption := Format('%s - [%s]', [APPVER,s]);
@@ -278,26 +281,26 @@ begin
 
 //--------
       InitXomHandle;
-// Г‘Г·ГЁГІГ»ГўГ ГҐГ¬ Г¤Г Г­Г­Г»ГҐ
+// Считываем данные
       Move(Buf^,XomHandle,64);
-// Г‘Г·ГЁГІГ»ГўГ ГҐГ¬ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЄГ®Г­ГІГҐГ°Г©Г­ГҐГ°Г®Гў
+// Считываем количество контерйнеров
 //      XomHandle.NumTypes:=word(pointer(Longword(Buf)+24)^);
-// Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Г¤Г Г­Г­Г»Гµ
+// Инициализация данных
   saidx:=0;
 
-  // Г®Г·ГЁГ±ГІГЄГ  ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г®Гў
+  // очистка контейнеров
   CntrArr.Clear;
-// ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г®Гў
+// количество контейнеров
 //      XomHandle.MaxCount:=integer(pointer(Longword(Buf)+28)^);
  //     XomHandle.RootCount:=integer(pointer(Longword(Buf)+32)^);
-// Г‘Г·ГЁГІГ»ГўГ ГҐГ¬ ГЁГ­Г¤ГҐГЄГ±Г­Г»Г© ГЄГ®Г­ГІГҐГ©Г­ГҐГ°
+// Считываем индексный контейнер
       CntrArr.Count:=XomHandle.MaxCount+1;
 
       SetLength(XomHandle.TypesInfo,XomHandle.NumTypes);
       SetLength(NTypes, XomHandle.NumTypes);
 
 try
-// Г–ГЁГЄГ« ГЇГ®ГЄГ®Г©ГІГҐГ©Г­ГҐГ°Г­Г®ГЈГ® Г±Г·ГЁГІГ»ГўГ Г­ГЁГї ГЌГ Г§ГўГ Г­ГЁГ© ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г®Гў
+// Цикл покойтейнерного считывания Названий контейнеров
       for i := 0 to XomHandle.NumTypes-1 do begin
         p:=pointer(64+i*Sizeof(TXomType)+Longword(Buf));
         Move(p^,XomHandle.TypesInfo[i],Sizeof(TXomType));
@@ -312,7 +315,7 @@ try
       end;
 
       p:=pointer(Longword(Buf)+64+XomHandle.NumTypes*Sizeof(TXomType)+16);
-//Г‘Г·ГЁГІГ»ГўГ Г­ГЁГҐ Г± ГЇГ°Г®ГўГҐГ°ГЄГ®Г© Г­Г Г·Г Г«Г  ГІГ ГЎГ«ГЁГ¶Г»
+//Считывание с проверкой начала таблицы
       if Longword(p^)<>Ctnr2 then
       p:=pointer(16+4+Longword(p))else
       p:=pointer(4+Longword(p));
@@ -329,12 +332,12 @@ try
       //<table str>
       k:=Longword(p)+XomHandle.SizeStrs*4;
       XomHandle.StringTable.Add('');
-      // Г§Г ГЇГ®Г«Г­ГҐГ­ГЁГҐ ГІГ ГЎГ«ГЁГ¶Г» ГЁГ¬ГҐГ­
+      // заполнение таблицы имен
       for i:=0 to XomHandle.SizeStrs-2 do begin
         L:=longword(pointer(i*4+Longword(p)+4)^);
-        s:=Utf8Decode(Pchar(pointer(k+L)));
+        ws:=Utf8Decode(Pchar(pointer(k+L)));
        // s:=Pchar(pointer(k+L));
-        XomHandle.StringTable.Add(s); //
+        XomHandle.StringTable.Add(ws); //
       end;
       k:=XomHandle.LenStrs+XomHandle.SizeStrs*4;
       inc(Longword(p),k);
@@ -343,7 +346,7 @@ try
       //Tree adding
 
   CntrArr[0]:=TContainer.Create(0,CntrArr,p);
-  Outpoint := false; // ГўГ»Г«ГҐГІ ГЁГ§ ГЇГ Г¬ГїГІГЁ
+  Outpoint := false; // вылет из памяти
 
   for j := 0 to XomHandle.NumTypes - 1 do
   with XomHandle.TypesInfo[j] do
@@ -379,7 +382,7 @@ try
           if saidx = XomHandle.RootCount then
                 BaseCntr := CntrArr[saidx];
 
-          if (IsCtnr) then  // ГЁГ№ГҐГ¬ ГЄГ®Г­ГҐГ¶ ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г 
+          if (IsCtnr) then  // ищем конец контейнера
 
             while (Longword(Pointer(Longword(p) + sizecount)^) <> Ctnr) do
             begin
@@ -416,7 +419,7 @@ XomHandle.SCHM:='SCHM';
 XomHandle.SCHMType:=1;
 XomHandle.Strs:='STRS';
 SetLength(XomHandle.TypesInfo,0);
-XomHandle.StringTable:=TStringList.Create;
+XomHandle.StringTable:=TTntStringList.Create;
 end;
 
 function TXom.SearchType(XType: XTypes;var index:Integer): Boolean;
@@ -469,9 +472,9 @@ begin
     Result := -1;
 end;
 
-function StringListCS(List: TStringList; Index1, Index2: Integer): Integer;
+function StringListCS(List: TTntStringList; Index1, Index2: Integer): Integer;
 var
-  s1, s2: string;
+  s1, s2: WideString;
 begin
   //inc(sortcount);
   s1 := List.Strings[Index1];
@@ -494,40 +497,42 @@ Move(XomHandle.Guid,p^,11*4);
 inc(integer(p),16*3);
 end;
 
-procedure TXom.SaveStringTable(var p:Pointer;LStrings:TStringList);
+procedure TXom.SaveStringTable(var p:Pointer;LStrings:TTntStringList);
 var
   p1,p3,p4:pointer;
   i,j,len: Integer;
-  s: string;
+  ws: WideString;
   s2:Utf8String;
-  SortStrings:TStringList;
+  SortStrings:TTntStringList;
 begin
-  j := LStrings.Count-1; // Г­ГіГ«ГҐГўГ®Г© ГЁГ­Г¤ГҐГЄГ± Г§Г Г­ГїГІ
+  j := LStrings.Count-1; // нулевой индекс занят
 //  p2 := VBuf;
-  p4 := Pointer(Longword(p) + j * 4);  // Г°Г Г§Г¬ГҐГ° ГІГ ГЎГ«ГЁГ¶Г» ГЁГ­Г¤ГҐГЄГ±Г®Гў ГІГҐГЄГ±ГІГ 
+  p4 := Pointer(Longword(p) + j * 4);  // размер таблицы индексов текста
   Len := 1;
-  SortStrings:=TStringList.Create;
+  SortStrings:=TTntStringList.Create;
   LStrings.CaseSensitive:=true;
   SortStrings.Assign(LStrings);
   SortStrings.Delete(0);
   SortStrings.CustomSort(StringListCS);
+ // SortStrings.CaseSensitive := True;
+ // SortStrings.Sort;
   //Str Table
   for i := 0 to j - 1 do
   begin
-    s  := SortStrings.Strings[i];
-    Longword(Pointer((LStrings.IndexOf(s)-1) * 4 + Longword(p))^) := Longword(Len);
- //   Smallint(Pointer(i * 4 + Longword(p))^) := Smallint(Len);  // Г§Г ГЇГ®Г«Г­ГїГҐГ¬ Г¤Г«ГЁГ­Г­Г» Гў ГЁГ­Г¤ГҐГЄГ±Г»
+    ws  := SortStrings.Strings[i];
+    Longword(Pointer((LStrings.IndexOf(ws)-1) * 4 + Longword(p))^) := Longword(Len);
+ //   Smallint(Pointer(i * 4 + Longword(p))^) := Smallint(Len);  // заполняем длинны в индексы
     p3 := Pointer(Longword(p4) + Len);
-    s2:= Utf8Encode(s);
+    s2:= Utf8Encode(ws);
    // s2:=s;
     p1  := PChar(s2);
-    Move(p1^, p3^, Length(s2));// ГЄГ®ГЇГЁГ°ГіГҐГ¬ ГІГҐГЄГ±ГІ Гў ГЇГїГ¬ГїГІГј
+    Move(p1^, p3^, Length(s2));// копируем текст в пямять
     Len := Len + Length(s2) + 1;
   end;
   SortStrings.Free;
-  Longword(Pointer(Longword(p) - 12)^) := Longword(j + 1); // ГЇГЁГёГҐГ¬ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® Г±Г«Г®Гў
-  Longword(Pointer(Longword(p) - 8)^) := Longword(Len);  // Г¤Г«ГЁГ­Г­Г  Г±Г«Г®Гў
-  p := Pointer(Longword(p4) + Len); // ГЇГ°Г»ГЈГ ГҐГ¬ ГЇГ®Г±Г«ГҐ ГІГ ГЎГ«ГЁГ¶Г» Г±Г«Г®Гў
+  Longword(Pointer(Longword(p) - 12)^) := Longword(j + 1); // пишем количество слов
+  Longword(Pointer(Longword(p) - 8)^) := Longword(Len);  // длинна слов
+  p := Pointer(Longword(p4) + Len); // прыгаем после таблицы слов
 end;
 
 procedure TXom.SaveXom(Filename: String);
@@ -545,7 +550,7 @@ begin
     VirtualBufer := TMemoryStream.Create;
     n := CntrArr.Count;//Length(Containers);
 
-  VBufBegin := AllocMem(1024*1024); // ГЎГҐГ°ГҐГ¬ ГЇГ Г¬ГїГІГј Г¤Г«Гї Г±ГІГ°Г®ГЄ ГЁ ГёГ ГЇГ®ГЄ
+  VBufBegin := AllocMem(1024*1024); // берем память для строк и шапок
   VBuf := VBufBegin;
   p2:=VBuf;
 
@@ -1734,6 +1739,22 @@ begin
     Result := -1;
 end;
 
+function StrToFloatDefSafe(const aStr : Utf8String; const aDef : Extended) : Extended;
+const
+  D = ['.', ','];
+var
+  S : String;
+  i : Integer;
+begin
+  S := aStr;
+  for i := 1 to Length(S) do
+    if S[i] in D then begin
+      S[i] := DecimalSeparator;
+      Break;
+    end;
+  Result := StrToFloatDef(S, aDef);
+end;
+
 procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXmlNode);
     var
       XCont,XClass:TXmlNode;
@@ -1773,9 +1794,9 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       xb:=IfThen(StrToBool(XValue),1,0);
       Buf.Write(xb,1);
     end else if XValueType='XString' then begin
-      WriteXName(Buf,UTF8Decode(XValue));
+      WriteXString(Buf,XValue);
     end else if XValueType='XFloat' then begin
-      xf:=StrToFloat(XValue);
+      xf:=StrToFloatDefSafe(XValue,0.0);
       Buf.Write(xf,4);
     end else if XValueType='XEnum' then begin
       xui:= StrToCard(XValue);
