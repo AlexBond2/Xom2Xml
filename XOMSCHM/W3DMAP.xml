@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xomSCHM Xgame="W3D">
   <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" Xtype="XClass">
-    <XNode guid="{BF1E8B2B-025D-4EB2-B937-05575E5771D3}" Xver="0" id="XClass">
+    <XNode guid="{BF1E8B2B-025D-4EB2-B937-05575E5771D3}" Xver="0" Xtype="XClass">
       <XInteriorNode guid="{8BE307A9-B705-4753-9D80-55F01B2122F8}" Xver="0" id="XRef">
         <LandFrameStore guid="{05D6D0F7-BC9E-4BB6-AAEF-FC9477DEBFA1}" Xver="0" id="XRef">
           <Name>XString</Name>
