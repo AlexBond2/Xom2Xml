@@ -2026,7 +2026,7 @@ var
 {$endif MSWINDOWS}
   cDefaultExternalEncoding:        TsdStringEncoding   = seUTF8;
   cDefaultFixStructuralErrors:     boolean             = False;
-  cDefaultIndentString:            Utf8String          = #$09; // tab
+  cDefaultIndentString:            Utf8String          = '  '; // tab
   cDefaultNodeClosingStyle:        TsdNodeClosingStyle = ncClose;
   cDefaultSortAttributes:          boolean             = False;
   cDefaultSplitSecondDigits:       integer             = 0;
@@ -2091,6 +2091,7 @@ function sdCharsetToStringEncoding(ACharset: Utf8String): TsdStringEncoding;
 function sdCodepageToCharset(ACodepage: integer): Utf8String;
 
 function Utf8CompareText(const S1, S2: Utf8String): integer;
+function Utf8CompareStr(const S1, S2: Utf8String): integer; // #FIX Case sensitivity
 
 // type conversions
 
@@ -2292,6 +2293,12 @@ begin
   Result := sdWideToUtf8(W);
 end;
 
+function Utf8CompareStr(const S1, S2: Utf8String): integer; // #FIX
+begin
+  // AnsiCompareStr is case-sensitive
+  Result := AnsiCompareStr(AnsiString(S1), AnsiString(S2));
+end;
+
 function TXmlNode.GetAttributeByName(const AName: Utf8String): TsdAttribute;
 var
   i: integer;
@@ -2300,7 +2307,8 @@ begin
   for i := 0 to GetAttributeCount - 1 do
   begin
     A := GetAttributes(i);
-    if Utf8CompareText(A.Name, AName) = 0 then
+    //if Utf8CompareText(A.Name, AName) = 0 then    
+    if Utf8CompareStr(A.Name, AName) = 0 then   // #FIX Case
     begin
       Result := A;
       exit;
@@ -2580,7 +2588,8 @@ var
   i: integer;
 begin
   for i := 0 to GetNodeCount - 1 do
-    if Utf8CompareText(GetNodes(i).Name, AName) = 0 then
+    if Utf8CompareStr(GetNodes(i).Name, AName) = 0 then // #FIX Case
+    //if Utf8CompareText(GetNodes(i).Name, AName) = 0 then
     begin
       Result := GetNodes(i);
       exit;
@@ -4721,6 +4730,7 @@ begin
 
   s := P.ReadStringUntilChar('<');
   CharDataString := sdRigthTrim(s);
+  if s=#$A then CharDataString := s;    // #FIX NL
   if length(CharDataString) > 0 then
   begin
     // Insert CharData node
@@ -4728,7 +4738,7 @@ begin
     {$ifdef SOURCEPOS}
     CharDataNode.FSourcePos := SourcePos;
     {$endif SOURCEPOS}
-    CharDataNode.FValueID := AddString(CharDataString);
+    CharDataNode.FValueID := AddString(s); //AddString(CharDataString);
     NodeAdd(CharDataNode);
 
     // ParseIntermediateData can be called multiple times from ParseElementList.
