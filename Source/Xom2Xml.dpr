@@ -11,10 +11,10 @@ uses
   NativeXml;
 
 //,EncdDecd;
-  
+
 var
   FileName, OFilename :String;
-  guid, help, schema, log, isxid, outfile, clear: boolean;
+  guid, help, schema, log, isxid, outfile, clear, xomfile: boolean;
 
 procedure ExportXML(FileName: String; schmnode : TXmlNode);
 var
@@ -156,6 +156,7 @@ begin
   isxid:=FindCmdLineSwitch('id');
   schema:=FindCmdLineSwitch('schm');
   outfile:=FindCmdLineSwitch('out');
+  xomfile:=FindCmdLineSwitch('xom');
   if clear then isxid := false;
   WUM:=true;
   W3D:=false;
@@ -164,15 +165,23 @@ begin
   for i:=1 to ParamCount do
   begin
      param:= ParamStr(i);
-     if (param[1]<>'-') then begin filename:= param; break; end;
+     if (param[1]<>'-') then begin FileName:= param; break; end;
   end;
-  OFilename:=filename;
+  OFilename:=FileName;
   if schema then
  for i:=1 to ParamCount do
   begin
      param:= ParamStr(i);
      if (param='-schm') and (i<ParamCount) then
         begin schmfile:= ParamStr(i+1); break; end;
+  end;
+
+  if xomfile then
+ for i:=1 to ParamCount do
+  begin
+     param:= ParamStr(i);
+     if (param='-xom') and (i<ParamCount) then
+        begin FileName:= ParamStr(i+1); break; end;
   end;
 
   if outfile then
@@ -200,6 +209,7 @@ begin
     Writeln('   -schm <file>  Sets a custom scheme file.');
     Writeln('                 The default is XOMSCHM.dat scheme file');
     Writeln('   -out <file>   Sets output filename to save');
+    Writeln('   -xom <file>   Sets input filename as xom');
     Writeln('   -l            Logs process of reading');
     Writeln('   -cl           Export XML in game format');
 
@@ -234,7 +244,7 @@ begin
      end;
   end;
 
-    if LowerCase(ExtractFileExt(FileName)) = '.xom' then
+    if xomfile or (LowerCase(ExtractFileExt(FileName)) = '.xom') then
   begin
     // convert xom to xml
     if guid then
