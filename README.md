@@ -16,6 +16,7 @@ Options:
    -schm <file>  Sets a custom scheme file.
                  The default is XOMSCHM.dat scheme file
    -out <file>   Sets output filename to save
+   -xom <file>   Sets input filename as xom
    -l            Logs process of reading
    -cl           Export XML in game format   
 
@@ -45,6 +46,7 @@ Options:
    -id          Экспортирует Xid индекс в XML для сохранения оригинального порядка контейнеров
    -schm <file> Установить пользовательский файл структуры. По умолчанию используется XOMSCHM.dat
    -out <file>  Установить выходное имя файла
+   -xom <file>  Установить входное имя файла
    -l           Вывести лог процесса чтения
    -cl          Экспортирует XML в игровом формате
 ```
