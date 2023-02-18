@@ -50,6 +50,7 @@ Options:
 ```
 ## Пример для карт
 
+**Worms 3D**
 ```
 xom2xml kong.xom -schm W3DMAP.xml -out kong.xml
 Xgame = W3D
@@ -59,10 +60,23 @@ xom2xml kong.xml -schm W3DMAP.xml -out kong_new.xom
 Xgame = W3D
 ... conversion kong.xml >> kong_new.xom done.
 ```
+
+**Worms 4: Mayhem / Worms Ultimate Mayhem**  
+(структура \*.xan файлов не отличается от W3D версии и тут подходит схема W3DMAP.xml)
+```
+xom2xml -xom Multi_TyrannoSawUs.xan -schm W3DMAP.xml -out Multi_TyrannoSawUs.xml
+Xgame = W3D
+... conversion Multi_TyrannoSawUs.xan >> Multi_TyrannoSawUs.xml done.
+
+xom2xml Multi_TyrannoSawUs.xml -schm W3DMAP.xml -out Tyranno.xan
+Xgame = W3D
+... conversion Multi_TyrannoSawUs.xml >> Tyranno.xan done.
+```
+
 ## Обновление
 
 Обновление в версии 1.2.1.2:
- - добавлена поддержка карт из игры **Worms 3D** и создана кастомная схема
+ - добавлена поддержка карт из игры **Worms 3D**, **Worms 4: Mayhem / Worms Ultimate Mayhem** и создана кастомная схема
 
 Обновление в версии 1.2.0.2:
  - добавлена поддержка xom файлов для игры **Worms 3D**
