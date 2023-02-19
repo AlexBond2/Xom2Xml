@@ -37,6 +37,51 @@
       <StringTableResources href="XContainerResourceDetails" Xtype="XCollection" />
       <ColorResources href="XColorResourceDetails" Xtype="XCollection" />
     </XDataBank>
+    <XNode guid="{BF1E8B2B-025D-4EB2-B937-05575E5771D3}" Xver="0" Xtype="XClass">
+      <XInteriorNode guid="{8BE307A9-B705-4753-9D80-55F01B2122F8}" Xver="0" id="XRef">
+        <LandFrameStore guid="{05D6D0F7-BC9E-4BB6-AAEF-FC9477DEBFA1}" Xver="0" id="XRef">
+          <Name>XString</Name>
+          <Position x="XFloat" y="XFloat" z="XFloat" />
+          <Orientation x="XFloat" y="XFloat" z="XFloat" />
+          <Scale x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexXVec x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexYVec x="XFloat" y="XFloat" z="XFloat" />
+          <WallTexXVec x="XFloat" y="XFloat" z="XFloat" />
+          <WallTexYVec x="XFloat" y="XFloat" z="XFloat" />
+          <FloorTexOffset x="XFloat" y="XFloat" />
+          <WallTexOffset x="XFloat" y="XFloat" />
+          <CentreOffset x="XFloat" y="XFloat" z="XFloat" />
+          <EdgeOffset1 Xtype="XCollection" Xpack="true">XVector2f</EdgeOffset1>
+          <EdgeOffset2 Xtype="XCollection" Xpack="true">XVector2f</EdgeOffset2>
+          <XSize>XUInt8</XSize>
+          <YSize>XUInt8</YSize>
+          <ZSize>XUInt8</ZSize>
+          <HeightMap Xtype="XCollection" Xpack="true">XFloat</HeightMap>
+          <EdgeCrinkle>XBool</EdgeCrinkle>
+          <EdgeFalloff>XBool</EdgeFalloff>
+          <PeturbCliffs>XFloat</PeturbCliffs>
+          <Visible>XBool</Visible>
+          <SmoothShading>XBool</SmoothShading>
+          <Tint r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+          <Voxels Xtype="XCollection" Xpack="true">XUIntHex</Voxels>
+          <Details href="DetailEntityStore" Xtype="XCollection" />
+        </LandFrameStore>
+        <Children href="XContainer" Xtype="XCollection" />
+      </XInteriorNode>
+      <DetailEntityStore guid="{7522BAA6-3384-42B0-9000-990BD92940BB}" Xver="0" id="XRef">
+        <Name>XString</Name>
+        <ResourceName>XString</ResourceName>
+        <Position x="XFloat" y="XFloat" z="XFloat" />
+        <Orientation x="XFloat" y="XFloat" z="XFloat" />
+        <VoxelPos x="XFloat" y="XFloat" z="XFloat" />
+        <Scale x="XFloat" y="XFloat" z="XFloat" />
+      </DetailEntityStore>
+      <Bounds x="XFloat" y="XFloat" z="XFloat" Radius="XFloat" />
+      <!-- Bounding volume for this node (including children) -->
+      <BoundMode>XEnum</BoundMode>
+      <!-- Bounding volume update mode -->
+      <Name>XString</Name>
+    </XNode>
     <IntegerArray guid="{8988E3A1-397F-4016-8748-B02D6A6108B1}" Xver="0" id="XRef">
       <Integers Xtype="XCollection">XUInt</Integers>
     </IntegerArray>
@@ -676,6 +721,19 @@
       <AddToWormInventory>XInt</AddToWormInventory>
       <CustomGraphic>XString</CustomGraphic>
     </CrateDataContainer>
+    <TriggerDataContainer guid="{E5DD74B7-7788-4F23-B7D8-D476E80B042E}" Xver="0" id="XRef">
+      <Spawn>XString</Spawn>
+      <Radius>XFloat</Radius>
+      <Index>XInt</Index>
+      <TeamCollect>XInt</TeamCollect>
+      <TeamDestroy>XInt</TeamDestroy>
+      <HitPoints>XInt</HitPoints>
+      <SheepCollect>XInt</SheepCollect>
+      <PayloadCollect>XInt</PayloadCollect>
+      <GirderCollect>XInt</GirderCollect>
+      <WormCollect>XInt</WormCollect>
+      <AffectsAI>XInt</AffectsAI>
+    </TriggerDataContainer>
     <FlagDataContainer guid="{E773A429-E48A-4BA4-8671-FF87A3B25802}" Xver="0" id="XRef">
       <TextResource>XString</TextResource>
       <TargaName>XString</TargaName>
@@ -2046,14 +2104,154 @@
         <DrawDebugDots>XBool</DrawDebugDots>
         <!-- Does this camera leave a trail of dots in the editor? -->
       </EFMV_PathCameraEventContainer>
+      <EFMV_TimedPathCameraEventContainer guid="{B46E6F19-5687-421A-8BCB-935C642D98AF}" Xver="0" id="XRef">
+        <PositionKnotList>XString</PositionKnotList>
+        <!-- Comma separarted list of points camera will move through (detail object names) -->
+        <LookAtKnotList>XString</LookAtKnotList>
+        <!-- Comma separated list of points you want to look at (detail object names) -->
+        <LoopPosition>XBool</LoopPosition>
+        <!-- Does the camera move in a loop? -->
+        <LoopLookAt>XBool</LoopLookAt>
+        <!-- Does the camera loop through its look at points? -->
+        <PositionSteps>XString</PositionSteps>
+        <!-- How many steps to make between two points (less=faster) -->
+        <LookAtSteps>XString</LookAtSteps>
+        <!-- How many steps to make between two look at points (less=faster) -->
+        <PositionTension>XFloat</PositionTension>
+        <!-- How tight is the position curve? -->
+        <LookAtTension>XFloat</LookAtTension>
+        <!-- How tight is the look at curve? -->
+        <DrawDebugDots>XBool</DrawDebugDots>
+        <!-- Does this camera leave a trail of dots in the editor? -->
+      </EFMV_TimedPathCameraEventContainer>
+      <EFMV_CutCameraEventContainer guid="{497B42CF-BF60-4BDF-98D2-0873DCEDDC8E}" Xver="0" id="XRef">
+        <Position>XString</Position>
+        <!-- Where to place the camera (detail object name) -->
+        <LookAt>XString</LookAt>
+        <!-- What to look at (detail object name) -->
+      </EFMV_CutCameraEventContainer>
+      <EFMV_ShakeCameraEventContainer guid="{7AED9F3F-F580-41A0-933E-09F47C1EB877}" Xver="0" id="XRef">
+        <Duration>XUInt</Duration>
+        <!-- How long to shake for -->
+        <Magnitude>XFloat</Magnitude>
+        <!-- How strong is the shake? -->
+      </EFMV_ShakeCameraEventContainer>
+      <EFMV_CreateEmitterEventContainer guid="{D21E2BEA-FE01-4BE3-8882-38A70E5AB4CE}" Xver="0" id="XRef">
+        <EmitterName>XString</EmitterName>
+        <!-- The name of the particle emmitter -->
+        <Location>XString</Location>
+        <!-- Where you want to place the effect (detail object name) -->
+        <Locator>XString</Locator>
+        <!-- Name of locator on detail object to attach to (leave blank otherwise) -->
+        <UserId>XUInt</UserId>
+        <!-- The uniqiue identifier for this effect (set by system) -->
+      </EFMV_CreateEmitterEventContainer>
+      <EFMV_DeleteEmitterEventContainer guid="{C325AFC1-4C04-42FA-BBA4-02EB38EE61A0}" Xver="0" id="XRef">
+        <UserId>XUInt</UserId>
+        <!-- What was the identifier used in the CreateEvent? -->
+      </EFMV_DeleteEmitterEventContainer>
       <EFMV_CommentEventContainer guid="{C2C2BE5A-928B-49DB-A506-0450CEB68691}" Xver="0" id="XRef">
         <Comment>XString</Comment>
         <!-- What is the ID of the comment? -->
         <Duration>XUInt</Duration>
         <!-- How long should it be displayed for? -->
       </EFMV_CommentEventContainer>
+      <EFMV_FailureCommentEventContainer guid="{1E387EB2-8B18-48DB-8F74-4CF9C0BF86F3}" Xver="0" id="XRef">
+        <Duration>XUInt</Duration>
+        <!-- How long should it be displayed for? -->
+      </EFMV_FailureCommentEventContainer>
+      <EFMV_CreateExplosionEventContainer guid="{7D653C39-2C7D-4A37-ABCC-8A61E2BC2F1E}" Xver="0" id="XRef">
+        <Location>XString</Location>
+        <!-- The location of the explosion (detail object name) -->
+        <WormDamageMagnitude>XFloat</WormDamageMagnitude>
+        <!-- The amount of damage a worm will take -->
+        <ImpulseMagnitude>XFloat</ImpulseMagnitude>
+        <!-- The push force of the explosion -->
+        <WormDamageRadius>XFloat</WormDamageRadius>
+        <!-- The safe distance from worm damage -->
+        <LandDamageRadius>XFloat</LandDamageRadius>
+        <!-- The size of land which will be destroyed -->
+        <ImpulseRadius>XFloat</ImpulseRadius>
+        <!-- The safe distance from the push force -->
+        <ParticleEffect>XString</ParticleEffect>
+        <!-- An alternative particle effect (leave blank for default) -->
+        <ImpulseOffset>XFloat</ImpulseOffset>
+        <!-- How far below the actual explosion do we treat as the centre of the impulse -->
+      </EFMV_CreateExplosionEventContainer>
+      <EFMV_SpawnWormEventContainer guid="{FC12F4B6-98EB-4ECA-A971-13E031B21C75}" Xver="0" id="XRef">
+        <WormId>XUInt</WormId>
+        <!-- The number of the worm (from 0) -->
+        <DataId>XString</DataId>
+        <!-- The Id of the worms details in the databank -->
+      </EFMV_SpawnWormEventContainer>
+      <EFMV_UnspawnWormEventContainer guid="{F5C93E45-A6BA-4593-B6A2-480AF002EB0B}" Xver="0" id="XRef">
+        <WormId>XUInt</WormId>
+        <!-- The number of the worm (from 0) -->
+      </EFMV_UnspawnWormEventContainer>
+      <EFMV_RaiseWaterEventContainer guid="{DA1ACD4D-D2A9-428B-BAEA-8FEAEC9D3B04}" Xver="0" id="XRef">
+        <Delta>XInt</Delta>
+        <!-- How much to raise the water by -->
+      </EFMV_RaiseWaterEventContainer>
+      <EFMV_TriggerSoundEffectEventContainer guid="{14C97073-7C33-4B32-B67F-FADE8EB6E13C}" Xver="2" id="XRef">
+        <EffectName>XString</EffectName>
+        <!-- The ID of the sound effect -->
+        <Location>XString</Location>
+        <!-- Where the sound effect should come from (detail object name) -->
+        <Looping>XBool</Looping>
+        <!-- Stop looping sound at the end of the movie -->
+        <Duration>XUInt</Duration>
+        <!--  -->
+      </EFMV_TriggerSoundEffectEventContainer>
+      <EFMV_CreateBriefingBoxEventContainer guid="{08F27B68-4716-44A4-8922-C6B12EE51536}" Xver="0" id="XRef">
+        <MessageId Xtype="XCollection">XString</MessageId>
+        <!-- A list of the message IDs to display -->
+      </EFMV_CreateBriefingBoxEventContainer>
+      <EFMV_StopEventContainer guid="{581ABBE3-26ED-40D3-8E14-C3F2278FDC2F}" Xver="0" id="XRef" />
+      <EFMV_SelectWormEventContainer guid="{53923686-5B42-4344-BCEA-47C5ECCA251E}" Xver="0" id="XRef">
+        <WormId>XUInt</WormId>
+        <!-- The worm who will respond to the controller -->
+      </EFMV_SelectWormEventContainer>
+      <EFMV_SelectWeaponEventContainer guid="{FB687292-E5F5-474E-A909-A08E2270F84C}" Xver="0" id="XRef">
+        <WeaponId>XUInt</WeaponId>
+        <!-- The Id of the weapon the current worm will select -->
+      </EFMV_SelectWeaponEventContainer>
       <EFMV_CreateBordersEventContainer guid="{7F4F778F-AA06-4352-986A-336ECD158C4E}" Xver="0" id="XRef" />
       <EFMV_DeleteBordersEventContainer guid="{C3C0225F-D46F-4D67-8E92-3689A5788E9E}" Xver="0" id="XRef" />
+      <EFMV_CreateCustomHudGraphicEventContainer guid="{A1A7B9AC-BC14-4AAD-B14F-B284F7151FFB}" Xver="0" id="XRef">
+        <X>XFloat</X>
+        <!-- The X coordinate centre -->
+        <Y>XFloat</Y>
+        <!-- The Y coordinate centre -->
+        <GraphicName>XString</GraphicName>
+        <!-- The name of the graphic resource -->
+      </EFMV_CreateCustomHudGraphicEventContainer>
+      <EFMV_AnimateCustomHudGraphicEventContainer guid="{4C6A47EC-630C-4D34-BBBD-EAA48C45B164}" Xver="0" id="XRef">
+        <AnimName>XString</AnimName>
+        <!-- The name of the animation -->
+        <Loop>XBool</Loop>
+        <!-- Do you want the animation to loop? -->
+        <QueueAtEnd>XBool</QueueAtEnd>
+        <!-- Do you want to queue the anim or stop all the others first -->
+      </EFMV_AnimateCustomHudGraphicEventContainer>
+      <EFMV_AnimateDetailEventContainer guid="{AA91E300-D4A7-43B2-8C66-EB5114FB8DAB}" Xver="0" id="XRef">
+        <FourCC>XString</FourCC>
+        <!-- FourCC of the detail object(s) -->
+        <AnimName>XString</AnimName>
+        <!-- The name of the animation -->
+      </EFMV_AnimateDetailEventContainer>
+      <EFMV_DeleteCustomHudGraphicEventContainer guid="{E6784F28-66A9-47D9-8F3B-8044DEA56605}" Xver="0" id="XRef" />
+      <EFMV_DeleteLandframeEventContainer guid="{096BB929-D39F-43E2-B33A-FA43ABAB0D98}" Xver="0" id="XRef">
+        <Code>XString</Code>
+        <!-- The codename of the landframe -->
+      </EFMV_DeleteLandframeEventContainer>
+      <EFMV_CreateWXBriefingBoxEventContainer guid="{AEF7B58B-4353-4881-88EF-25FB2C279F02}" Xver="0" id="XRef">
+        <Type>XString</Type>
+        <!-- The type of box: WXFEP.InGameBriefTop, WXFEP.InGameBriefMiddle, WXFEP.InGameBriefBottom -->
+        <TextId>XString</TextId>
+        <!-- The Id of the text message to be displayed -->
+        <Image>XString</Image>
+        <!-- The Id of the image to be displayed, add :n to select frame n -->
+      </EFMV_CreateWXBriefingBoxEventContainer>
       <Tag>XString</Tag>
       <!-- Your name for this event -->
       <Time>XUInt</Time>
