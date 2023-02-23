@@ -79,6 +79,7 @@ type
     BuildingGlobalContainer,
     BuildingSpecificContainer,
     CachedLeaderBoardWrite,
+    CameraControlContainer,
     Campaign,
     CampaignCollective,
     CampaignData,
@@ -149,6 +150,7 @@ type
     GunWeaponPropertiesContainer,
     HighScoreData,
     HomingPayloadWeaponPropertiesContainer,
+    HumanControlContainer,
     InputDetailsContainer,
     InputEventMappingContainer,
     InputMappingDetails,
@@ -281,6 +283,7 @@ type
     WeaponInventory,
     WeaponSettingsData,
     WormCareerStats,
+    WormControlContainer,
     WormDataContainer,
     WormPotContainer,
     WormPotControlDesc,
@@ -457,6 +460,7 @@ const
     'BuildingGlobalContainer',
     'BuildingSpecificContainer',
     'CachedLeaderBoardWrite',
+    'CameraControlContainer',
     'Campaign',
     'CampaignCollective',
     'CampaignData',
@@ -527,6 +531,7 @@ const
     'GunWeaponPropertiesContainer',
     'HighScoreData',
     'HomingPayloadWeaponPropertiesContainer',
+    'HumanControlContainer',
     'InputDetailsContainer',
     'InputEventMappingContainer',
     'InputMappingDetails',
@@ -659,6 +664,7 @@ const
     'WeaponInventory',
     'WeaponSettingsData',
     'WormCareerStats',
+    'WormControlContainer',
     'WormDataContainer',
     'WormPotContainer',
     'WormPotControlDesc',
@@ -1060,6 +1066,7 @@ type
     Size: Integer; // размер контейнера       
     Update: Boolean; // обновлен
     CTNR: Boolean; // имеет заголовок
+    Zver: Integer; // числов в начале контейнера
     Xtype: XTypes; // тип контейнера
     Name: String;
     CntrArr: TContainers;
@@ -1219,7 +1226,10 @@ end;
 
 function TContainer.GetPoint:Pointer;
 begin
-  Result := Pointer(Longword(Point) + 3);
+  if CTNR then
+    Result := Pointer(Longword(Point) + 3)
+  else
+    Result := Point;
 end;
 
 function TContainer.Copy(Cntrs:TContainers=nil):TContainer;
