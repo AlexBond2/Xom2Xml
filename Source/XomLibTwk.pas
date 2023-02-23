@@ -69,7 +69,7 @@ type
 
     procedure SaveXom(FileName: String);
   //  function BuildTree( XCntr: TContainer; Tree: TTreeView; Node: TTreeNode): XTypes;
-    function ReadXContainer(p:pointer;NType:XTypes; var Name:String; var IsCtnr:Boolean):Pointer;
+    function ReadXContainer(p:pointer;NType:XTypes; var Name:String; var IsCtnr:Boolean; Schema: Integer):Pointer;
 //    function AddXMLNode(XCntr: TContainer; XML: TNativeXml; TreeNode: TXmlNode): TXmlNode;
     procedure AddXTypeXML( XContainer,xomObjects:TXmlNode);
     procedure LoadXTypeXML( XContainer,xomTypes:TXmlNode);
@@ -380,7 +380,7 @@ try
 
           sizecount := sizeoffset;
 
-          p2:=ReadXContainer(p,NTypes[j],s,IsCtnr);
+          p2:=ReadXContainer(p,NTypes[j],s,IsCtnr,XomHandle.TypesInfo[j].btype);
 
           if not IsCtnr then
             sizecount := Longword(p2) - Longword(p);
@@ -590,7 +590,7 @@ begin
   Result := (milisec div 60000) + ((milisec mod 60000) div 1000) / 100;
 end;
 
-Function TXom.ReadXContainer(p:pointer;NType:XTypes;var Name:String; var IsCtnr:Boolean):pointer;
+Function TXom.ReadXContainer(p:pointer;NType:XTypes;var Name:String; var IsCtnr:Boolean; Schema: Integer):pointer;
 var
 p2:Pointer;
 k,s,x,x1,x2,k3,k2,inx, inx1,inx2:integer;
@@ -613,7 +613,7 @@ begin
               begin
                 Inc(Longword(p2), 16);
                 k3 := TestByte128(p2);
-                s := TestByte128(p2);
+                k3 := TestByte128(p2);
               end;
               IsCtnr := false;
             end;
@@ -812,7 +812,7 @@ begin
                 k3 := TestByte128(p2);
               px := Longword(p2);
               p2 := Pointer(Longword(p2) + 4 * 5);
-              s := TestByte128(p2);
+              Name := GetStr128(p2);
             end;
             XChildSelector:
             begin
@@ -924,15 +924,20 @@ begin
             end;
             XShape:
             begin
-              Inc(Longword(p2), 3);
-              k3 := TestByte128(p2);
-              k3 := TestByte128(p2);
-              if not WB then
-              Inc(Longword(p2), 5);
-              if WUM then Inc(Longword(p2), 2);
-              px := Longword(p2);
-              p2 := Pointer(Longword(p2) + 4 * 5);
-              s := TestByte128(p2);
+              Inc(Longword(p2), 3); //Flags
+              k3 := TestByte128(p2); // Shader
+              k3 := TestByte128(p2);  // Geometry
+              if WUM or W4 then begin
+                Inc(Longword(p2), 4); // SortKey
+                if Schema = 3 then k3 := TestByte128(p2) else  // Parameters
+                if Schema = 4 then begin
+                  k3 := TestByte128(p2);  // PreRenderFunc
+                  k3 := TestByte128(p2);  // PostRenderFunc
+                end;
+              end;
+              //px := Longword(p2);
+              p2 := Pointer(Longword(p2) + 4 * 5);  // Bounds BoundMode
+              Name := GetStr128(p2);    // Name
             end;
             XBuildingShape:
             begin
@@ -993,14 +998,15 @@ begin
             end;
             XSimpleShader:
             begin
-              for x := 1 to k do
+              for x := 1 to k do    // TextureStages
                 k3 := TestByte128(p2);
-              k := TestByte128(p2);
-              for x := 1 to k do
+              k := TestByte128(p2);  
+              for x := 1 to k do    // Attributes
                 k3 := TestByte128(p2);
-              Inc(Longword(p2), 4);
-              s := TestByte128(p2);
-              if WUM then  Inc(Longword(p2));
+              Inc(Longword(p2), 4); // Flags
+              Name := GetStr128(p2); // Name
+
+              if WUM and (Schema = 2) then  Inc(Longword(p2)); // FragmentShader  Schema	2
               IsCtnr := false;
             end;
             XTexFont:
@@ -1234,9 +1240,14 @@ begin
             XCollisionGeometry:
             begin
               p2 := Pointer(Longword(p) + 4 + 7 + 8);
-              s := TestByte128(p2);
+              k3 := TestByte128(p2);
+              p2 := Pointer(Longword(p2) + 2 * k3);
+              k3 := TestByte128(p2);
+              p2 := Pointer(Longword(p2) + 4 * k3);
+              p2 := Pointer(Longword(p2) + 4 * 5);  // Bounds BoundMode
+              Name := GetStr128(p2);    // Name
             end;
-            XDataBank: 
+            XDataBank:
             begin
             end;
             XExpandedAnimInfo:
@@ -1384,7 +1395,7 @@ begin
               p2 := Pointer(Longword(p) + 12);
               IsCtnr := false;
             end;
-            XDetailObjectsData: 
+            XDetailObjectsData:
             begin
               p2 := Pointer(Longword(p) + 7);
               k := TestByte128(p2);
@@ -1414,11 +1425,14 @@ end;
 // XML part
 
 const
-  NTYPES = 12;
+  VTYPES = 17;
 
-  XCheckedValues : array [0..NTYPES] of String = ('XInt','XUInt','XInt8','XUInt8',
-    'XInt16','XUInt16','XString','XFloat','XBool','XString','XEnum',
-    'XVector2f','XUIntHex');
+  XCheckedValues : array [0..VTYPES] of String = (
+    'XInt','XUInt','XInt8','XUInt8',
+    'XInt16','XUInt16','XString',
+    'XFloat','XBool','XEnum','XColor4ub',
+    'XVector2f','XVector3f','XVector4f',
+    'XUIntHex', 'XGUID','XMatrix34','XBoundBox');
 var
 XGlobid:Integer=0;
 
@@ -1433,12 +1447,19 @@ var
   var n:integer;
   begin
     Result:=true;
-    for n:=0 to NTYPES do
+    for n:=0 to VTYPES do
       if XValue = XCheckedValues[n] then exit;
     Result:=false;
   end;
 
+  function XReadFloat:UTF8String;
+  begin
+    Result:=FloatToStrF(Single(p2^),ffGeneral,7,7);
+    Inc(Longword(p2), 4);
+  end;
+
   function XReadValue(XValue:String):UTF8String;
+  var n:integer;
   begin
    try
     if XValue='XInt' then begin
@@ -1447,7 +1468,8 @@ var
     end else if XValue='XUInt' then begin
       Result:=Format('%d', [Cardinal(p2^)]);
       Inc(Longword(p2), 4);
-    end else if XValue='XUIntHex' then begin
+    end else if (XValue='XColor4ub') or
+      (XValue='XUIntHex') then begin
       Result:=IntToHex(Cardinal(p2^), 8);
       Inc(Longword(p2), 4);
     end else if XValue='XBool' then begin
@@ -1456,13 +1478,23 @@ var
     end else if XValue='XString' then begin
       Result:=Utf8Encode(GetStr128(p2));
     end else if XValue='XFloat' then begin
-      Result:=FloatToStrF(Single(p2^),ffGeneral,7,7);
-      Inc(Longword(p2), 4);
+      Result:=XReadFloat;
     end else if XValue='XVector2f' then begin
-      Result:=FloatToStrF(Single(p2^),ffGeneral,7,7);
-      Inc(Longword(p2), 4);
-      Result:=Result + ' ' + FloatToStrF(Single(p2^),ffGeneral,7,7);
-      Inc(Longword(p2), 4);
+      Result:=XReadFloat + ' ' + XReadFloat;
+    end else if XValue='XVector3f' then begin
+      Result:=XReadFloat + ' ' + XReadFloat + ' ' + XReadFloat;
+    end else if XValue='XVector4f' then begin
+      Result:=XReadFloat + ' ' + XReadFloat + ' ' + XReadFloat + ' ' + XReadFloat;
+    end else if XValue='XMatrix34' then begin
+      Result:='';
+      for n:=1 to 11 do
+        Result:=Result+XReadFloat + ' ';
+      Result:=Result+XReadFloat;
+    end else if XValue='XBoundBox' then begin
+      Result:='';
+      for n:=1 to 5 do
+        Result:=Result+XReadFloat + ' ';
+      Result:=Result+XReadFloat;
     end else if XValue='XEnum' then begin
       Result:=Format('%d', [Cardinal(p2^)]);
       Inc(Longword(p2), 4);
@@ -1478,11 +1510,16 @@ var
     end else if XValue='XUInt16' then begin
       Result:=Format('%d', [Word(p2^)]);
       Inc(Longword(p2), 2);
+    end else if XValue='XGUID' then begin
+      Result:=GUIDToString(TGUID(p2^));
+      Inc(Longword(p2), 16);
     end;
     if Longword(p2)>Longword(XCntr.Point)+XCntr.Size then begin
        WriteLn(Format('Error: Out of container when read %s of XContainer[%d]: %s',[XValue, XCntr.Index, PCharXTypes[XCntr.Xtype]]));
        Halt;
-    end;
+    end;// else
+   // WriteLn(Format('readed %s = %s of XContainer[%d]: %s',[XValue,Result, XCntr.Index, PCharXTypes[XCntr.Xtype]]));
+
   Except
       on E : Exception do   begin
        WriteLn(Format('Error: Try read %s of XContainer[%d]: %s',[XValue, XCntr.Index, PCharXTypes[XCntr.Xtype]]));
@@ -1546,7 +1583,9 @@ var
             end else
             if XSNode.Attributes[i].Name = 'href' then begin
                // XContainer
-               XValue:=AddXMLNode(XCntr.CntrArr[GetIdx128(p2)], XContainer, XName, XML, xomObjects); // GetNameID
+               n:=GetIdx128(p2);
+               if n=0 then Continue;
+               XValue:=AddXMLNode(XCntr.CntrArr[n], XContainer, XName, XML, xomObjects); // GetNameID
                XNode.AttributeAdd('href',XValue);
             end else begin
               XValueType:=XSNode.Attributes[i].Value;
@@ -1569,7 +1608,13 @@ var
       begin
         AddProp(XSNode);
       end else begin
-       if XSNode.AttributeValueByName['guid']<>'' then exit;
+       if XSNode.HasAttribute('guid') then exit;
+       if XSNode.HasAttribute('Xver') and
+          SearchType(XCntr.Xtype,n) then begin
+           n:=XomHandle.TypesInfo[n].btype;
+           if n <> StrToIntDef(XSNode.AttributeValueByName['Xver'],0) then
+            exit;
+       end;
        XValueType:=XSNode.AttributeValueByName['Xtype'];
        if XValueType='XCollection' then begin
           Xpack:=XSNode.AttributeValueByName['Xpack'];
@@ -1591,6 +1636,7 @@ var
   procedure ReadParentProp(XParent:TXmlNode);
   var i:integer ;
   begin
+  if XParent.Name='xomSCHM' then exit;
   For i:=0 to XParent.ElementCount-1 do
     ReadAndAddProp(XParent.Elements[i]);
   // check prop parrents
@@ -1615,7 +1661,11 @@ begin
    XGlobid:=0;
   end else begin
     if (SXCont.Name='LandFrameStore') or
-      (SXCont.Name='DetailEntityStore') then
+     // (SXCont.Name='XGraphSet') or
+      (SXCont.Name='XGroup') or
+      (SXCont.Name='XShape') or
+      (SXCont.Name='XSimpleShader') or
+      (SXCont.Name='XCollisionGeometry') then
       begin
         XName:=XCntr.Name;
         if XName='' then XName:='id';
@@ -1634,6 +1684,8 @@ begin
   if (Longword(p2)-Longword(XCntr.Point))<>XCntr.Size then
       Writeln(Format('Error: %s Size: %d <> %d',[XType,Longword(p2)-Longword(XCntr.Point),XCntr.Size]));
   if IsXid then XCont.AttributeAdd('Xid',IntToStr(XCntr.Index));
+  if not XCntr.CTNR then XCont.AttributeAdd('NoCntr','true');
+  if (SXCont.Name<>'XGraphSet') and (SmallInt(XCntr.Point^)>0) then XCont.AttributeAdd('Zver',IntToStr(SmallInt(XCntr.Point^)));
   Inc(XMLNumCntr);
   Result := XRef;
 end;
@@ -1667,11 +1719,11 @@ end;
 
 procedure TXom.LoadXTypeXML(XContainer, xomTypes: TXmlNode);
 var
-i: integer;
+i, v: integer;
 XTypeName: String;
 XClass: TXmlNode;
 
-  procedure AddType(XClass: TXmlNode);
+  procedure AddType(XClass: TXmlNode; Xver: Integer);
    var LastTypeI: Integer;
    XGuid: TGUID;
    XName: String;
@@ -1682,7 +1734,8 @@ XClass: TXmlNode;
       SetLength(XomHandle.TypesInfo,XomHandle.NumTypes);
       XGuid := StringToGUID(XClass.AttributeValueByName['guid']);
       XName := XClass.Name;
-      vType := StrToInt(XClass.AttributeValueByName['Xver']);
+      vType := StrToIntDef(XClass.AttributeValueByName['Xver'],0);
+      if (Xver>-1) and (Xver<>vType) then vType:=Xver;
       with XomHandle.TypesInfo[LastTypeI] do begin
         StrLCopy(@aType[0],PChar('TYPE'),4);
         bType:=vType;
@@ -1696,12 +1749,13 @@ XClass: TXmlNode;
 begin
    for i:=0 to xomTypes.ElementCount-1 do begin
       XTypeName:= xomTypes.Elements[i].Name;
-      XClass := XContainer.Parent.FindNode(XTypeName);
+      v := StrToIntDef(xomTypes.Elements[i].AttributeValueByName['Xver'],-1);
+      XClass := XContainer.FindNode(XTypeName);
       if XClass = nil then begin
       WriteLn('Error: ' + XTypeName + ' not found in scheme');
       Halt;
       end;
-      AddType(XClass);
+      AddType(XClass,v);
    end;
 end;
 
@@ -1836,7 +1890,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
   var n:integer;
   begin
     Result:=true;
-    for n:=0 to NTYPES do
+    for n:=0 to VTYPES do
       if XValue = XCheckedValues[n] then exit;
     Result:=false;
   end;
@@ -1852,6 +1906,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
     xui8: Byte;
     xi16: SmallInt;
     xui16: Word;
+    xGUID:TGUID;
   begin
    try
     if XValueType='XInt' then begin
@@ -1860,7 +1915,8 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
     end else if XValueType='XUInt' then begin
       xui:= StrToCard(XValue);
       Buf.Write(xui,4);
-    end else if XValueType='XUIntHex' then begin
+    end else if (XValueType='XUIntHex') or
+      (XValueType='XColor4ub') then begin
       xui:= StrToCard('$'+XValue);
       Buf.Write(xui,4);
     end else if XValueType='XBool' then begin
@@ -1886,6 +1942,9 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
     end else if XValueType='XUInt16' then begin
       xui16:= StrToInt(XValue);
       Buf.Write(xui16,2);
+    end else if XValueType='XGUID' then begin
+      xGUID:= StringToGUID(XValue);
+      Buf.Write(xGUID,16);
     end;
 
   Except
@@ -1914,7 +1973,8 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
           XValues.Delimiter := ' ';
           XValues.DelimitedText := XValue;
           len := XValues.Count-1;
-          if XValueType = 'XVector2f' then XValueType:='XFloat';
+          if (XValueType = 'XVector2f') or
+            (XValueType = 'XVector3f') then XValueType:='XFloat';
           for i:=0 to len do
             XWriteValue(XValueType,XValues[i],Buf);
           XValues.Free;
@@ -1925,17 +1985,33 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
   procedure WriteProp(XSNode,XCont:TXmlNode; Buf:TMemoryStream);
   var
   XValueType, XValue: UTF8String;
-  i,n,index:Integer;
+  i,n,index,len:Integer;
+  XValues:TStringList;
   begin
       if Length(XSNode.Value)>0 then  //< >Value</ >
       begin
         XValueType:=XSNode.Value;
         if CheckXValue(XValueType) then begin
+
           if XCont.Value='' then
             XValue:=''
           else
             XValue :=sdReplaceString(TsdText(XCont.Nodes[0]).GetCoreValue);
-          XWriteValue(XValueType,XValue,Buf);
+
+          if (XValueType = 'XVector4f') or
+            (XValueType = 'XMatrix34') or
+            (XValueType = 'XBoundBox') then
+          begin
+            XValues := TStringList.Create;
+            XValues.Delimiter := ' ';
+            XValues.DelimitedText := XValue;
+            len := XValues.Count-1;
+            for i:=0 to len do
+                XWriteValue('XFloat',XValues[i],Buf);
+            XValues.Free;
+          end else
+            XWriteValue(XValueType,XValue,Buf);
+
         end;
       end else    //  attr= />
       begin
@@ -1947,6 +2023,11 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
             if XSNode.Attributes[i].Name = 'href' then begin
                // XContainer
                XValue := XCont.AttributeValueByName['href'];
+               if XValue='' then begin
+                  index:=0;
+                  WriteXByte(Buf,index);
+                  Continue;
+               end;
                index := CntrArr.FindIndexByName(XValue);
                WriteXByte(Buf,index);
                WriteXMLContaiter(index,CntrArr[index],XContainer);
@@ -1991,7 +2072,12 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
         CheckXNode;
         WriteProp(XSNode,XNode,Buf);
       end else begin
-       if XSNode.AttributeValueByName['guid']<>'' then exit;
+       if XSNode.HasAttribute('guid') then exit;
+       if XSNode.HasAttribute('Xver') then begin
+           n:=XomHandle.TypesInfo[XCntr.TypeIndex].btype;
+           if n <> StrToInt(XSNode.AttributeValueByName['Xver']) then
+            exit;
+       end;
        XValueType:=XSNode.AttributeValueByName['Xtype'];
        if XValueType='XCollection' then begin
           Xpack:=XSNode.AttributeValueByName['Xpack'];
@@ -2022,6 +2108,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
   procedure ReadParentProp(XParent,XCont:TXmlNode; Buf:TMemoryStream);
   var i:integer ;
   begin
+  if XParent.Name='xomSCHM' then exit;
   For i:=0 to XParent.ElementCount-1 do
     ReadAndWriteProp(XParent.Elements[i],XCont,Buf);
   // check prop parrents
@@ -2035,8 +2122,9 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       XCont:=TXmlNode(XCntr.Point);
       LocalIndex := TKeyValueList.Create;
       Buf := TMemoryStream.Create;
-      Zero:=0;
-      Buf.Write(zero, 3);
+      Zero:=XCntr.Zver;
+      if XCntr.CTNR then
+        Buf.Write(zero, 3);
       XClass := XContainer.FindNode(XCont.Name);
       for e:=0 to XClass.ElementCount-1 do
         ReadAndWriteProp(XClass.Elements[e],XCont,Buf);
@@ -2049,12 +2137,12 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       LocalIndex.Free;
 end;
 
-
 procedure TXom.LoadFromXML(xomTypes, xomObjects, XContainer: TXmlNode);
 var
   i,indx:integer;
   XRoot:TContainer;
   XElement: TsdElement;
+
     procedure AddXContainer(XCont:TXmlNode);
     var
       n:integer;
@@ -2066,10 +2154,13 @@ var
           CntrArr[indx] := TContainer.Create(indx, CntrArr, XCont);
           Inc(XomHandle.TypesInfo[n].Size);
           // Save Index Type in XCont
-          CntrArr[indx].CTNR := true; // Hope all types have
+          CntrArr[indx].CTNR := not XCont.HasAttribute('NoCntr');
+          if XCont.HasAttribute('Zver') then
+            CntrArr[indx].Zver:=XCont.AttributeByName['Zver'].ValueAsInteger
+          else CntrArr[indx].Zver := 0;
           CntrArr[indx].Name := XCont.AttributeValueByName['id'];
           if XCont.HasAttribute('Xid') then
-            CntrArr[indx].Xid := StrToInt(XCont.AttributeValueByName['Xid'])
+            CntrArr[indx].Xid := XCont.AttributeByName['Xid'].ValueAsInteger
           else
             CntrArr[indx].Xid := indx;
           CntrArr[indx].TypeIndex := n;
