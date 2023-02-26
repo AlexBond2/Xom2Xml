@@ -8,6 +8,25 @@
     <!-- Detail Objects {DB94305F-B373-42FC-B185-2E01B28F8212} -->
     <!-- Forts Exported Data {28EFD7E1-0C99-43BF-A67D-15FE53986A3B} -->
   </XGraphSet>
+  <XBaseResourceDescriptor guid="{4DCD7EFF-E238-4182-8828-CD940A39D137}" Xver="0" id="XRef" Xtype="XClass">
+    <ResourceId>XString</ResourceId>
+    <SectionId>XUInt16</SectionId>
+    <XCustomDescriptor guid="{754BA91E-A04B-4AE7-8677-E53055DBE1D9}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <Flags>XUInt16</Flags>
+    </XCustomDescriptor>
+    <XBitmapDescriptor guid="{87CF794F-A2AA-4C44-A9DB-7C9091245CB3}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <SpriteScene href="XContainer" />
+      <ImageWidth>XUInt16</ImageWidth>
+      <ImageHeight>XUInt16</ImageHeight>
+    </XBitmapDescriptor>
+    <XMeshDescriptor guid="{A8E8B2DB-0AC3-4BF0-A476-96F47CF924D2}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <GraphSet href="XContainer" />
+      <Flags>XUInt16</Flags>
+    </XMeshDescriptor>
+    <XSpriteSetDescriptor guid="{28257394-F08F-43AA-AB26-D253D6707BCC}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <SpriteSetGroup href="XContainer" />
+    </XSpriteSetDescriptor>
+  </XBaseResourceDescriptor>
   <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" Xtype="XClass">
     <XResourceDetails guid="{E77556F2-A495-491A-8563-006CE2577244}" Xver="0" Xtype="XClass">
       <XIntResourceDetails guid="{7D889B8D-2C14-445E-961F-5E0E5520416A}" Xver="0" id="XRef">
@@ -45,6 +64,39 @@
       <StringTableResources href="XContainerResourceDetails" Xtype="XCollection" />
       <ColorResources href="XColorResourceDetails" Xtype="XCollection" />
     </XDataBank>
+    <XTextureStage guid="{73798F07-9792-4DDE-AD87-76D1AEA37684}" Xver="2" id="XRef" Xtype="XClass">
+      <XTextureMap guid="{EDE002E0-1BD1-4B80-8A2E-C2A042C58B1A}" Xver="0" id="XRef" Xtype="XClass">
+        <XOglTextureMap guid="{BB248D9C-0051-4E53-B0C1-60355A2D215F}" Xver="0" id="XRef">
+          <Blend>XEnum</Blend>
+          <BlendColor>XVector4f</BlendColor>
+        </XOglTextureMap>
+        <Texture href="XContainer" />
+      </XTextureMap>
+      <MaxAnisotropy>XFloat</MaxAnisotropy>
+      <!-- <FourCC Obsolete="2">XUInt</FourCC> -->
+      <Enable>XBool</Enable>
+      <TexCoordIndex>XUInt8</TexCoordIndex>
+      <!-- <MaxMipMapLevel Obsolete="2">XUInt8</MaxMipMapLevel> -->
+      <AddressModeS>XEnum</AddressModeS>
+      <AddressModeT>XEnum</AddressModeT>
+      <MagFilter>XEnum</MagFilter>
+      <MinFilter>XEnum</MinFilter>
+      <MipFilter>XEnum</MipFilter>
+      <!-- <Matrix Obsolete="2">XMatrix4f</Matrix> -->
+      <TextureGen href="XContainer" />
+    </XTextureStage>
+    <XBaseResourceDescriptor2 guid="{31BD00F6-F3CE-4588-8126-D1DFD58ACD22}" Xver="0" id="XRef" Xtype="XClass">
+      <XMeshDescriptor2 guid="{E70CE377-7E88-48DC-9029-903A7ADA2AD6}" Xver="0" id="XRef">
+        <Graph href="XContainer" />
+        <ClipLibrary href="XContainer" />
+      </XMeshDescriptor2>
+      <Name>XString</Name>
+      <DefaultSceneIndex>XUInt8</DefaultSceneIndex>
+      <LoadFuncIndex>XUInt8</LoadFuncIndex>
+      <InstanceFuncIndex>XUInt8</InstanceFuncIndex>
+      <BankIndex>XUInt8</BankIndex>
+      <InstanceCount>XUInt16</InstanceCount>
+    </XBaseResourceDescriptor2>
     <XGeometry guid="{5B23F9B9-EF3F-4DE0-B7A9-87367921A69D}" Xver="2" Xtype="XClass">
       <XGeoSet guid="{F1337197-F57E-4ACB-9770-63794A52DEAE}" Xver="0" Xtype="XClass">
         <XIndexedGeoSet guid="{7DD1BB1B-5A50-4266-BFD6-9C66CB7EEA47}" Xver="0" Xtype="XClass">
@@ -110,10 +162,10 @@
       <RefPointOrientation Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
       <BPName Xtype="XCollection">XString</BPName>
       <BPPosition x="XFloat" y="XFloat" z="XFloat" Xtype="XCollection" />
-      <BPVictoryLocation>XBool</BPVictoryLocation>
+      <BPVictoryLocation Nver="4">XBool</BPVictoryLocation>
       <BPBuildingType>XInt8</BPBuildingType>
       <BPBonusType Xtype="XCollection">XUInt8</BPBonusType>
-      <BPBuildingName Xtype="XCollection">XString</BPBuildingName>
+      <BPBuildingName Xver="2" Xtype="XCollection">XString</BPBuildingName>
       <BPBuildingPlayerId Xtype="XCollection">XInt</BPBuildingPlayerId>
       <BPBuildingOrientation Xtype="XCollection">XFloat</BPBuildingOrientation>
       <BPBuildingConnections Xtype="XCollection">XUInt8</BPBuildingConnections>
@@ -123,7 +175,7 @@
       <PhantomBoxPosition x="XFloat" y="XFloat" z="XFloat" Xtype="XCollection" />
       <PhantomSphereRadius Xtype="XCollection">XFloat</PhantomSphereRadius>
       <PhantomBoxExtents Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
-      <SceneryEffects Xtype="XCollection" href="XContainer" />
+      <SceneryEffects Xver="3" Xtype="XCollection" href="XContainer" />
     </XFortsExportedData>
     <XDetailObjectsData guid="{110A17B3-B61F-4D34-B553-C46C14630BA7}" Xver="0" id="XRef">
       <DetailObjectFilePath Xtype="XCollection">XString</DetailObjectFilePath>
@@ -231,7 +283,57 @@
         <Power>XFloat</Power>
         <FresnelPower Xver="2">XFloat</FresnelPower>
       </XMaterial>
+      <XAlphaTest guid="{75287369-18AD-4F7B-A462-578E6409DCDD}" Xver="0" id="XRef">
+        <Enable>XBool</Enable>
+        <CompareFunction>XEnum</CompareFunction>
+        <RefValue>XFloat</RefValue>
+      </XAlphaTest>
+      <XZBufferWriteEnable guid="{B27CAC2C-EAFF-405A-9F27-C2B7527DE113}" Xver="0" id="XRef">
+        <Enable>XBool</Enable>
+      </XZBufferWriteEnable>
+      <XDepthTest guid="{60FE094A-07FC-4715-9A3C-3C625A2BBB3A}" Xver="0" id="XRef">
+        <CompareFunction>XEnum</CompareFunction>
+        <Enable>XBool</Enable>
+        <NearZ>XFloat</NearZ>
+        <!-- Domain	0 -->
+        <FarZ>XFloat</FarZ>
+        <!-- Domain	0 -->
+      </XDepthTest>
+      <XCullFace guid="{37466FD7-03E7-45DD-A426-5741C759724A}" Xver="0" id="XRef">
+        <CullMode>XEnum</CullMode>
+      </XCullFace>
+      <XLightingEnable guid="{82FBBB09-FE60-4810-BA94-5B5DDAC5D958}" Xver="0" id="XRef">
+        <Enable>XBool</Enable>
+        <TwoSided>XBool</TwoSided>
+        <LocalViewer>XBool</LocalViewer>
+        <Normalize>XEnum</Normalize>
+        <AmbientColor>XVector4f</AmbientColor>
+      </XLightingEnable>
+      <XBlendModeGL guid="{EF995274-86AA-4002-975C-DE2B248ABFE7}" Xver="0" id="XRef">
+        <SourceFactor>XEnum</SourceFactor>
+        <DestFactor>XEnum</DestFactor>
+      </XBlendModeGL>
     </XAttribute>
+    <XImage guid="{963FBF22-3230-4C89-A440-9566FEC7DAA4}" Xver="0" id="XRef">
+      <Name>XString</Name>
+      <Width>XUInt16</Width>
+      <Height>XUInt16</Height>
+      <MipLevels>XUInt16</MipLevels>
+      <Flags>XUInt16</Flags>
+      <Strides Xtype="XCollection" Xpack="true">XUInt</Strides>
+      <Offsets Xtype="XCollection" Xpack="true">XUInt</Offsets>
+      <Format>XEnum</Format>
+      <Data Xtype="XCollection" Xpack="true">XBase64Byte</Data>
+      <Palette href="XContainer" />
+      <!-- <ApiHandle>XUInt</ApiHandle> -->
+    </XImage>
+    <XPalette guid="{EBFCFD09-03F8-4C35-BB90-C3F84946A947}" Xver="0" id="XRef">
+      <!-- <ApiHandle>XUInt</ApiHandle> -->
+      <IndexSize>XUInt8</IndexSize>
+      <Flags>XUInt8</Flags>
+      <Format>XEnum</Format>
+      <Data Xtype="XCollection" Xpack="true">XUInt8</Data>
+    </XPalette>
     <IntegerArray guid="{8988E3A1-397F-4016-8748-B02D6A6108B1}" Xver="0" id="XRef">
       <Integers Xtype="XCollection">XUInt</Integers>
     </IntegerArray>
