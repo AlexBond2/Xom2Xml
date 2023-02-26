@@ -2017,7 +2017,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
   i,n,index,len:Integer;
   XValues:TStringList;
   begin
-      WriteLn(Format('write %s: %s',[XSNode.Name,XCont.Value]));
+      // WriteLn(Format('write %s: %s',[XSNode.Name,XCont.Value]));
       if Length(XSNode.Value)>0 then  //< >Value</ >
       begin
         XValueType:=XSNode.Value;
