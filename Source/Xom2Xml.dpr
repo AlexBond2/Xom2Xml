@@ -10,8 +10,6 @@ uses
   XomCntrLibTwk,
   NativeXml;
 
-//,EncdDecd;
-
 var
   FileName, OFilename :String;
   guid, help, schema, log, isxid, outfile, clear, xomfile: boolean;
