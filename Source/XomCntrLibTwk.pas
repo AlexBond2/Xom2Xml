@@ -72,6 +72,7 @@ type
     AcceptCancelButtonDesc,
     AchievementsProgressContainer,
     AssistedShotTweaks,
+    AudioControlContainer,
     BaseWeaponContainer,
     BrickBuildingCtr,
     BrickBuildingList,
@@ -79,6 +80,7 @@ type
     BuildingGlobalContainer,
     BuildingSpecificContainer,
     CachedLeaderBoardWrite,
+    CameraControlContainer,
     Campaign,
     CampaignCollective,
     CampaignData,
@@ -88,9 +90,11 @@ type
     CheckBoxDesc,
     ComboControlDesc,
     ControlSetupDesc,
+    CrateContainer,
     CrateDataContainer,
     CreditsFMVs,
     DamageStatsContainer,
+    DebrisContainer,
     DetailEntityStore,
     EFMV_AnimateCustomHudGraphicEventContainer,
     EFMV_AnimateDetailEventContainer,
@@ -149,6 +153,7 @@ type
     GunWeaponPropertiesContainer,
     HighScoreData,
     HomingPayloadWeaponPropertiesContainer,
+    HumanControlContainer,
     InputDetailsContainer,
     InputEventMappingContainer,
     InputMappingDetails,
@@ -185,8 +190,10 @@ type
     ParticleMeshNamesContainer,
     PayloadWeaponPropertiesContainer,
     PercentButtonDesc,
+    PhysicsControlContainer,
     PictureViewDesc,
     PlayerList,
+    PowerUpDataContainer,
     ProfileAchievementsContainer,
     SavedLevel,
     SavedLevelCollective,
@@ -280,7 +287,11 @@ type
     WeaponFactoryThrownCostContainer,
     WeaponInventory,
     WeaponSettingsData,
+    WfRumbleList,
+    WfRumbleSettings,
+    WormAnimContainer,
     WormCareerStats,
+    WormControlContainer,
     WormDataContainer,
     WormPotContainer,
     WormPotControlDesc,
@@ -332,6 +343,7 @@ type
     XExportAttributeString,
     XFloatResourceDetails,
     XFortsExportedData,
+    XGeometry,
     XGraphSet,
     XGroup,
     XImage,
@@ -395,6 +407,7 @@ type
     XSampleData,
     XSceneCamera,
     XSceneryEffectData,
+    XShader,
     XShape,
     XSimpleShader,
     XSkeletonRoot,
@@ -450,6 +463,7 @@ const
     'AcceptCancelButtonDesc',
     'AchievementsProgressContainer',
     'AssistedShotTweaks',
+    'AudioControlContainer',
     'BaseWeaponContainer',
     'BrickBuildingCtr',
     'BrickBuildingList',
@@ -457,6 +471,7 @@ const
     'BuildingGlobalContainer',
     'BuildingSpecificContainer',
     'CachedLeaderBoardWrite',
+    'CameraControlContainer',
     'Campaign',
     'CampaignCollective',
     'CampaignData',
@@ -466,9 +481,11 @@ const
     'CheckBoxDesc',
     'ComboControlDesc',
     'ControlSetupDesc',
+    'CrateContainer',
     'CrateDataContainer',
     'CreditsFMVs',
     'DamageStatsContainer',
+    'DebrisContainer',
     'DetailEntityStore',
     'EFMV_AnimateCustomHudGraphicEventContainer',
     'EFMV_AnimateDetailEventContainer',
@@ -527,6 +544,7 @@ const
     'GunWeaponPropertiesContainer',
     'HighScoreData',
     'HomingPayloadWeaponPropertiesContainer',
+    'HumanControlContainer',
     'InputDetailsContainer',
     'InputEventMappingContainer',
     'InputMappingDetails',
@@ -563,8 +581,10 @@ const
     'ParticleMeshNamesContainer',
     'PayloadWeaponPropertiesContainer',
     'PercentButtonDesc',
+    'PhysicsControlContainer',
     'PictureViewDesc',
     'PlayerList',
+    'PowerUpDataContainer',
     'ProfileAchievementsContainer',
     'SavedLevel',
     'SavedLevelCollective',
@@ -658,7 +678,11 @@ const
     'WeaponFactoryThrownCostContainer',
     'WeaponInventory',
     'WeaponSettingsData',
+    'WfRumbleList',
+    'WfRumbleSettings',
+    'WormAnimContainer',
     'WormCareerStats',
+    'WormControlContainer',
     'WormDataContainer',
     'WormPotContainer',
     'WormPotControlDesc',
@@ -710,6 +734,7 @@ const
     'XExportAttributeString',
     'XFloatResourceDetails',
     'XFortsExportedData',
+    'XGeometry',
     'XGraphSet',
     'XGroup',
     'XImage',
@@ -773,6 +798,7 @@ const
     'XSampleData',
     'XSceneCamera',
     'XSceneryEffectData',
+    'XShader',
     'XShape',
     'XSimpleShader',
     'XSkeletonRoot',
@@ -1060,6 +1086,7 @@ type
     Size: Integer; // размер контейнера       
     Update: Boolean; // обновлен
     CTNR: Boolean; // имеет заголовок
+    Zver: Integer; // числов в начале контейнера
     Xtype: XTypes; // тип контейнера
     Name: String;
     CntrArr: TContainers;
@@ -1219,7 +1246,10 @@ end;
 
 function TContainer.GetPoint:Pointer;
 begin
-  Result := Pointer(Longword(Point) + 3);
+  if CTNR then
+    Result := Pointer(Longword(Point) + 3)
+  else
+    Result := Point;
 end;
 
 function TContainer.Copy(Cntrs:TContainers=nil):TContainer;

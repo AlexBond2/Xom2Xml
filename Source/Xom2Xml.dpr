@@ -10,8 +10,6 @@ uses
   XomCntrLibTwk,
   NativeXml;
 
-//,EncdDecd;
-
 var
   FileName, OFilename :String;
   guid, help, schema, log, isxid, outfile, clear, xomfile: boolean;
@@ -20,11 +18,11 @@ procedure ExportXML(FileName: String; schmnode : TXmlNode);
 var
   XML: TNativeXml;
   LoadedXom:TXom;
-  node,xomObjects,xomTypes,XContainer: TXmlNode;
+  node,xomObjects,xomTypes,XContainer,XType: TXmlNode;
   s: string;
   code: string;
   xomArchive,XNode: TsdElement;
-  i: integer;
+  i,Xver: integer;
 begin
   LoadedXom:=TXom.Create;
   LoadedXom.LoadXomFileName(FileName, s,false);
@@ -46,7 +44,11 @@ begin
 
   for i:=0 to LoadedXom.XomHandle.NumTypes-1 do begin
         XNode := TsdElement.CreateParent(XML,xomTypes);
-        XNode.Name := LoadedXom.GetXTypeName(LoadedXom.XomHandle.TypesInfo[i].Name,XContainer);
+        XNode.Name := LoadedXom.GetXTypeName(LoadedXom.XomHandle.TypesInfo[i].Name,schmnode);
+        XType:=schmnode.FindNode(XNode.Name);
+        XVer:=StrToInt(XType.AttributeValueByName['Xver']);
+        if LoadedXom.XomHandle.TypesInfo[i].btype<>XVer then
+        XNode.AttributeAdd(XML.AttrText('Xver', IntToStr(LoadedXom.XomHandle.TypesInfo[i].btype)));
         XNode.NodeClosingStyle := ncClose;
   end;
 
@@ -57,7 +59,7 @@ begin
 
   // convert to XML
   LoadedXom.XMLNumCntr:=0;
-  LoadedXom.AddXMLNode(LoadedXom.BaseCntr,XContainer,'id',XML,xomObjects);
+  LoadedXom.AddXMLNode(LoadedXom.BaseCntr,schmnode,'id',XML,xomObjects);
   If LoadedXom.BaseCntr.CntrArr.Count-1 < LoadedXom.XMLNumCntr then
     Writeln(Format('Error: Loaded %d of %d',[LoadedXom.XMLNumCntr,LoadedXom.BaseCntr.CntrArr.Count-1]));
   If LoadedXom.BaseCntr.CntrArr.Count-1 > LoadedXom.XMLNumCntr then
@@ -87,7 +89,7 @@ begin
   XML.LoadFromFile(FileName);
   xomTypes := XML.Root.NodeByName('xomTypes');
   xomObjects := XML.Root.NodeByName('xomObjects');
-  XContainer := schmnode.NodeByName('XContainer');
+  XContainer := schmnode;
   // parse
   NewXom:=TXom.Create;
   NewXom.LogXML:=log;
@@ -193,7 +195,7 @@ begin
   end;
   if (Filename='') or help then begin
     // show help
-    Writeln('Xom2Xml version 1.2');
+    Writeln('Xom2Xml version 1.3');
     Writeln('Copyright 2023 AlexBond');
     Writeln;
     Writeln('Usage:');
