@@ -25,7 +25,7 @@ Options:
 ## Russian
 **Xom2Xml** это консольный конвертер для xom файлов в xml и обатно. 
 
-База **WUM** для xom файлов папок **Data**,**Tweak** и часть **Data/Bundles** для игры **Worms Ultimate Mayhem**. 
+База **WUM** для xom файлов папок **Data**,**Tweak** и часть **Data\Bundles** для игры **Worms Ultimate Mayhem**. 
 
 База **W3D** для xom файлов папки **Data** для игры **Worms 3D**. Файлы которые поддерживает база: 
  - xom файлы из папки **Data**
@@ -79,7 +79,7 @@ Xgame = W3D
 
 Обновление в версии 1.3.0.3:
  - добавлена поддержка классов XGraphSet, XBaseResourceDescriptor, XTextureStage, XGeometry, XAttribute
- - добавлена поддержка некоторых файлов файлов из папки **Data/Bundles** игры **Worms Ultimate Mayhem**
+ - добавлена поддержка некоторых файлов файлов из папки **Data\Bundles** игры **Worms Ultimate Mayhem**
  - добавлен тип **XBase64Byte** для кодированного отображения байтовых данных
 
 Обновление в версии 1.2.1.2:
