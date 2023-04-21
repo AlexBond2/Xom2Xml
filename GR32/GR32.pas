@@ -110,15 +110,23 @@ type
 // Custom TBitmaps32 by AlexBond
 
   TBitmap32 = class(TCustomBitmap32)
+  private
+    FNumMipMaps: Integer;
+    FMipMaps: array of PColor32Array;
   public
-    procedure LoadFromData(Data: Pointer; Width, Height: Integer; ColorBits: Integer);
-    procedure SaveToStream(Data: TStream; ColorBits: Integer; GenMipMaps: Boolean);
-    procedure LoadFromTGA(FileName: String);
-    procedure SaveToTGA(FileName: String; ColorBits: Integer);
-    procedure LoadFromPNG(Filename: string); overload;
-    procedure LoadFromPNG(Stream: TStream); overload;
-    procedure SaveToPNG(FileName: string); overload;
-    procedure SaveToPNG(Stream: TStream); overload;
+    constructor Create;
+    destructor Destroy;  
+    procedure LoadFromData(Data: Pointer; Width, Height: Integer; ColorBits: Integer; MipMaps: Integer = 1);
+    function GenMipMaps: Integer;
+    procedure FreeMipMaps;
+    procedure SaveToStream(Data: TStream; ColorBits: Integer);
+    procedure LoadFromTGA(Stream: TStream);
+    procedure SaveToTGA(Stream: TStream; ColorBits: Integer);
+    procedure LoadFromPNG(Stream: TStream);
+    procedure SaveToPNG(Stream: TStream);
+    procedure LoadFromDDS(Stream: TStream);
+    procedure SaveToDDS(Stream: TStream; ColorBits: Integer);
+    property NumMipMaps: Integer read FNumMipMaps;
   end;
 
 implementation
@@ -189,10 +197,29 @@ end;
 
 { TBitmap32 }
 
-procedure TBitmap32.LoadFromPNG(Filename: string);
+constructor TBitmap32.Create;
 begin
-  LoadBitmap32FromPNG(self, Filename);
+  inherited;
 end;
+
+procedure TBitmap32.FreeMipMaps;
+var l, i:Integer;
+begin
+  l := Length(FMipMaps)-1;
+  for i:=0 to l do
+    FreeMem(FMipMaps[i]);
+  SetLength(FMipMaps,0);
+  FNumMipMaps := 0;
+end;
+
+destructor TBitmap32.Destroy;
+var i:integer;
+begin
+  FreeMipMaps;
+  inherited;
+end;
+
+// Portable Network Graphics
 
 procedure TBitmap32.LoadFromPNG(Stream: TStream);
 begin
@@ -204,10 +231,7 @@ begin
   SaveBitmap32ToPNG(self, Stream);
 end;
 
-procedure TBitmap32.SaveToPNG(FileName: string);
-begin
-  SaveBitmap32ToPNG(self, FileName);
-end;
+//  Truevision Graphics Adapter
 
 type
 
@@ -226,46 +250,39 @@ type
     ImageDescriptor: Byte;
   end;
 
-procedure TBitmap32.SaveToTGA(FileName: String; ColorBits: Integer);
+procedure TBitmap32.SaveToTGA(Stream: TStream; ColorBits: Integer);
 var
-  Bufer: TMemoryStream;
   Tga: TGAHeader;
   x,y: Integer;
   Pixel: PColor32;
   PixelSize: Integer;
 begin
-  Bufer := TMemoryStream.Create;
   ZeroMemory(@Tga, SizeOf(TGAHeader));
   Tga.ImageType := 2;
   Tga.Width := FWidth;
   Tga.Height := FHeight;
   Tga.BitsPerPixel := ColorBits;
-  Bufer.Write(Tga, SizeOf(TGAHeader));
+  Stream.Write(Tga, SizeOf(TGAHeader));
   PixelSize := ColorBits div 8;
   for y := FHeight - 1 downto 0 do
     for x := 0 to FWidth - 1 do
     begin
       Pixel := PixelPtr[x,y];
-      Bufer.Write(Pixel^, PixelSize);
+      Stream.Write(Pixel^, PixelSize);
     end;
-  Bufer.SaveToFile(FileName);
-  Bufer.Free;
 end;
 
-procedure TBitmap32.LoadFromTGA(FileName: String);
+procedure TBitmap32.LoadFromTGA(Stream: TStream);
 var
   x,y, counter: integer;
   chunkHeader: byte;
-  FileStream: TMemoryStream;
   Tga: TGAHeader;
   Pixel: PColor32;
   Color: TColor32Entry;
   PixelSize: Integer;
 begin
 
-  FileStream := TMemoryStream.Create;
-  FileStream.LoadFromFile(FileName);
-  FileStream.Read(Tga, sizeOf(TGAHeader));
+  Stream.Read(Tga, sizeOf(TGAHeader));
 
   SetSize(Tga.Width, Tga.Height);
   PixelSize := tga.BitsPerPixel div 8;
@@ -277,7 +294,7 @@ begin
       for x := 0 to Tga.Width - 1 do
       begin
         Pixel := PixelPtr[x,y];
-        FileStream.Read(Pixel^, PixelSize);
+        Stream.Read(Pixel^, PixelSize);
         if PixelSize = 3 then TColor32Entry(Pixel^).A := 255;
       end;
     end;
@@ -290,7 +307,7 @@ begin
     while y >= 0 do
     begin
     //repeat
-      FileStream.Read(chunkHeader,1);
+      Stream.Read(chunkHeader,1);
       if chunkHeader < 128 then //array of colors
       begin
         Inc(chunkHeader);
@@ -302,7 +319,7 @@ begin
             x := 0;
           end;
           Pixel := PixelPtr[x,y];
-          FileStream.Read(Pixel^, PixelSize);
+          Stream.Read(Pixel^, PixelSize);
           if PixelSize = 3 then TColor32Entry(Pixel^).A := 255;
           Inc(x);
         end;
@@ -310,7 +327,7 @@ begin
       else  //repeat color
       begin
         chunkHeader := chunkHeader - 127;
-        FileStream.Read(Color, PixelSize);
+        Stream.Read(Color, PixelSize);
         if PixelSize = 3 then Color.A := 255;
 
         for counter:=0 to chunkHeader -1 do
@@ -328,22 +345,26 @@ begin
     end;
   end;
 
-  FileStream.Free;
 end;
 
+// BGR Image
+
 procedure TBitmap32.LoadFromData(Data: Pointer; Width, Height,
-  ColorBits: Integer);
+  ColorBits: Integer; MipMaps: Integer = 1);
 var
- x, y, PixelSize: Integer;
+ PixelSize, i, MWidth, MHeight: Integer;
+ Pixels: PColor32Array;
+
+ procedure ReadDataBGR(dWidth, dHeight:Integer);
+ var
+ x, y : Integer;
  Pixel: PColor32;
  Color: TColor32Entry;
-begin
-  SetSize(Width, Height);
-  PixelSize := ColorBits div 8;
-  for y := FHeight - 1 downto 0 do
-    for x := 0 to FWidth - 1 do
+ begin
+  for y := dHeight - 1 downto 0 do
+    for x := 0 to dWidth - 1 do
     begin
-      Pixel := PixelPtr[x,y];
+      Pixel := @Pixels[x + y * dWidth];
       Color.R := TColor32Entry(Data^).B;
       Color.G := TColor32Entry(Data^).G;
       Color.B := TColor32Entry(Data^).R;
@@ -354,6 +375,31 @@ begin
       Inc(LongWord(Data),PixelSize);
       TColor32Entry(Pixel^) := Color;
     end;
+ end;
+
+begin
+  SetSize(Width, Height);
+  PixelSize := ColorBits div 8;
+  Pixels := Bits;
+  ReadDataBGR(FWidth, FHeight);
+
+  If MipMaps>1 then begin
+    MWidth := Width;
+    MHeight := Height;
+    FreeMipMaps;
+    FNumMipMaps := MipMaps-1;
+    SetLength(FMipMaps, FNumMipMaps);
+    for i:=0 to FNumMipMaps-1 do begin
+      MWidth := MWidth div 2;
+	    if MWidth = 0 then MWidth := 1;
+      MHeight := MHeight div 2;
+	    if MHeight = 0 then MHeight := 1;
+      Pixels := AllocMem(MWidth * MHeight * Sizeof(TColor32));
+      ReadDataBGR(MWidth, MHeight);
+      FMipMaps[i] := Pixels;
+    end;
+  end;
+
 end;
 
 procedure DownScale(srcData: Pointer; pixelSize, srcWidth, srcHeight,
@@ -426,77 +472,310 @@ begin
 
 end;
 
-procedure TBitmap32.SaveToStream(Data: TStream; ColorBits: Integer; GenMipMaps:Boolean);
+function TBitmap32.GenMipMaps:Integer;
 var
- i, x, y, PixelSize, Maps, NMaps, MWidth, MHeight: Integer;
+ i, nMM, PixelSize, Maps, MaxMaps, MWidth, MHeight: Integer;
+ mData, sData: Pointer;
+begin
+  PixelSize := 4;
+
+  Maps  := Max(FWidth, FHeight);
+  MaxMaps := Round(Log2(Maps));
+
+  Result := FNumMipMaps;
+
+  if MaxMaps = FNumMipMaps then exit;
+  nMM := FNumMipMaps;
+  FNumMipMaps := MaxMaps;
+
+  MWidth := FWidth;
+  MHeight := FHeight;
+
+  sData := FBits;
+  SetLength(FMipMaps, FNumMipMaps);
+	for i := 0 to FNumMipMaps - 1 do
+	begin
+    MWidth  := MWidth div 2;
+	  if MWidth = 0 then MWidth := 1;
+    MHeight := MHeight div 2;
+	  if MHeight = 0 then MHeight := 1;
+    if i < nMM then continue;
+    mData := AllocMem(MWidth * MHeight * Sizeof(TColor32));
+    DownScale(sData, PixelSize, FWidth, FHeight, MWidth, MHeight, mData);
+    FMipMaps[i] := mData;
+	end;
+  Result := FNumMipMaps;
+end;
+
+procedure TBitmap32.SaveToStream(Data: TStream; ColorBits: Integer);
+var
+ i, PixelSize, Maps, NMaps, MWidth, MHeight: Integer;
+ Pixels: PColor32Array;
+
+ procedure WriteBGR(dWidth, dHeight: Integer);
+ var
+ x, y : Integer;
  Pixel: PColor32;
  Color: TColor32Entry;
- MipXImage, RGBImage, sData: Pointer;
-
-  function GetMipmap(sData: Pointer;
-    sWidth, sHeight: Integer;
-    dData: Pointer;
-    dWidth, dHeight, PixelSize: Integer):Cardinal;
-  begin
-    if (sWidth <> dWidth) and (sHeight <> dHeight) then
-      DownScale(sData, PixelSize, sWidth, sHeight,
-        dWidth, dHeight, dData)
-    else
-      Move(sData^, dData^, sWidth * sHeight * PixelSize);
-  end;
-
-begin
-
-  PixelSize := ColorBits div 8;
-
-	RGBImage := AllocMem(FWidth * FHeight * PixelSize);
-  sData := RGBImage;
-  for y := FHeight - 1 downto 0 do
-    for x := 0 to FWidth - 1 do
+ begin
+  for y := dHeight - 1 downto 0 do
+    for x := 0 to dWidth - 1 do
     begin
-      Pixel := PixelPtr[x,y];
+      Pixel := @Pixels[x + y * dWidth];
       Color.R := TColor32Entry(Pixel^).B;
       Color.G := TColor32Entry(Pixel^).G;
       Color.B := TColor32Entry(Pixel^).R;
       if PixelSize = 4 then
          Color.A := TColor32Entry(Pixel^).A;
-
-      Move(Color, sData^, PixelSize);
-      Inc(LongWord(sData), PixelSize);
+      Data.Write(Color, PixelSize);
     end;
+ end;
 
-  if not GenMipMaps then
-    NMaps := 1
-  else
-    begin
-      Maps  := Max(FWidth, FHeight);
-      NMaps := Round(Log2(Maps)) + 1;
-    end;
+begin
+  PixelSize := ColorBits div 8;
+  Pixels := FBits;
+  WriteBGR(FWidth, FHeight);
 
   MWidth := FWidth;
   MHeight := FHeight;
 
-  MipXImage := AllocMem(MWidth * MHeight * PixelSize);
-  sData := RGBImage;
-
-	for i := 0 to NMaps - 1 do
+	for i := 0 to FNumMipMaps - 1 do
 	begin
+    Pixels := FMipMaps[i];
+    MWidth  := MWidth div 2;
 	  if MWidth = 0 then MWidth := 1;
+    MHeight := MHeight div 2;
 	  if MHeight = 0 then MHeight := 1;
-
-	  GetMipmap(sData, FWidth, FHeight, MipXImage, MWidth, MHeight, PixelSize);
-	  Data.Write(MipXImage^, MWidth * MHeight * PixelSize);
-
-	  if ((MWidth = 1) and (MHeight = 1)) then
-		Break;
-	  MWidth  := MWidth div 2;
-	  MHeight := MHeight div 2;
-	end;
-
-  FreeMem(RGBImage);
-  FreeMem(MipXImage);
-
+    WriteBGR(MWidth, MHeight);
+  end;
 end;
 
+// DirectDraw Surface
+{ Types from ImagingDds.pas https://github.com/galfar/imaginglib }
+
+type
+  Uint32 = Cardinal;
+  Int32 = Integer;
+
+const
+
+  { Constants used by TDDSPixelFormat.Flags.}
+  DDPF_ALPHAPIXELS     = $00000001;    // used by formats which contain alpha
+  DDPF_FOURCC          = $00000004;    // used by DXT and large ARGB formats
+  DDPF_RGB             = $00000040;    // used by RGB formats
+  DDPF_LUMINANCE       = $00020000;    // used by formats like D3DFMT_L16
+  DDPF_BUMPLUMINANCE   = $00040000;    // used by mixed signed-unsigned formats
+  DDPF_BUMPDUDV        = $00080000;    // used by signed formats
+
+  { Four character codes.}
+  DDSMagic    = UInt32(Byte('D') or (Byte('D') shl 8) or (Byte('S') shl 16) or
+    (Byte(' ') shl 24));
+
+  { Constants used by TDDSurfaceDesc2.Flags.}
+  DDSD_CAPS            = $00000001;
+  DDSD_HEIGHT          = $00000002;
+  DDSD_WIDTH           = $00000004;
+  DDSD_PITCH           = $00000008;
+  DDSD_PIXELFORMAT     = $00001000;
+  DDSD_MIPMAPCOUNT     = $00020000;
+  DDSD_LINEARSIZE      = $00080000;
+  DDSD_DEPTH           = $00800000;
+
+  { Flags for TDDSurfaceDesc2.Flags used when saving DDS file.}
+  DDS_SAVE_FLAGS = DDSD_CAPS or DDSD_PIXELFORMAT or DDSD_WIDTH or
+    DDSD_HEIGHT or DDSD_LINEARSIZE;
+
+  { Constants used by TDDSCaps.Caps1.}
+  DDSCAPS_COMPLEX      = $00000008;
+  DDSCAPS_TEXTURE      = $00001000;
+  DDSCAPS_MIPMAP       = $00400000;
+
+type
+  { Stores the pixel format information.}
+  TDDPixelFormat = packed record
+    Size: UInt32;       // Size of the structure = 32 bytes
+    Flags: UInt32;      // Flags to indicate valid fields
+    FourCC: UInt32;     // Four-char code for compressed textures (DXT)
+    BitCount: UInt32;   // Bits per pixel if uncomp. usually 16,24 or 32
+    RedMask: UInt32;    // Bit mask for the Red component
+    GreenMask: UInt32;  // Bit mask for the Green component
+    BlueMask: UInt32;   // Bit mask for the Blue component
+    AlphaMask: UInt32;  // Bit mask for the Alpha component
+  end;
+
+  { Specifies capabilities of surface.}
+  TDDSCaps = packed record
+    Caps1: UInt32;      // Should always include DDSCAPS_TEXTURE
+    Caps2: UInt32;      // For cubic environment maps
+    Reserved: array[0..1] of UInt32; // Reserved
+  end;
+
+  { Record describing DDS file contents.}
+  TDDSurfaceDesc2 = packed record
+    Size: UInt32;       // Size of the structure = 124 Bytes
+    Flags: UInt32;      // Flags to indicate valid fields
+    Height: UInt32;     // Height of the main image in pixels
+    Width: UInt32;      // Width of the main image in pixels
+    PitchOrLinearSize: UInt32; // For uncomp formats number of bytes per
+                               // scanline. For comp it is the size in
+                               // bytes of the main image
+    Depth: UInt32;      // Only for volume text depth of the volume
+    MipMaps: Int32;     // Total number of levels in the mipmap chain
+    Reserved1: array[0..10] of UInt32; // Reserved
+    PixelFormat: TDDPixelFormat; // Format of the pixel data
+    Caps: TDDSCaps;       // Capabilities
+    Reserved2: UInt32;  // Reserved
+  end;
+
+  { DDS file header.}
+  TDDSFileHeader = packed record
+    Magic: UInt32;       // File format magic
+    Desc: TDDSurfaceDesc2; // Surface description
+  end;
+
+procedure TBitmap32.LoadFromDDS(Stream: TStream);
+var
+ Hdr: TDDSFileHeader;
+ PixelSize, i, MWidth, MHeight: Integer;
+ Pixels: PColor32Array;
+
+ procedure ReadDataRGB(dWidth, dHeight:Integer);
+ var
+ x, y : Integer;
+ Pixel: PColor32;
+ Color: TColor32Entry;
+ begin
+  for y := 0 to dHeight - 1 do
+    for x := 0 to dWidth - 1 do
+    begin
+      Pixel := @Pixels[x + y * dWidth];
+      Stream.Read(Pixel^, PixelSize);
+      if PixelSize = 3 then TColor32Entry(Pixel^).A := 255;
+    end;
+ end;
+
+begin
+  Stream.Read( Hdr, SizeOf(TDDSFileHeader));
+  With Hdr, Hdr.Desc.PixelFormat do begin
+  SetSize(Desc.Width, Desc.Height);
+  PixelSize:=0;
+  if (Flags and DDPF_RGB) = DDPF_RGB then
+    begin
+      // Handle RGB formats
+      if (Flags and DDPF_ALPHAPIXELS) = DDPF_ALPHAPIXELS then
+      begin
+        // Handle RGB with alpha formats
+        If BitCount = 32 then   // A8R8G8B8
+        begin
+          // BlueMask = $00FF0000
+          PixelSize := 4;
+        end;
+      end else
+      begin
+        If BitCount = 24 then  // R8G8B8
+        begin
+          PixelSize := 3;
+        end;
+      end;
+   end;
+
+  If PixelSize = 0 then exit;
+  Pixels := FBits;
+  ReadDataRGB(Desc.Width, Desc.Height);
+
+  if Desc.MipMaps>1 then begin
+    // Read MipMaps
+    MWidth := Width;
+    MHeight := Height;
+    FreeMipMaps;
+    FNumMipMaps := Desc.MipMaps - 1;
+    SetLength(FMipMaps, FNumMipMaps);
+    for i:=0 to FNumMipMaps-1 do begin
+      MWidth := MWidth div 2;
+	    if MWidth = 0 then MWidth := 1;
+      MHeight := MHeight div 2;
+	    if MHeight = 0 then MHeight := 1;
+      Pixels := AllocMem(MWidth * MHeight * Sizeof(TColor32));
+      ReadDataRGB(MWidth, MHeight);
+      FMipMaps[i] := Pixels;
+    end;
+  end;
+
+  end;
+end;
+
+procedure TBitmap32.SaveToDDS(Stream: TStream; ColorBits: Integer);
+var
+  Hdr: TDDSFileHeader;
+ i, PixelSize, Maps, NMaps, MWidth, MHeight: Integer;
+ Pixels: PColor32Array;
+
+ procedure WriteRGB(dWidth, dHeight: Integer);
+ var
+ x, y : Integer;
+ Pixel: PColor32;
+ Color: TColor32Entry;
+ begin
+  for y := 0 to dHeight - 1 do
+    for x := 0 to dWidth - 1 do
+    begin
+      Pixel := @Pixels[x + y * dWidth];
+      Stream.Write(Pixel^, PixelSize);
+    end;
+ end;
+
+begin
+  FillChar(Hdr, Sizeof(Hdr), 0);
+  PixelSize := ColorBits div 8;
+  with Hdr do begin
+    Magic := DDSMagic;
+    Desc.Size := SizeOf(Desc);
+    Desc.Width := FWidth;
+    Desc.Height := FHeight;
+    Desc.Flags := DDS_SAVE_FLAGS;
+    Desc.Caps.Caps1 := DDSCAPS_TEXTURE;
+    Desc.PixelFormat.Size := SizeOf(Desc.PixelFormat);
+    Desc.PitchOrLinearSize := FWidth * FHeight * PixelSize;
+
+    if FNumMipMaps > 0 then
+    begin
+      // Set proper flags if we have some mipmaps to be saved
+      Desc.Flags := Desc.Flags or DDSD_MIPMAPCOUNT;
+      Desc.Caps.Caps1 := Desc.Caps.Caps1 or DDSCAPS_MIPMAP or DDSCAPS_COMPLEX;
+      Desc.MipMaps := FNumMipMaps + 1;
+    end;
+
+    Desc.PixelFormat.Flags := DDPF_RGB;
+    Desc.PixelFormat.BitCount := ColorBits;
+
+    Desc.PixelFormat.RedMask :=   $00FF0000;
+    Desc.PixelFormat.GreenMask := $0000FF00;
+    Desc.PixelFormat.BlueMask :=  $000000FF;
+
+    if PixelSize = 4 then
+      begin
+        Desc.PixelFormat.Flags := Desc.PixelFormat.Flags or DDPF_ALPHAPIXELS;
+        Desc.PixelFormat.AlphaMask := $FF000000;
+      end;
+  end;
+
+  Stream.Write(Hdr, SizeOf(Hdr));
+  Pixels := FBits;
+  WriteRGB(FWidth,FHeight);
+
+  MWidth := FWidth;
+  MHeight := FHeight;
+
+	for i := 0 to FNumMipMaps - 1 do
+	begin
+    Pixels := FMipMaps[i];
+    MWidth  := MWidth div 2;
+	  if MWidth = 0 then MWidth := 1;
+    MHeight := MHeight div 2;
+	  if MHeight = 0 then MHeight := 1;
+    WriteRGB(MWidth, MHeight);
+  end;
+
+end;
 
 end.
