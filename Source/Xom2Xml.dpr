@@ -13,6 +13,7 @@ uses
 var
   FileName, OFilename :String;
   guid, help, schema, log, isxid, outfile, clear, xomfile: boolean;
+  ximg: TXImg;
 
 procedure ExportXML(FileName: String; schmnode : TXmlNode);
 var
@@ -28,6 +29,7 @@ begin
   LoadedXom.LoadXomFileName(FileName, s,false);
   LoadedXom.LogXML:=log;
   LoadedXom.IsXid:=isxid;
+  LoadedXom.XImg:=XImg;
   XContainer := schmnode.NodeByName('XContainer');
 
   XML := TNativeXml.CreateName('xomArchive');
@@ -145,54 +147,53 @@ begin
   NewXom.Free;
 end;
 
+procedure ReadParamOption(var Option:String; const Name: String);
 var
-i: integer;
-param, schmfile, Xgame: string;
-schmxml: TNativeXml = nil;
-schmnode : TXmlNode = nil;
+ i: integer;
 begin
-  guid:=FindCmdLineSwitch('g');
-  help:=FindCmdLineSwitch('h');
-  log:=FindCmdLineSwitch('l');
-  clear:=FindCmdLineSwitch('cl');
-  isxid:=FindCmdLineSwitch('id');
-  schema:=FindCmdLineSwitch('schm');
-  outfile:=FindCmdLineSwitch('out');
-  xomfile:=FindCmdLineSwitch('xom');
+ for i:=1 to ParamCount do
+  begin
+     if (ParamStr(i) = Name) and (i<ParamCount) then
+        begin Option := ParamStr(i+1); break; end;
+  end;
+end;
+
+var
+ i: integer;
+ param, schmfile, Xgame: string;
+ schmxml: TNativeXml = nil;
+ schmnode : TXmlNode = nil;
+begin
+  guid := FindCmdLineSwitch('g');
+  help := FindCmdLineSwitch('h');
+  log := FindCmdLineSwitch('l');
+  clear := FindCmdLineSwitch('cl');
+  isxid := FindCmdLineSwitch('id');
+  schema := FindCmdLineSwitch('schm');
+  outfile := FindCmdLineSwitch('out');
+  xomfile := FindCmdLineSwitch('xom');
+  ximg.base64 := FindCmdLineSwitch('ximg-base64');
+  ximg.isfile := FindCmdLineSwitch('ximg-file');
+  ximg.outfile := 'png';
+  ximg.isdir := FindCmdLineSwitch('ximg-dir');
   if clear then isxid := false;
-  WUM:=true;
-  W3D:=false;
-  schmfile:='XOMSCHM.dat';
+  WUM := true;
+  W3D := false;
+  schmfile := 'XOMSCHM.dat';
   Filename := '';
   for i:=1 to ParamCount do
   begin
-     param:= ParamStr(i);
+     param := ParamStr(i);
      if (param[1]<>'-') then begin FileName:= param; break; end;
   end;
-  OFilename:=FileName;
-  if schema then
- for i:=1 to ParamCount do
-  begin
-     param:= ParamStr(i);
-     if (param='-schm') and (i<ParamCount) then
-        begin schmfile:= ParamStr(i+1); break; end;
-  end;
+  OFilename := FileName;
+  if schema then ReadParamOption(schmfile, '-schm');
+  if xomfile then ReadParamOption(FileName, '-xom');
+  if outfile then ReadParamOption(OFilename, '-out');
+  if ximg.isfile then ReadParamOption(ximg.outfile, '-ximg-file');
+  ximg.dir := ExtractFilePath(OFilename);
+  if ximg.isdir then ReadParamOption(ximg.dir, '-ximg-dir');
 
-  if xomfile then
- for i:=1 to ParamCount do
-  begin
-     param:= ParamStr(i);
-     if (param='-xom') and (i<ParamCount) then
-        begin FileName:= ParamStr(i+1); break; end;
-  end;
-
-  if outfile then
- for i:=1 to ParamCount do
-  begin
-     param:= ParamStr(i);
-     if (param='-out') and (i<ParamCount) then
-        begin OFilename:= ParamStr(i+1); break; end;
-  end;
   if (Filename='') or help then begin
     // show help
     Writeln('Xom2Xml version 1.3');
@@ -202,18 +203,27 @@ begin
     Writeln('   Xom2Xml <filename> [options]');
     Writeln;
     Writeln('Filename:');
-    Writeln('   file.xml      For converting xml file to xom');
-    Writeln('   file.xom      For converting xom file to xml');
+    Writeln('   file.xml             For converting xml file to xom');
+    Writeln('   file.xom             For converting xom file to xml');
     Writeln;
     Writeln('Options:');
-    Writeln('   -h            Shows help and usage information');
-    Writeln('   -id           Export Xid index to XML to save original order');
-    Writeln('   -schm <file>  Sets a custom scheme file.');
-    Writeln('                 The default is XOMSCHM.dat scheme file');
-    Writeln('   -out <file>   Sets output filename to save');
-    Writeln('   -xom <file>   Sets input filename as xom');
-    Writeln('   -l            Logs process of reading');
-    Writeln('   -cl           Export XML in game format');
+    Writeln('   -h                   Shows help and usage information');
+    Writeln('   -id                  Export Xid index to XML to save original order');
+    Writeln('   -schm <file>         Sets a custom scheme file.');
+    Writeln('                        The default is XOMSCHM.dat scheme file');
+    Writeln('   -out <file>          Sets output filename to save');
+    Writeln('   -xom <file>          Sets input filename as xom');
+    Writeln('   -l                   Logs process of reading');
+    Writeln('   -cl                  Export XML in game format');
+    Writeln('   -ximg-base64         Save XImage data as Base64 encoding.');
+    Writeln('                        Otherwise save XImage data as file.');
+    Writeln('   -ximg-file <format>  Set XImage data in format:');
+    Writeln('    -ximg-file bin      BIN with Mipmaps');
+    Writeln('    -ximg-file dds      DDS with Mipmaps');
+    Writeln('    -ximg-file png      PNG compression');
+    Writeln('    -ximg-file tga      TGA format');
+    Writeln('   -ximg-dir <dir>      Save XImages files in custom directory.');
+    Writeln('                        The default is output folder for XML');
 
    // Writeln('   -g       Save GUID info from xom as xml');
     Writeln;
