@@ -3,7 +3,7 @@ unit XomLibTwk;
 interface
 
 uses IdGlobal, SysUtils, Classes,
-  Math, XomCntrLibTwk, NativeXml, TntClasses, Base64;
+  Math, XomCntrLibTwk, NativeXml, TntClasses, GR32, Base64;
 
 type TXomType = packed record
         aType:array [0..3] of Char;
@@ -40,6 +40,14 @@ type TXomHandle = packed record
     Values: array [0..12] of Integer;
   end;
 
+  TXImg = record
+    base64: boolean;
+    isfile: boolean;
+    outfile: string;
+    isdir: boolean;
+    dir: string;
+    end;
+
   TStEdByte = record
     //sbyte,ebyte:smallint;
     id: Integer;
@@ -63,6 +71,7 @@ type
     LogXML:boolean;
     IsXid:boolean;
     XMLNumCntr: Integer;
+    XImg:TXImg;
     function GetXType(XName:PChar;var XType:XTypes):Boolean;
     procedure LoadXomFileName(FileName: string; var OutCaption: string; ShowProgress:boolean=true);
 
@@ -70,12 +79,13 @@ type
     procedure SaveXom(FileName: String);
   //  function BuildTree( XCntr: TContainer; Tree: TTreeView; Node: TTreeNode): XTypes;
     function ReadXContainer(p:pointer;NType:XTypes; var Name:String; var IsCtnr:Boolean; Schema: Integer):Pointer;
-//    function AddXMLNode(XCntr: TContainer; XML: TNativeXml; TreeNode: TXmlNode): TXmlNode;
     procedure AddXTypeXML( XContainer,xomObjects:TXmlNode);
     procedure LoadXTypeXML( XContainer,xomTypes:TXmlNode);
     function GetXTypeName(Name:String;XContainer:TXmlNode):String;
     procedure WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXmlNode);
     function AddXMLNode(XCntr:TContainer; XContainer:TXmlNode; XName:String; XML:TNativeXml; xomObjects:TXmlNode):String;
+    function XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
+    procedure XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
     procedure LoadFromXML(xomTypes, xomObjects, XContainer:TXmlNode);
     procedure InitXomHandle;
     procedure SaveXomHandle(var p:pointer);
@@ -592,6 +602,8 @@ begin
 end;
 
 Function TXom.ReadXContainer(p:pointer;NType:XTypes;var Name:String; var IsCtnr:Boolean; Schema: Integer):pointer;
+label
+_XSimpleShader;
 var
 p2:Pointer;
 k,s,x,x1,x2,k3,k2,inx, inx1,inx2:integer;
@@ -997,13 +1009,24 @@ begin
               s := TestByte128(p2);
             //  IsCtnr := false;
             end;
-            XSimpleShader:
+            XTexFont:
             begin
+              for x := 1 to k do
+                Inc(Longword(p2), 8);
+              k := TestByte128(p2);
+              for x := 1 to k do
+                Inc(Longword(p2), 8);
+              k := TestByte128(p2);
+              goto _XSimpleShader;
+            end;
+            XSimpleShader:
+            begin _XSimpleShader:
               for x := 1 to k do    // TextureStages
                 k3 := TestByte128(p2);
               k := TestByte128(p2);  
               for x := 1 to k do    // Attributes
                 k3 := TestByte128(p2);
+              // XShader
               Inc(Longword(p2), 4); // Flags
               Name := GetStr128(p2); // Name
               if WUM then begin
@@ -1012,24 +1035,6 @@ begin
                if (Schema = 2) then  Inc(Longword(p2)); // FragmentShader  Schema	2
               end;
               IsCtnr := false;
-            end;
-            XTexFont:
-            begin
-              for x := 1 to k do 
-                Inc(Longword(p2), 8);
-              k := TestByte128(p2);
-              for x := 1 to k do 
-                Inc(Longword(p2), 8);
-              k := TestByte128(p2);
-              for x := 1 to k do
-                k3 := TestByte128(p2);
-              k := TestByte128(p2);
-              for x := 1 to k do
-                k3 := TestByte128(p2);
-              Inc(Longword(p2), 4);
-              s := TestByte128(p2);
-              if WUM then  Inc(Longword(p2));
-               IsCtnr := false;
             end;
             XContainerResourceDetails:
             begin
@@ -1093,6 +1098,7 @@ begin
             end;
             XAlphaTest:
             begin
+              Inc(Longword(p2), 8);
               IsCtnr := false;
             end;
             XLightingEnable:
@@ -1441,6 +1447,156 @@ const
 var
 XGlobid:Integer=0;
 
+function TXom.XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
+var
+  Bitmap: TBitmap32;
+  Mem: TMemoryStream;
+  Name, attr, FileName: String;
+  Width, Height, xFormat, Bits, MipMaps: Integer;
+begin
+  if XImg.isfile then begin
+
+    Name := ExtractFileName(XImageNode.NodeByName('Name').ValueUnicode);
+    if Pos('.',Name)>0 then
+      Name:=ChangeFileExt(Name,'.'+Ximg.outfile)
+    else begin
+      attr := XImageNode.AttributeValueByName['id'];
+      Name := format('%s.%s',[ attr, Ximg.outfile]);
+    end;
+
+    if XImg.dir <> '' then XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
+
+    FileName:= XImg.dir + Name;
+     if XImg.outfile = 'bin' then
+     begin
+       Mem:= TMemoryStream.Create;
+       Mem.Write(Point^,Size);
+       Mem.SaveToFile(FileName);
+       Mem.Free;
+       Result := FileName;
+     end else
+     begin
+      Bitmap:= TBitmap32.Create;
+      Width := XImageNode.NodeByName('Width').ValueAsInteger;
+      Height := XImageNode.NodeByName('Height').ValueAsInteger;
+      MipMaps := XImageNode.NodeByName('MipLevels').ValueAsInteger;
+      xFormat := XImageNode.NodeByName('Format').ValueAsInteger;
+      Case xFormat of
+       0: Bits := 24;  // kImageFormat_R8G8B8
+       1: Bits := 32; // kImageFormat_A8R8G8B8
+      else begin // TODO
+         WriteLn(Format('Error: kImageFormat %s not supported',[ImageFormatWUM[xFormat]]));
+         Halt;
+        end;
+      end;
+
+      Bitmap.LoadFromData(Point, Width, Height, Bits, MipMaps);
+      Mem:= TMemoryStream.Create;
+
+      if XImg.outfile = 'png' then
+        Bitmap.SaveToPNG(Mem)
+      else if XImg.outfile = 'tga' then
+        Bitmap.SaveToTGA(Mem, Bits)
+      else if XImg.outfile = 'dds' then
+        Bitmap.SaveToDDS(Mem, Bits);
+
+      if XImg.base64 then
+        Result:= 'data:image/' + XImg.outfile + ';base64,' + EncodePointer(Mem.Memory, Mem.Size)
+      else begin
+        Mem.SaveToFile(FileName);
+        Result := FileName;
+      end;
+
+      Mem.Free;
+      Bitmap.Free;
+     end
+  end else
+     Result := EncodePointer(Point, Size);
+
+end;
+
+procedure TXom.XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
+var
+  Bitmap: TBitmap32;
+  Mem: TMemoryStream;
+  isfile, isBase64: Boolean;
+  Name, base64Data, base64Head, ExtPart, FileName, outfile: String;
+  Width, Height, xFormat, Bits, MipMaps, Len, ps: Integer;
+begin
+  isfile := false;
+  isBase64 := false;
+  outfile := '';
+  Len := Length(XValue);
+  if Len > 4 then begin
+    base64Head := Copy(XValue, 0, 5); // data:
+    ExtPart := Copy(XValue, len - 3, 1); // .png
+    if base64Head = 'data:' then begin isBase64:=True; isfile:=true;  end
+    else if ExtPart = '.' then begin isfile:=true;  end;
+  end;
+
+  if isfile then begin
+
+    if not isBase64 and not FileExists(XValue) then
+    begin
+       WriteLn(Format('Error: File %s not exist',[XValue]));
+       Halt;
+    end;
+      Mem:= TMemoryStream.Create;
+
+    if isBase64 then begin
+      ps:= Pos('base64,',XValue) + 6; // ;base64,
+      base64Data := Copy(XValue, ps + 1, len - ps );
+      outfile:= Copy(XValue, 12, 3);// 'data:image/' ext ';base64,'
+      DecodeStreamString(base64Data, Mem);
+    end else begin
+      outfile := LowerCase(Copy(XValue, len - 2, 3));
+      FileName := XValue;
+      Mem.LoadFromFile(FileName);
+    end;
+
+     if outfile = 'bin' then
+     begin
+       Buf.CopyFrom(Mem, Mem.Size);
+     end else
+     begin
+      Bitmap:= TBitmap32.Create;
+
+      Width := XImageNode.NodeByName('Width').ValueAsInteger;
+      Height := XImageNode.NodeByName('Height').ValueAsInteger;
+      MipMaps := XImageNode.NodeByName('MipLevels').ValueAsInteger;
+      xFormat := XImageNode.NodeByName('Format').ValueAsInteger;
+      if xFormat>1 then begin // TODO
+         WriteLn(Format('Error: kImageFormat %s not supported',[ImageFormatWUM[xFormat]]));
+         Halt;
+        end;
+
+      Bits := (3 + xFormat) * 8;
+      Mem.Position := 0;
+
+      if outfile = 'png' then
+        Bitmap.LoadFromPNG(Mem)
+      else if outfile = 'tga' then
+        Bitmap.LoadFromTGA(Mem)
+      else if outfile = 'dds' then
+        Bitmap.LoadFromDDS(Mem);
+       // TODO convert full XImage
+      if (Width <> Bitmap.Width) or (Height <> Bitmap.Height) then begin
+         WriteLn(Format('Error: WxH = %d x %d is not correct',[Bitmap.Width, Bitmap.Height]));
+         Halt;
+        end;
+
+      if MipMaps > 1 then Bitmap.GenMipMaps;
+
+      Bitmap.SaveToStream(Buf, Bits);
+      Bitmap.Free;
+     end;
+
+     Mem.Free;
+  end else
+     DecodeStreamString(XValue, Buf);
+
+end;
+
 function TXom.AddXMLNode(XCntr:TContainer; XContainer:TXmlNode; XName:String;  XML:TNativeXml; xomObjects:TXmlNode):String;
 var
   XType,XRef: string;
@@ -1551,7 +1707,10 @@ var
           XStNode := TsdCharData.CreateParent(XML,XNode);
           s:='';
           If XValueType = 'XBase64Byte' then begin
-            s := EncodePointer(p2,n);
+            if XCont.Name = 'XImage' then
+              s := XImageEncode(XCont, p2, n)
+            else
+              s := EncodePointer(p2,n);
             Inc(Longword(p2), n);
           end else begin
             for i := 1 to n do
@@ -1711,7 +1870,8 @@ begin
       Writeln(Format('Error: %s Size: %d <> %d',[XType,Longword(p2)-Longword(XCntr.Point),XCntr.Size]));
   if IsXid then XCont.AttributeAdd('Xid',IntToStr(XCntr.Index));
   if not XCntr.CTNR then XCont.AttributeAdd('NoCntr','true');
-  if (SXCont.Name<>'XGraphSet') and (SmallInt(XCntr.Point^)>0) then XCont.AttributeAdd('Zver',IntToStr(SmallInt(XCntr.Point^)));
+  if XCntr.CTNR and (Byte(XCntr.Point^)>0)
+    then XCont.AttributeAdd('Zver',IntToStr(Byte(XCntr.Point^)));
   Inc(XMLNumCntr);
   Result := XRef;
 end;
@@ -1995,7 +2155,10 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
           else
             XValue :=sdReplaceString(TsdText(XCont.Nodes[1]).GetCoreValue);
           If XValueType = 'XBase64Byte' then begin
-            DecodeStreamString(XValue,Buf);
+            if XCont.Parent.Name = 'XImage' then
+             XImageDecode(XCont.Parent, XValue, Buf)
+            else
+             DecodeStreamString(XValue,Buf);
             exit;
           end;
           XValues := TStringList.Create;
