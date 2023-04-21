@@ -261,7 +261,11 @@
       </XMatrix>
     </XCore>
     <XShader guid="{58A4C3A0-8C4D-4E94-AE28-975CC0D246E0}" Xver="2" id="XRef" Xtype="XClass">
-      <XSimpleShader guid="{21BE2651-4990-41C0-A528-E1562E8F1FD0}" Xver="0" id="XRef">
+      <XSimpleShader guid="{21BE2651-4990-41C0-A528-E1562E8F1FD0}" Xver="0" id="XRef" Xtype="XClass">
+		<XTexFont guid="{1AFF34EE-AE4F-45B3-A669-E60BFEFEB727}" Xver="0" id="XRef">
+			<CharCoords Xtype="XCollection" Xpack="true">XVector2f</CharCoords>
+			<CharSizes Xtype="XCollection" Xpack="true">XVector2f</CharSizes>
+		</XTexFont>
         <TextureStages Xtype="XCollection" href="XContainer" />
         <Attributes Xtype="XCollection" href="XContainer" />
       </XSimpleShader>
