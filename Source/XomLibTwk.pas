@@ -1464,7 +1464,10 @@ begin
       Name := format('%s.%s',[ attr, Ximg.outfile]);
     end;
 
-    if XImg.dir <> '' then XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
+    if XImg.dir <> '' then begin
+      if not DirectoryExists(XImg.dir) then CreateDir(XImg.dir);
+      XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
+    end;
 
     FileName:= XImg.dir + Name;
      if XImg.outfile = 'bin' then
