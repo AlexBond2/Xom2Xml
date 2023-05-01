@@ -2,6 +2,7 @@
 <xomSCHM Xgame="WUM">
   <XGraphSet guid="{64BF3D0B-3941-40BB-B179-8F882D14449B}" Xver="0" NoCntr="true" id="XRef">
     <Graph Type="XGUID" href="XContainer" Name="XString" Xtype="XCollection" />
+    <!-- Bitmap {6E43CC99-BE6F-4BF5-85D2-BFCDF9AE4283} -->
     <!-- GUID_GeometryGraph {E4DBE66A-86FA-456B-A73F-F9130E12DFEB} -->
     <!-- GUID_CollisionData {C58FC2ED-9E8E-4505-9BAA-5575E9CD6DC6} -->
     <!-- Phantom Collision Data {C58FC2ED-9E8E-4505-9BAA-5575E9CD6DC6} -->
@@ -64,27 +65,6 @@
       <StringTableResources href="XContainerResourceDetails" Xtype="XCollection" />
       <ColorResources href="XColorResourceDetails" Xtype="XCollection" />
     </XDataBank>
-    <XTextureStage guid="{73798F07-9792-4DDE-AD87-76D1AEA37684}" Xver="2" id="XRef" Xtype="XClass">
-      <XTextureMap guid="{EDE002E0-1BD1-4B80-8A2E-C2A042C58B1A}" Xver="0" id="XRef" Xtype="XClass">
-        <XOglTextureMap guid="{BB248D9C-0051-4E53-B0C1-60355A2D215F}" Xver="0" id="XRef">
-          <Blend>XEnum</Blend>
-          <BlendColor>XVector4f</BlendColor>
-        </XOglTextureMap>
-        <Texture href="XContainer" />
-      </XTextureMap>
-      <MaxAnisotropy>XFloat</MaxAnisotropy>
-      <!-- <FourCC Obsolete="2">XUInt</FourCC> -->
-      <Enable>XBool</Enable>
-      <TexCoordIndex>XUInt8</TexCoordIndex>
-      <!-- <MaxMipMapLevel Obsolete="2">XUInt8</MaxMipMapLevel> -->
-      <AddressModeS>XEnum</AddressModeS>
-      <AddressModeT>XEnum</AddressModeT>
-      <MagFilter>XEnum</MagFilter>
-      <MinFilter>XEnum</MinFilter>
-      <MipFilter>XEnum</MipFilter>
-      <!-- <Matrix Obsolete="2">XMatrix4f</Matrix> -->
-      <TextureGen href="XContainer" />
-    </XTextureStage>
     <XBaseResourceDescriptor2 guid="{31BD00F6-F3CE-4588-8126-D1DFD58ACD22}" Xver="0" id="XRef" Xtype="XClass">
       <XMeshDescriptor2 guid="{E70CE377-7E88-48DC-9029-903A7ADA2AD6}" Xver="0" id="XRef">
         <Graph href="XContainer" />
@@ -97,6 +77,29 @@
       <BankIndex>XUInt8</BankIndex>
       <InstanceCount>XUInt16</InstanceCount>
     </XBaseResourceDescriptor2>
+    <XAnimClipLibrary guid="{FFC0E26A-719A-4819-9779-47CCF9BEF3B2}" Xver="0" id="XRef">
+      <Name>XString</Name>
+      <AttributeMap Field="XUInt8" Flags="XUInt16" SubEntry="XUInt8" NodePath="XString" Xtype="XMapCollection" />
+      <AnimClips Duration="XFloat" Name="XString" Xtype="XClipCollection">
+        <AnimChannel Xtype="XChannelCollection">
+          <MustContribute>XBool</MustContribute>
+          <IsWeighted>XBool</IsWeighted>
+          <IsStatic>XBool</IsStatic>
+          <IsLinear>XBool</IsLinear>
+          <MapID>XUInt16</MapID>
+          <PostInfinity>XEnum</PostInfinity>
+          <PreInfinity>XEnum</PreInfinity>
+          <KeyArray Xtype="XKeyCollection" Xpack="true">XKey</KeyArray>
+        </AnimChannel>
+      </AnimClips>
+    </XAnimClipLibrary>
+    <XAnimInfo guid="{14624473-D780-41E2-A511-FFB1086D7520}" Xver="0" id="XRef">
+      <HasAnimatedAlpha>XBool</HasAnimatedAlpha>
+      <HasAnimatedColor>XBool</HasAnimatedColor>
+    </XAnimInfo>
+    <XExpandedAnimInfo guid="{2D480BE2-E5E7-4B69-B028-607F5A52C870}" Xver="0" id="XRef">
+      <Flags>XUInt</Flags>
+    </XExpandedAnimInfo>
     <XGeometry guid="{5B23F9B9-EF3F-4DE0-B7A9-87367921A69D}" Xver="2" Xtype="XClass">
       <XGeoSet guid="{F1337197-F57E-4ACB-9770-63794A52DEAE}" Xver="0" Xtype="XClass">
         <XIndexedGeoSet guid="{7DD1BB1B-5A50-4266-BFD6-9C66CB7EEA47}" Xver="0" Xtype="XClass">
@@ -130,12 +133,22 @@
         <XColor4ubSet guid="{1E96CAA0-6108-4256-9425-BB3D0075970B}" Xver="0" id="XRef">
           <Color Xtype="XCollection" Xpack="true">XColor4ub</Color>
         </XColor4ubSet>
+        <XConstColorSet guid="{BD86901B-845C-41BD-8FAF-0F352AE66A3C}" Xver="0" id="XRef">
+          <Color>XVector4f</Color>
+        </XConstColorSet>
       </XColorSet>
       <XTexCoordSet guid="{1918AFD0-3D89-4FC8-AE3F-D129A8F7F7D0}" Xver="0" Xtype="XClass">
         <XTexCoord2fSet guid="{00F8A32F-30D6-4C86-B065-D3C986CF4CF0}" Xver="0" id="XRef">
           <TexCoord Xtype="XCollection" Xpack="true">XVector2f</TexCoord>
         </XTexCoord2fSet>
       </XTexCoordSet>
+      <XWeightSet guid="{BE31B087-5E35-4657-A955-06A97C7E6E96}" Xver="0" id="XRef" Xtype="XClass">
+        <XPaletteWeightSet guid="{90034327-AFD5-43C2-AC26-D99120CF03CC}" Xver="0" id="XRef">
+          <Indices Xtype="XCollection" Xpack="true">XUInt8</Indices>
+        </XPaletteWeightSet>
+        <WeightCount>XUInt16</WeightCount>
+        <Weight Xtype="XCollection" Xpack="true">XFloat</Weight>
+      </XWeightSet>
     </XVertexDataSet>
     <XIndexArray guid="{4F350A17-ED9F-4048-A5A2-7D1B9DBC594A}" Xver="0" Xtype="XClass">
       <XIndexSet guid="{3980830B-1963-43FA-B753-116C5DA74C16}" Xver="0" id="XRef">
@@ -143,11 +156,27 @@
       </XIndexSet>
       <!-- <IndexAPIHandle>XUInt</IndexAPIHandle> -->
     </XIndexArray>
+    <XPathFinderData guid="{C1208DDC-8144-4955-A440-2113257B10C5}" Xver="0" id="XRef">
+      <NodePosition Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
+      <NodeDirection Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
+      <NodeCost Xtype="XCollection">XFloat</NodeCost>
+      <EdgeIndexBase Xtype="XCollection">XUInt16</EdgeIndexBase>
+      <EdgeCount Xtype="XCollection">XUInt8</EdgeCount>
+      <EdgeTargets Xtype="XCollection">XUInt16</EdgeTargets>
+      <EdgeCost Xtype="XCollection">XFloat</EdgeCost>
+    </XPathFinderData>
     <XCollisionData guid="{A5B702B6-4871-4065-8252-01117916FC0C}" Xver="0" id="XRef">
       <SphereCentres x="XFloat" y="XFloat" z="XFloat" Xtype="XCollection" />
       <SphereRadii Xtype="XCollection">XFloat</SphereRadii>
       <Geom Xtype="XCollection" href="XContainer" />
     </XCollisionData>
+    <XPositionData guid="{DE034903-C8C5-451A-93A6-1353B47B69F9}" Xver="0" id="XRef">
+      <Name Xtype="XCollection">XString</Name>
+      <Type Xtype="XCollection">XUInt</Type>
+      <Pos Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
+      <Dir Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
+      <MineType Xtype="XCollection">XUInt</MineType>
+    </XPositionData>
     <XFortsExportedData guid="{8304C83C-35AD-4D23-9D15-23E5EF711E64}" Xver="4" id="XRef">
       <Epoch>XUInt8</Epoch>
       <FogNear>XFloat</FogNear>
@@ -184,6 +213,26 @@
       <DetailObjectOrientation Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
       <DetailObjectScale Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
     </XDetailObjectsData>
+    <XExportAttribute guid="{EC8D36C7-5EC4-4D1E-9B62-752347C48FD3}" Xver="0" Xtype="XClass">
+      <XExportAttributeInt guid="{3A944E12-533B-48BB-83C4-31F9C721F51B}" Xver="0" id="XRef">
+        <IntAttribute>XInt</IntAttribute>
+      </XExportAttributeInt>
+      <XExportAttributeBool guid="{0BAE18FF-3243-4D48-840D-845F6DAD0385}" Xver="0" id="XRef">
+        <BoolAttribute>XBool</BoolAttribute>
+      </XExportAttributeBool>
+      <XExportAttributeString guid="{3D4352B8-BCF3-4844-8A9A-02B0255EEB90}" Xver="0" id="XRef">
+        <StringAttribute>XString</StringAttribute>
+      </XExportAttributeString>
+      <XExportAttributeFloat guid="{E868B773-F15E-4E58-BCA4-56C584D2A5AA}" Xver="0" id="XRef">
+        <FloatAttribute>XFloat</FloatAttribute>
+      </XExportAttributeFloat>
+      <AttributeName>XString</AttributeName>
+      <XomObjectName>XString</XomObjectName>
+      <AttributeType>XEnum</AttributeType>
+    </XExportAttribute>
+    <XXomInfoNode guid="{E6FBE86E-C6DD-4383-A13D-D1409DFCB6E2}" Xver="0" id="XRef">
+      <Attributes Xtype="XCollection" href="XExportAttribute" />
+    </XXomInfoNode>
     <XNode guid="{BF1E8B2B-025D-4EB2-B937-05575E5771D3}" Xver="0" Xtype="XClass">
       <XCollisionGeometry guid="{F61BF2D7-F882-4CDF-8893-3AA84AE16022}" Xver="0" id="XRef" Xtype="XClass">
         <Restitution>XFloat</Restitution>
@@ -220,6 +269,14 @@
           <Voxels Xtype="XCollection" Xpack="true">XUIntHex</Voxels>
           <Details href="DetailEntityStore" Xtype="XCollection" />
         </LandFrameStore>
+        <XSkin guid="{428C389D-F4F7-41BD-AA94-359EAD62DF6E}" Xver="0" id="XRef">
+          <Skeleton href="XContainer" />
+        </XSkin>
+        <XBone guid="{0D0FFE87-0BED-47A4-A5EF-72E1F7496954}" Xver="0" id="XRef">
+          <PoseMatrix>XMatrix</PoseMatrix>
+          <Transform>XMatrix</Transform>
+          <Affine>XBool</Affine>
+        </XBone>
         <XGroup guid="{DED0CDAE-4DB7-42E2-84A7-8BC056730BA7}" Xver="0" id="XRef">
           <Core href="XContainer" />
         </XGroup>
@@ -233,7 +290,10 @@
         <VoxelPos x="XFloat" y="XFloat" z="XFloat" />
         <Scale x="XFloat" y="XFloat" z="XFloat" />
       </DetailEntityStore>
-      <XShape guid="{F39F012E-DE00-451B-9B10-CB09402F24B4}" Xver="4" id="XRef">
+      <XShape guid="{F39F012E-DE00-451B-9B10-CB09402F24B4}" Xver="4" id="XRef" Xtype="XClass">
+        <XSkinShape guid="{C8ABC4B3-92A0-4E04-B537-F7C3A403FF5A}" Xver="0" id="XRef">
+          <Bones Xtype="XCollection" href="XBone" />
+        </XSkinShape>
         <Flags>XUInt</Flags>
         <Shader href="XContainer" />
         <Geometry href="XContainer" />
@@ -250,7 +310,11 @@
     </XNode>
     <XCore guid="{342A9484-87C8-4D47-B5A2-76A71267E169}" Xver="0" Xtype="XClass">
       <XMatrix guid="{51672D19-B40A-4E08-B836-72A4CC51A649}" Xver="0" id="XRef" Xtype="XClass">
-        <XTransform guid="{6FBF0008-51C8-4407-9BA0-00864B1A0A8E}" Xver="0" id="XRef">
+        <XTransform guid="{6FBF0008-51C8-4407-9BA0-00864B1A0A8E}" Xver="0" id="XRef" Xtype="XClass">
+          <XJointTransform guid="{2752EA87-BAD4-48EC-AF92-86470A92B186}" Xver="0" id="XRef">
+            <RotateAxis x="XFloat" y="XFloat" z="XFloat" />
+            <JointOrientation x="XFloat" y="XFloat" z="XFloat" />
+          </XJointTransform>
           <Translate x="XFloat" y="XFloat" z="XFloat" />
           <Rotate x="XFloat" y="XFloat" z="XFloat" />
           <Scale x="XFloat" y="XFloat" z="XFloat" />
@@ -262,10 +326,10 @@
     </XCore>
     <XShader guid="{58A4C3A0-8C4D-4E94-AE28-975CC0D246E0}" Xver="2" id="XRef" Xtype="XClass">
       <XSimpleShader guid="{21BE2651-4990-41C0-A528-E1562E8F1FD0}" Xver="0" id="XRef" Xtype="XClass">
-		<XTexFont guid="{1AFF34EE-AE4F-45B3-A669-E60BFEFEB727}" Xver="0" id="XRef">
-			<CharCoords Xtype="XCollection" Xpack="true">XVector2f</CharCoords>
-			<CharSizes Xtype="XCollection" Xpack="true">XVector2f</CharSizes>
-		</XTexFont>
+        <XTexFont guid="{1AFF34EE-AE4F-45B3-A669-E60BFEFEB727}" Xver="0" id="XRef">
+          <CharCoords Xtype="XCollection" Xpack="true">XVector2f</CharCoords>
+          <CharSizes Xtype="XCollection" Xpack="true">XVector2f</CharSizes>
+        </XTexFont>
         <TextureStages Xtype="XCollection" href="XContainer" />
         <Attributes Xtype="XCollection" href="XContainer" />
       </XSimpleShader>
@@ -338,6 +402,27 @@
       <Format>XEnum</Format>
       <Data Xtype="XCollection" Xpack="true">XUInt8</Data>
     </XPalette>
+    <XTextureStage guid="{73798F07-9792-4DDE-AD87-76D1AEA37684}" Xver="2" id="XRef" Xtype="XClass">
+      <XTextureMap guid="{EDE002E0-1BD1-4B80-8A2E-C2A042C58B1A}" Xver="0" id="XRef" Xtype="XClass">
+        <XOglTextureMap guid="{BB248D9C-0051-4E53-B0C1-60355A2D215F}" Xver="0" id="XRef">
+          <Blend>XEnum</Blend>
+          <BlendColor>XVector4f</BlendColor>
+        </XOglTextureMap>
+        <Texture href="XContainer" />
+      </XTextureMap>
+      <MaxAnisotropy>XFloat</MaxAnisotropy>
+      <!-- <FourCC Obsolete="2">XUInt</FourCC> -->
+      <Enable>XBool</Enable>
+      <TexCoordIndex>XUInt8</TexCoordIndex>
+      <!-- <MaxMipMapLevel Obsolete="2">XUInt8</MaxMipMapLevel> -->
+      <AddressModeS>XEnum</AddressModeS>
+      <AddressModeT>XEnum</AddressModeT>
+      <MagFilter>XEnum</MagFilter>
+      <MinFilter>XEnum</MinFilter>
+      <MipFilter>XEnum</MipFilter>
+      <!-- <Matrix Obsolete="2">XMatrix4f</Matrix> -->
+      <TextureGen href="XContainer" />
+    </XTextureStage>
     <IntegerArray guid="{8988E3A1-397F-4016-8748-B02D6A6108B1}" Xver="0" id="XRef">
       <Integers Xtype="XCollection">XUInt</Integers>
     </IntegerArray>
