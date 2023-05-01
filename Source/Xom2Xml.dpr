@@ -43,7 +43,7 @@ begin
   if not clear then begin
  // Types
   xomTypes := XML.NodeNew('xomTypes');
-
+  try
   for i:=0 to LoadedXom.XomHandle.NumTypes-1 do begin
         XNode := TsdElement.CreateParent(XML,xomTypes);
         XNode.Name := LoadedXom.GetXTypeName(LoadedXom.XomHandle.TypesInfo[i].Name,schmnode);
@@ -53,7 +53,12 @@ begin
         XNode.AttributeAdd(XML.AttrText('Xver', IntToStr(LoadedXom.XomHandle.TypesInfo[i].btype)));
         XNode.NodeClosingStyle := ncClose;
   end;
-
+  Except
+      on E : Exception do   begin
+       WriteLn(Format('Error: Try read %s type [%d]',[XNode.Name, i]));
+       Halt;
+    end;
+  end;
   xomArchive.NodeAdd(xomTypes);
   end;
  // Objects
