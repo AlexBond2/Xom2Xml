@@ -1435,15 +1435,15 @@ end;
 // XML part
 
 const
-  VTYPES = 18;
+  VTYPES = 20;
 
   XCheckedValues : array [0..VTYPES] of String = (
     'XInt','XUInt','XInt8','XUInt8',
     'XInt16','XUInt16','XString',
     'XFloat','XBool','XEnum','XColor4ub',
     'XVector2f','XVector3f','XVector4f',
-    'XUIntHex', 'XGUID','XMatrix34','XBoundBox',
-    'XBase64Byte');
+    'XUIntHex', 'XGUID','XMatrix34','XMatrix','XBoundBox',
+    'XBase64Byte', 'XKey');
 var
 XGlobid:Integer=0;
 
@@ -1653,8 +1653,13 @@ var
       Result:='';
       for n:=1 to 11 do
         Result:=Result+XReadFloat + ' ';
+      Result:=Result+XReadFloat;  
+    end else if XValue='XMatrix' then begin
+      Result:='';
+      for n:=1 to 15 do
+        Result:=Result+XReadFloat + ' ';
       Result:=Result+XReadFloat;
-    end else if XValue='XBoundBox' then begin
+    end else if (XValue='XBoundBox') or (XValue='XKey') then begin
       Result:='';
       for n:=1 to 5 do
         Result:=Result+XReadFloat + ' ';
@@ -1692,7 +1697,7 @@ var
     end;
   end;
 
-  procedure AddPropPack(XSNode:TXmlNode; n:Integer);
+  procedure AddPropPack(XSNode, XCont:TXmlNode; n:Integer);
   var
   XValueType:String;
   s,XValue: UTF8String;
@@ -1725,7 +1730,7 @@ var
       end;
   end;
 
-  procedure AddProp(XSNode:TXmlNode);
+  function AddProp(XSNode, XCont:TXmlNode):TsdElement;
   var
   XValueType:String;
   XValue,Attr: UTF8String;
@@ -1733,6 +1738,7 @@ var
   XNode: TsdElement;
   i,n:Integer;
   begin
+      XNode := nil;
       if Length(XSNode.Value)>0 then  //< >Value</ >
       begin
         XValueType:=XSNode.Value;
@@ -1768,19 +1774,21 @@ var
             end;
           end;
       end;
+      Result := XNode;
   end;
 
-  procedure ReadAndAddProp(XSNode:TXmlNode);
+  procedure ReadAndAddProp(XSNode, XCont:TXmlNode);
   var
   XValueType:String;
-  i,n:Integer;
+  i,j,n:Integer;
   Xtype:XTypes;
   Xpack:String;
+  XNode:TsdElement;
   begin
  //   try
       if XSNode.AttributeCount = 0 then   // >Value<
       begin
-        AddProp(XSNode);
+        AddProp(XSNode, XCont);
       end else begin
        if XSNode.HasAttribute('guid') then exit;
        if XSNode.HasAttribute('Nver') then begin
@@ -1802,12 +1810,45 @@ var
           Xpack:=XSNode.AttributeValueByName['Xpack'];
           n := GetSize128(p2);
           if Xpack='true' then
-             AddPropPack(XSNode, n)
+             AddPropPack(XSNode, XCont, n)
           else
           for i := 1 to n do
-             AddProp(XSNode);
+             AddProp(XSNode, XCont);
+       end else if XValueType='XMapCollection' then begin
+          n := Cardinal(p2^); // MapNum
+          Inc(Longword(p2), 4);
+          for i := 1 to n do
+              AddProp(XSNode, XCont);
+       end else if XValueType='XClipCollection' then begin
+          n := Cardinal(p2^); // ClipNum
+          Inc(Longword(p2), 4);
+          for i := 1 to n do begin
+            XNode := AddProp(XSNode, XCont);
+            for j:=0 to XSNode.ElementCount-1 do
+              ReadAndAddProp(XSNode.Elements[j], XNode);
+          end;
+       end else if XValueType='XChannelCollection' then begin
+          n := Cardinal(p2^); // ChannelNum
+          Inc(Longword(p2), 4);
+          for i := 1 to n do begin
+            XNode := TsdElement.CreateParent(XML,XCont);
+            XNode.Name := XSNode.Name;
+            XNode.NodeClosingStyle := ncFull;
+            for j:=0 to XSNode.ElementCount-1 do
+              ReadAndAddProp(XSNode.Elements[j], XNode);
+          end;
+       end else if XValueType='XKeyCollection' then begin
+          Xpack:=XSNode.AttributeValueByName['Xpack'];
+          n := Cardinal(p2^); // KeyNum
+          Inc(Longword(p2), 4);
+          if Xpack='true' then
+             AddPropPack(XSNode, XCont, n)
+          else begin
+            WriteLn(Format('Error: Not found Xpack for %s',[XValueType]));
+            Halt;
+          end;
        end else
-           AddProp(XSNode);
+           AddProp(XSNode, XCont);
       end;
 {  Except
       on E : Exception do
@@ -1820,7 +1861,7 @@ var
   begin
   if XParent.Name='xomSCHM' then exit;
   For i:=0 to XParent.ElementCount-1 do
-    ReadAndAddProp(XParent.Elements[i]);
+    ReadAndAddProp(XParent.Elements[i], XCont);
   // check prop parrents
   if XParent.Parent.Name<>'XContainer' then
      ReadParentProp(XParent.Parent);
@@ -1863,7 +1904,7 @@ begin
     ReadParentProp(SXCont.Parent);
 
   For i:=0 to SXCont.ElementCount-1 do
-    ReadAndAddProp(SXCont.Elements[i]);
+    ReadAndAddProp(SXCont.Elements[i], XCont);
   // check prop parrents
   if (SXCont.Parent.Name<>'XContainer') and (SXCont.AttributeValueByName['Xtype'] <> 'XDesc') then
      ReadParentProp(SXCont.Parent);
@@ -2169,7 +2210,8 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
           XValues.DelimitedText := XValue;
           len := XValues.Count-1;
           if (XValueType = 'XVector2f') or
-            (XValueType = 'XVector3f') then XValueType:='XFloat';
+            (XValueType = 'XVector3f') or
+            (XValueType = 'XKey') then XValueType:='XFloat';
           for i:=0 to len do
             XWriteValue(XValueType,XValues[i],Buf);
           XValues.Free;
@@ -2195,7 +2237,8 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
             XValue :=sdReplaceString(TsdText(XCont.Nodes[0]).GetCoreValue);
 
           if (XValueType = 'XVector4f') or
-            (XValueType = 'XMatrix34') or
+            (XValueType = 'XMatrix34') or 
+            (XValueType = 'XMatrix') or
             (XValueType = 'XBoundBox') then
           begin
             XValues := TStringList.Create;
@@ -2241,7 +2284,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
   procedure ReadAndWriteProp(XSNode,XCont:TXmlNode; Buf:TMemoryStream);
   var
   XValueType:String;
-  i,n:Integer;
+  i,j,n:Integer;
   NodeList: TList;
   XNode: TXmlNode;
   Xpack:String;
@@ -2302,6 +2345,47 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
            for i := 0 to n-1 do
              WriteProp(XSNode,TXmlNode(NodeList[i]),Buf);
            NodeList.Clear;
+          end;
+       end else if XValueType='XMapCollection' then begin
+           NodeList:= TList.Create;
+           XCont.NodesByName(XSNode.Name,NodeList);
+           n := NodeList.Count; // MapNum
+           Buf.Write(n,4);
+           for i := 0 to n-1 do
+             WriteProp(XSNode,TXmlNode(NodeList[i]),Buf);
+           NodeList.Clear;
+       end else if XValueType='XClipCollection' then begin
+           NodeList:= TList.Create;
+           XCont.NodesByName(XSNode.Name,NodeList);
+           n := NodeList.Count; // ClipNum
+           Buf.Write(n,4);
+           for i := 0 to n-1 do begin
+             WriteProp(XSNode,TXmlNode(NodeList[i]),Buf);
+             for j:=0 to XSNode.ElementCount-1 do
+                ReadAndWriteProp(XSNode.Elements[j],TXmlNode(NodeList[i]), Buf);
+           end;
+           NodeList.Clear;
+       end else if XValueType='XChannelCollection' then begin
+           NodeList:= TList.Create;
+           XCont.NodesByName(XSNode.Name,NodeList);
+           n := NodeList.Count; // ChannelNum
+           Buf.Write(n,4);
+           for i := 0 to n-1 do begin
+             for j:=0 to XSNode.ElementCount-1 do
+                ReadAndWriteProp(XSNode.Elements[j],TXmlNode(NodeList[i]), Buf);
+           end;
+           NodeList.Clear;
+       end else if XValueType='XKeyCollection' then begin
+          Xpack:=XSNode.AttributeValueByName['Xpack'];  // only true
+          if Xpack = 'true' then begin
+           XNode:=XCont.NodeByName(XSNode.Name);
+           n := StrToInt(XNode.AttributeValueByName['Xpack']);
+           Buf.Write(n,4);  // KeyNum
+           if n>0 then
+             WritePropPack(XSNode,XNode,Buf);
+          end else begin
+            WriteLn(Format('Error: Not found Xpack for %s',[XValueType]));
+            Halt;
           end;
        end else begin
            XNode:=XCont.NodeByName(XSNode.Name);
