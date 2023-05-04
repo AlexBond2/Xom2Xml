@@ -12,7 +12,7 @@ uses
 
 var
   FileName, OFilename :String;
-  guid, help, schema, log, isxid, outfile, clear, xomfile: boolean;
+  guid, help, schema, log, isxid, outfile, clear, xomfile, hqfloat: boolean;
   ximg: TXImg;
 
 procedure ExportXML(FileName: String; schmnode : TXmlNode);
@@ -30,6 +30,7 @@ begin
   LoadedXom.LogXML:=log;
   LoadedXom.IsXid:=isxid;
   LoadedXom.XImg:=XImg;
+  LoadedXom.hqFloat := hqFloat;
   XContainer := schmnode.NodeByName('XContainer');
 
   XML := TNativeXml.CreateName('xomArchive');
@@ -177,6 +178,7 @@ begin
   schema := FindCmdLineSwitch('schm');
   outfile := FindCmdLineSwitch('out');
   xomfile := FindCmdLineSwitch('xom');
+  hqfloat := FindCmdLineSwitch('xfloat');
   ximg.base64 := FindCmdLineSwitch('ximg-base64');
   ximg.isfile := FindCmdLineSwitch('ximg-file');
   ximg.outfile := 'png';
@@ -220,6 +222,7 @@ begin
     Writeln('   -xom <file>          Sets input filename as xom');
     Writeln('   -l                   Logs process of reading');
     Writeln('   -cl                  Export XML in game format');
+    Writeln('   -xfloat              Slow writing float values with max precision');
     Writeln('   -ximg-base64         Save XImage data as Base64 encoding.');
     Writeln('                        Otherwise save XImage data as file.');
     Writeln('   -ximg-file <format>  Set XImage data in format:');
