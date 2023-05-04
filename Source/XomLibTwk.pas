@@ -70,6 +70,7 @@ type
     Loading:boolean;
     LogXML:boolean;
     IsXid:boolean;
+    hqFloat:boolean;
     XMLNumCntr: Integer;
     XImg:TXImg;
     function GetXType(XName:PChar;var XType:XTypes):Boolean;
@@ -680,6 +681,30 @@ begin
             begin
               for x := 1 to k do
                 TestByte128(p2);
+            end;
+            WXTemplateSet:
+            begin
+              for x := 1 to k do  //Templates
+                TestByte128(p2);
+              p2 := Pointer(Longword(p2) + 4 * 5);  // Bounds BoundMode
+              Name := GetStr128(p2);    // Name
+            IsCtnr := false;  
+            end;
+            WXTemplate:
+            begin
+              for x:=1 to k do   // Connectors
+                 TestByte128(p2);
+              k:=TestByte128(p2); // Bounds
+              for x:=1 to k do
+                 TestByte128(p2);
+              k := TestByte128(p2);   // Outline
+              Inc(Longword(p2), 4*3*3); // PreviewPos  PreviewOrientation PreviewScale
+              k := TestByte128(p2);  // PreviewName
+              Inc(Longword(p2), 1 + 4); // RandomRoot LandCost
+              Inc(Longword(p2), 2*2);// Complexity EmitterCost
+              Inc(Longword(p2), 4); // LumpType
+              Inc(Longword(p2), 4); //  YPlacement
+              IsCtnr := false;
             end;
             W3DTemplateSet:
             begin
@@ -1293,8 +1318,8 @@ begin
             PC_LandChunk:
             begin
               p2 := Pointer(Longword(p) + 7 + 4);
-              Inc(Longword(p2), 4 * 4);
-              Inc(Longword(p2), 5);
+              Inc(Longword(p2), 4 * 4);  // Bounds
+              Inc(Longword(p2), 5);   // BoundMode  // Name
               IsCtnr := false;
             end;
             LandFrameStore:
@@ -1305,35 +1330,38 @@ begin
             PC_LandFrame:
             begin
               p2 := Pointer(Longword(p) + 7);
-              k3 := TestByte128(p2);
+              k3 := TestByte128(p2); // FloorRoofLightIndex
               Inc(Longword(p2), k3);
-              k3 := TestByte128(p2);
+              k3 := TestByte128(p2); // WallLightIndex
               Inc(Longword(p2), k3);
-              Inc(Longword(p2), 2);    //00 00
-              Inc(Longword(p2), 4);    // 3d 00 6c 00
-              Inc(Longword(p2), 368);  // pos?
-              k3 := TestByte128(p2);   // layers 1
+              k3 := TestByte128(p2); // TintedLighting
+              Inc(Longword(p2), k3);
+              k3 := TestByte128(p2); // Siblings
+              Inc(Longword(p2), k3);
+              Inc(Longword(p2), 4);    // MostSignificantMaterial SolidVoxelCount
+              Inc(Longword(p2), 368);  // Position - CentreOffset
+              k3 := TestByte128(p2);   // EdgeOffset1
               Inc(Longword(p2), k3 * 2 * 4);
-              k3 := TestByte128(p2); // layers 2
+              k3 := TestByte128(p2); // EdgeOffset2
               Inc(Longword(p2), k3 * 2 * 4);
-              k3 := TestByte128(p2); // ?
+              k3 := TestByte128(p2); // HeightMap
               Inc(Longword(p2), k3 * 4);
-              Inc(Longword(p2), 4);
-              k3 := TestByte128(p2); // ?
+              Inc(Longword(p2), 4);  // PeturbCliffs
+              k3 := TestByte128(p2); // BitArray
               Inc(Longword(p2), k3 * 4);
-              k3 := TestByte128(p2); // ?
+              k3 := TestByte128(p2); // SecondTextureBitArray
               Inc(Longword(p2), k3 * 4);
               // ?????
-              k3 := TestByte128(p2); // ?
+              k3 := TestByte128(p2); // RLEVoxelData
               Inc(Longword(p2), (k3 - 1) * 4);
               Inc(Longword(p2), 16); //???
-              Inc(Longword(p2), 4);  // ff ff ff ff
-              k3 := TestByte128(p2); // childs
+              Inc(Longword(p2), 4);  // ff ff ff ff  Tint
+              k3 := TestByte128(p2); // Children
               for x := 1 to k3 do
                 TestByte128(p2);
-              Inc(Longword(p2), 4 * 4); // coord4
-              Inc(Longword(p2), 4);     // zero
-              s := TestByte128(p2);
+              Inc(Longword(p2), 4 * 4); // Bounds
+              Inc(Longword(p2), 4);     // BoundMode
+              s := TestByte128(p2);  // Name
               IsCtnr := false;
             end;
             XSoundBank:
@@ -1456,7 +1484,8 @@ var
 begin
   if XImg.isfile then begin
 
-    Name := ExtractFileName(XImageNode.NodeByName('Name').ValueUnicode);
+    Name := ExtractFileName(StringReplace(XImageNode.NodeByName('Name').ValueUnicode,'/','\',[rfReplaceAll]));
+
     if Pos('.',Name)>0 then
       Name:=ChangeFileExt(Name,'.'+Ximg.outfile)
     else begin
@@ -1600,6 +1629,19 @@ begin
 
 end;
 
+type
+  Int32Rec = packed record
+    case Integer of
+      0: (Floats: Single);
+      1: (Cardinals: Cardinal);
+  end;
+
+function CompareFloatHex(v1,v2:Single):Boolean;
+begin
+    result:=  Int32Rec(v1).Cardinals = Int32Rec(v2).Cardinals;
+end;
+
+
 function TXom.AddXMLNode(XCntr:TContainer; XContainer:TXmlNode; XName:String;  XML:TNativeXml; xomObjects:TXmlNode):String;
 var
   XType,XRef: string;
@@ -1617,8 +1659,18 @@ var
   end;
 
   function XReadFloat:UTF8String;
+  var f: Single; s:String; q: integer;
   begin
-    Result:=FloatToStrF(Single(p2^),ffGeneral,7,7);
+    f := Single(p2^);
+    s := FloatToStrF(f,ffGeneral,7,7);
+    if hqFloat then  begin
+      if Int32Rec(f).Cardinals = 2147483648 then s:='-0';
+      for q := 8 to 15 do begin
+        if CompareFloatHex(StrToFloatDef(S, 0.0),f) then break;
+        s := FloatToStrF(f,ffGeneral,q,q);
+      end;
+    end;
+    Result := s;
     Inc(Longword(p2), 4);
   end;
 
