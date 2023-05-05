@@ -19,6 +19,7 @@ Options:
    -xom <file>          Sets input filename as xom
    -l                   Logs process of reading
    -cl                  Export XML in game format
+   -xfloat              Slow writing float values with max precision
    -ximg-base64         Save XImage data as Base64 encoding.
                         Otherwise save XImage data as file.
    -ximg-file <format>  Set XImage data in format:
@@ -34,7 +35,7 @@ Options:
 ## Russian
 **Xom2Xml** это консольный конвертер для xom файлов в xml и обатно. 
 
-База **WUM** для xom файлов папок **Data**,**Tweak** и часть **Data\Bundles** для игры **Worms Ultimate Mayhem**. 
+База **WUM** для xom файлов папок **Data**,**Tweak** и **Data\Bundles** для игры **Worms Ultimate Mayhem**. 
 
 База **W3D** для xom файлов папки **Data** для игры **Worms 3D**. Файлы которые поддерживает база: 
  - xom файлы из папки **Data**
@@ -58,6 +59,7 @@ Options:
    -xom <file>          Установить входное имя файла
    -l                   Вывести лог процесса чтения
    -cl                  Экспортирует XML в игровом формате
+   -xfloat              Медленная запись плавающих значений с максимальной точностью
    -ximg-base64         Сохранить данные XImage в Base64 кодировке.
                         Иначе сохранить данные XImage как файл.
    -ximg-file <format>  Преобразовать данные XImage в формате:
@@ -94,11 +96,41 @@ Xgame = W3D
 ... conversion Multi_TyrannoSawUs.xml >> Tyranno.xan done.
 ```
 
+## Пример с сохранение XImage в формате dds, png, tga в отдельную папку
+```
+Xom2Xml Bundl00.xom -ximg-file dds -ximg-dir dds
+Xgame = WUM
+... conversion Bundl00.xom >> Bundl00.xml done.
+
+Xom2Xml Bundl13.xom -ximg-file tga -ximg-dir ThemeArabian
+Xgame = WUM
+... conversion Bundl13.xom >> Bundl13.xml done.
+
+Xom2Xml Bundl14.xom -ximg-file png -ximg-dir ThemeBuilding
+Xgame = WUM
+... conversion Bundl14.xom >> Bundl14.xml done.
+```
+**Примечание:** папка указазанная флагом **-ximg-dir** будет автоматически создана, если ее нет. Сам же **xml** будет сохранен в папке где был **xom**. Можно указать  и общую папку для **xml** и текстур через **-out**, но не обе сразу. Это сделано из-за относительного адреса внутри **xml** на ресурс к изображению. Иначе при обратной конвертации текстуры не будут найдены, это нужно учитывать.
+
+## Пример конвертации с максимальной точностью
+При такой конвертации файл **xom\Bundl474.xom** будет идентичен оригиналу.
+```
+Xom2Xml Bundl474.xom -id -xfloat -ximg-file dds -out xml\Bundl474.xml
+Xgame = WUM
+... conversion Bundl474.xom >> Bundl474.xml done.
+
+Xom2Xml xml\Bundl474.xml -out xom\Bundl474.xom
+Xgame = WUM
+... conversion Bundl474.xml >> Bundl474.xom done.
+```
+**Примечание:** флаг **-id** сохраняет оригинальную сортировку чанков. Формат **dds** для текстур сохраняет все MipMaps поэтому их не нужно генерировать. А флаг **-xfloat** повшает точность для чисел. Такая точность нужна только для проверки работы, поэтому флаги **-id** и **-xfloat** можно игнорировать.
+
 ## Обновление
 
-Обновление в версии 1.3.1.3:
- - поддержка класса **XTexFont**, **XImage**
- - поддержка многих файлов с текстурами из папки **Data\Bundles** игры **Worms Ultimate Mayhem**
+Обновление в версии 1.3.2.0:
+ - поддержка всех классов для **WUM**
+ - поддержка класса **XTexFont**, **XImage**, **XAnimClipLibrary**
+ - поддержка всех файлов с текстурами из папки **Data\Bundles** игры **Worms Ultimate Mayhem**
  - экспорт / импорт форматов **PNG**, **DDS**, **TGA** для экспорта импорта **XImage**
  - возможность сохранять **XImage** как файл и как кодированные данные в **Base64**
  - автогенерация **MipMaps** для **Ximage** если источник не поддерживает их
