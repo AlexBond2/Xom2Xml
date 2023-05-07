@@ -20,8 +20,6 @@ Options:
    -l                   Logs process of reading
    -cl                  Export XML in game format
    -xfloat              Slow writing float values with max precision
-   -ximg-base64         Save XImage data as Base64 encoding.
-                        Otherwise save XImage data as file.
    -ximg-file <format>  Set XImage data in format:
     -ximg-file bin      BIN with Mipmaps
     -ximg-file dds      DDS with Mipmaps
@@ -37,9 +35,7 @@ Options:
 
 База **WUM** для xom файлов папок **Data**,**Tweak** и **Data\Bundles** для игры **Worms Ultimate Mayhem**. 
 
-База **W3D** для xom файлов папки **Data** для игры **Worms 3D**. Файлы которые поддерживает база: 
- - xom файлы из папки **Data**
- - языковые файлы xom из папки **Data\Language\PC**
+База **W3D** для xom файлов папки **Data**, **Data\Language\PC** и **Data\Bundles** для игры **Worms 3D**. 
 
 Программа читает Xom файл по структуре описанной в **XOMSCHM.dat** (обычный XML файл) и конвертирует его в XML формат, которые можно редактировать и конвертировать обратно в Xom. 
 
@@ -60,8 +56,6 @@ Options:
    -l                   Вывести лог процесса чтения
    -cl                  Экспортирует XML в игровом формате
    -xfloat              Медленная запись плавающих значений с максимальной точностью
-   -ximg-base64         Сохранить данные XImage в Base64 кодировке.
-                        Иначе сохранить данные XImage как файл.
    -ximg-file <format>  Преобразовать данные XImage в формате:
     -ximg-file bin      BIN с Mipmaps
     -ximg-file dds      DDS с Mipmaps
@@ -127,12 +121,13 @@ Xgame = WUM
 
 ## Обновление
 
-Обновление в версии 1.3.2.0:
+Обновление в версии 1.3.2.1:
  - поддержка всех классов для **WUM**
+ - поддержка всех классов для **W3D**
  - поддержка класса **XTexFont**, **XImage**, **XAnimClipLibrary**
  - поддержка всех файлов с текстурами из папки **Data\Bundles** игры **Worms Ultimate Mayhem**
  - экспорт / импорт форматов **PNG**, **DDS**, **TGA** для экспорта импорта **XImage**
- - возможность сохранять **XImage** как файл и как кодированные данные в **Base64**
+ - возможность сохранять **XImage** как файл и как кодированные данные в **Base64** если формат не выбран
  - автогенерация **MipMaps** для **Ximage** если источник не поддерживает их
 
 Обновление в версии 1.3.0.3:
