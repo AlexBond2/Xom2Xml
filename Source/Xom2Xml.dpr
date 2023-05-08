@@ -44,6 +44,9 @@ begin
   if not clear then begin
  // Types
   xomTypes := XML.NodeNew('xomTypes');
+  if LoadedXom.XomHandle.nType <> $2000000 then // MOIK default version
+    xomTypes.AttributeAdd(XML.AttrText('Xver', IntToStr(LoadedXom.XomHandle.nType shr 24)));
+
   try
   for i:=0 to LoadedXom.XomHandle.NumTypes-1 do begin
         XNode := TsdElement.CreateParent(XML,xomTypes);
@@ -179,7 +182,6 @@ begin
   outfile := FindCmdLineSwitch('out');
   xomfile := FindCmdLineSwitch('xom');
   hqfloat := FindCmdLineSwitch('xfloat');
-  ximg.base64 := FindCmdLineSwitch('ximg-base64');
   ximg.isfile := FindCmdLineSwitch('ximg-file');
   ximg.outfile := 'png';
   ximg.isdir := FindCmdLineSwitch('ximg-dir');
@@ -223,8 +225,6 @@ begin
     Writeln('   -l                   Logs process of reading');
     Writeln('   -cl                  Export XML in game format');
     Writeln('   -xfloat              Slow writing float values with max precision');
-    Writeln('   -ximg-base64         Save XImage data as Base64 encoding.');
-    Writeln('                        Otherwise save XImage data as file.');
     Writeln('   -ximg-file <format>  Set XImage data in format:');
     Writeln('    -ximg-file bin      BIN with Mipmaps');
     Writeln('    -ximg-file dds      DDS with Mipmaps');
