@@ -41,7 +41,6 @@ type TXomHandle = packed record
   end;
 
   TXImg = record
-    base64: boolean;
     isfile: boolean;
     outfile: string;
     isdir: boolean;
@@ -520,8 +519,12 @@ Move(XomHandle.Head,p^,16*4);
 inc(integer(p),16*4);
 Move(XomHandle.TypesInfo[0],p^,16*4*XomHandle.NumTypes);
 inc(integer(p),16*4*XomHandle.NumTypes);
-Move(XomHandle.Guid,p^,11*4);
-inc(integer(p),16*3);
+if XomHandle.nType > $1000000 then begin
+  Move(XomHandle.Guid,p^,16);
+  inc(integer(p),16);
+end;
+Move(XomHandle.SCHM,p^,16*2 - 4);
+inc(integer(p),16*2);
 end;
 
 procedure TXom.SaveStringTable(var p:Pointer;LStrings:TTntStringList);
@@ -1516,9 +1519,10 @@ begin
       Case xFormat of
        0: Bits := 24;  // kImageFormat_R8G8B8
        1: Bits := 32; // kImageFormat_A8R8G8B8
-      else begin // TODO
-         WriteLn(Format('Error: kImageFormat %s not supported',[ImageFormatWUM[xFormat]]));
-         Halt;
+      else begin // TODO xFormat
+         Bitmap.Free;
+         Result := EncodePointer(Point, Size);
+         Exit;
         end;
       end;
 
@@ -1532,12 +1536,8 @@ begin
       else if XImg.outfile = 'dds' then
         Bitmap.SaveToDDS(Mem, Bits);
 
-      if XImg.base64 then
-        Result:= 'data:image/' + XImg.outfile + ';base64,' + EncodePointer(Mem.Memory, Mem.Size)
-      else begin
-        Mem.SaveToFile(FileName);
-        Result := FileName;
-      end;
+      Mem.SaveToFile(FileName);
+      Result := FileName;
 
       Mem.Free;
       Bitmap.Free;
@@ -1551,40 +1551,31 @@ procedure TXom.XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
 var
   Bitmap: TBitmap32;
   Mem: TMemoryStream;
-  isfile, isBase64: Boolean;
-  Name, base64Data, base64Head, ExtPart, FileName, outfile: String;
+  isfile: Boolean;
+  Name, base64Data, ExtPart, FileName, outfile: String;
   Width, Height, xFormat, Bits, MipMaps, Len, ps: Integer;
 begin
   isfile := false;
-  isBase64 := false;
   outfile := '';
   Len := Length(XValue);
   if Len > 4 then begin
-    base64Head := Copy(XValue, 0, 5); // data:
     ExtPart := Copy(XValue, len - 3, 1); // .png
-    if base64Head = 'data:' then begin isBase64:=True; isfile:=true;  end
-    else if ExtPart = '.' then begin isfile:=true;  end;
+    if ExtPart = '.' then begin isfile:=true;  end;
   end;
 
   if isfile then begin
 
-    if not isBase64 and not FileExists(XValue) then
+    if not FileExists(XValue) then
     begin
        WriteLn(Format('Error: File %s not exist',[XValue]));
        Halt;
     end;
+    
       Mem:= TMemoryStream.Create;
 
-    if isBase64 then begin
-      ps:= Pos('base64,',XValue) + 6; // ;base64,
-      base64Data := Copy(XValue, ps + 1, len - ps );
-      outfile:= Copy(XValue, 12, 3);// 'data:image/' ext ';base64,'
-      DecodeStreamString(base64Data, Mem);
-    end else begin
       outfile := LowerCase(Copy(XValue, len - 2, 3));
       FileName := XValue;
       Mem.LoadFromFile(FileName);
-    end;
 
      if outfile = 'bin' then
      begin
@@ -2029,6 +2020,9 @@ XClass: TXmlNode;
    end;
 
 begin
+   v := StrToIntDef(xomTypes.AttributeValueByName['Xver'],2);
+   XomHandle.nType := v shl 24;
+   if v = 1 then XomHandle.SCHMType:=0; // 2003 MOIK with version 1
    for i:=0 to xomTypes.ElementCount-1 do begin
       XTypeName:= xomTypes.Elements[i].Name;
       v := StrToIntDef(xomTypes.Elements[i].AttributeValueByName['Xver'],-1);
@@ -2282,14 +2276,13 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       begin
         XValueType:=XSNode.Value;
         if CheckXValue(XValueType) then begin
-
-          if XCont.Value='' then
-            XValue:=''
+          if XCont.Value = '' then
+            XValue := ''
           else
-            XValue :=sdReplaceString(TsdText(XCont.Nodes[0]).GetCoreValue);
+            XValue := sdReplaceString(TsdText(XCont.Nodes[0]).GetCoreValue);
 
           if (XValueType = 'XVector4f') or
-            (XValueType = 'XMatrix34') or 
+            (XValueType = 'XMatrix34') or
             (XValueType = 'XMatrix') or
             (XValueType = 'XBoundBox') then
           begin
