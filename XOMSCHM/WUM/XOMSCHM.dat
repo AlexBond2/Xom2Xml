@@ -33,6 +33,22 @@
     </XSpriteSetDescriptor>
     <XNullDescriptor guid="{4B8E936F-864D-4227-B6E4-1914FC17D7C0}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc"></XNullDescriptor>
   </XBaseResourceDescriptor>
+  <XAnimClipLibrary guid="{FFC0E26A-719A-4819-9779-47CCF9BEF3B2}" NoCntr="true" Xver="0" id="XRef">
+    <Name>XString</Name>
+    <AttributeMap Field="XUInt8" Flags="XUInt16" SubEntry="XUInt8" NodePath="XString" Xtype="XMapCollection" />
+    <AnimClips Duration="XFloat" Name="XString" Xtype="XClipCollection">
+      <AnimChannel Xtype="XChannelCollection">
+        <MustContribute>XBool</MustContribute>
+        <IsWeighted>XBool</IsWeighted>
+        <IsStatic>XBool</IsStatic>
+        <IsLinear>XBool</IsLinear>
+        <MapID>XUInt16</MapID>
+        <PostInfinity>XEnum</PostInfinity>
+        <PreInfinity>XEnum</PreInfinity>
+        <KeyArray Xtype="XKeyCollection" Xpack="true">XKey</KeyArray>
+      </AnimChannel>
+    </AnimClips>
+  </XAnimClipLibrary>
   <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" Xtype="XClass">
     <XResourceDetails guid="{E77556F2-A495-491A-8563-006CE2577244}" Xver="0" Xtype="XClass">
       <XIntResourceDetails guid="{7D889B8D-2C14-445E-961F-5E0E5520416A}" Xver="0" id="XRef">
@@ -70,34 +86,6 @@
       <StringTableResources href="XContainerResourceDetails" Xtype="XCollection" />
       <ColorResources href="XColorResourceDetails" Xtype="XCollection" />
     </XDataBank>
-    <XBaseResourceDescriptor2 guid="{31BD00F6-F3CE-4588-8126-D1DFD58ACD22}" Xver="0" id="XRef" Xtype="XClass">
-      <XMeshDescriptor2 guid="{E70CE377-7E88-48DC-9029-903A7ADA2AD6}" Xver="0" id="XRef">
-        <Graph href="XContainer" />
-        <ClipLibrary href="XContainer" />
-      </XMeshDescriptor2>
-      <Name>XString</Name>
-      <DefaultSceneIndex>XUInt8</DefaultSceneIndex>
-      <LoadFuncIndex>XUInt8</LoadFuncIndex>
-      <InstanceFuncIndex>XUInt8</InstanceFuncIndex>
-      <BankIndex>XUInt8</BankIndex>
-      <InstanceCount>XUInt16</InstanceCount>
-    </XBaseResourceDescriptor2>
-    <XAnimClipLibrary guid="{FFC0E26A-719A-4819-9779-47CCF9BEF3B2}" Xver="0" id="XRef">
-      <Name>XString</Name>
-      <AttributeMap Field="XUInt8" Flags="XUInt16" SubEntry="XUInt8" NodePath="XString" Xtype="XMapCollection" />
-      <AnimClips Duration="XFloat" Name="XString" Xtype="XClipCollection">
-        <AnimChannel Xtype="XChannelCollection">
-          <MustContribute>XBool</MustContribute>
-          <IsWeighted>XBool</IsWeighted>
-          <IsStatic>XBool</IsStatic>
-          <IsLinear>XBool</IsLinear>
-          <MapID>XUInt16</MapID>
-          <PostInfinity>XEnum</PostInfinity>
-          <PreInfinity>XEnum</PreInfinity>
-          <KeyArray Xtype="XKeyCollection" Xpack="true">XKey</KeyArray>
-        </AnimChannel>
-      </AnimClips>
-    </XAnimClipLibrary>
     <XAnimInfo guid="{14624473-D780-41E2-A511-FFB1086D7520}" Xver="0" id="XRef">
       <HasAnimatedAlpha>XBool</HasAnimatedAlpha>
       <HasAnimatedColor>XBool</HasAnimatedColor>
@@ -262,7 +250,7 @@
         <FarClip>XFloat</FarClip>
         <Aperture x="XFloat" y="XFloat" />
       </XSceneCamera>
-      <XCollisionGeometry guid="{F61BF2D7-F882-4CDF-8893-3AA84AE16022}" Xver="0" id="XRef" Xtype="XClass">
+      <XCollisionGeometry guid="{F61BF2D7-F882-4CDF-8893-3AA84AE16022}" Xver="0" id="XRef">
         <Restitution>XFloat</Restitution>
         <Friction>XFloat</Friction>
         <Mass>XFloat</Mass>
