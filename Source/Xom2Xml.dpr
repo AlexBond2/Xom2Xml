@@ -20,7 +20,7 @@ var
   XML: TNativeXml;
   LoadedXom:TXom;
   node,xomObjects,xomTypes,XContainer,XType: TXmlNode;
-  s: string;
+  s, dir: string;
   code: string;
   xomArchive,XNode: TsdElement;
   i,Xver: integer;
@@ -76,9 +76,11 @@ begin
   If LoadedXom.BaseCntr.CntrArr.Count-1 > LoadedXom.XMLNumCntr then
     Writeln(Format('Warning: Loaded %d of %d',[LoadedXom.XMLNumCntr,LoadedXom.BaseCntr.CntrArr.Count-1]));
   xomArchive.NodeAdd(xomObjects);
-  if outfile then
-    s := OFileName
-  else
+  if outfile then begin
+    dir := ExtractFilePath(OFileName);
+    if not DirectoryExists(dir) then CreateDir(dir);
+    s := OFileName;
+  end else
   s := ChangeFileExt(FileName,'.xml');
   Writeln('... conversion ', ExtractFileName(FileName), ' >> ', ExtractFileName(s) ,' done.');
   XML.SaveToFile(s);
@@ -91,7 +93,7 @@ var
   XML: TNativeXml;
   NewXom:TXom;
   node,xomObjects,xomTypes,XContainer: TXmlNode;
-  s: string;
+  s, dir: string;
   code: string;
 begin
   XML:=TNativeXml.CreateName('xomArchive');
@@ -105,9 +107,11 @@ begin
   NewXom:=TXom.Create;
   NewXom.LogXML:=log;
   NewXom.LoadFromXML(xomTypes,xomObjects,XContainer);
-  if outfile then
-    s := OFileName
-  else
+  if outfile then begin
+    dir := ExtractFilePath(OFileName);
+    if not DirectoryExists(dir) then CreateDir(dir);
+    s := OFileName;
+  end else
   s := ChangeFileExt(FileName,'.xom');
   Writeln('... conversion ', ExtractFileName(FileName), ' >> ', ExtractFileName(s) ,' done.');
   NewXom.SaveXom(s);
