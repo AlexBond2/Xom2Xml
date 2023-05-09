@@ -29,6 +29,31 @@ Options:
                         The default is output folder for XML
                         
 ```
+## Examples
+Extract WUM Textures as **tga** format in folder **ThemeArabian**
+```
+Xom2Xml Bundl13.xom -ximg-file tga -ximg-dir ThemeArabian
+Xgame = WUM
+... conversion Bundl13.xom >> Bundl13.xml done.
+```
+Extract W3D Textures as **tga** format in folder **ThemePirate**
+```
+Xom2Xml Bundle08.xom -ximg-file tga -ximg-dir ThemePirate
+Xgame = W3D
+... conversion Bundle08.xom >> Bundle08.xml done.
+```
+Convert WUM Xom to Xml in folder **editfolder**
+```
+Xom2Xml MenuTwk.xom -out editfolder\MenuTwk.xml
+Xgame = WUM
+... conversion MenuTwk.xom >> MenuTwk.xml done.
+```
+Convert WUM Xml to Xom from **editfolder** to **newxom**
+```
+Xom2Xml editfolder\MenuTwk.xml -out newxom\MenuTwk.xom
+Xgame = WUM
+... conversion MenuTwk.xml >> MenuTwk.xom done.
+```
 
 ## Russian
 **Xom2Xml** это консольный конвертер для xom файлов в xml и обатно. 
