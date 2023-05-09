@@ -4730,7 +4730,8 @@ begin
 
   s := P.ReadStringUntilChar('<');
   CharDataString := sdRigthTrim(s);
-  if s=#$A then CharDataString := s;    // #FIX NL
+  if (s=#$A) or (s=#$20) then CharDataString := s;    // #FIX NL and Space
+  
   if length(CharDataString) > 0 then
   begin
     // Insert CharData node

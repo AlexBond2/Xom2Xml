@@ -20,7 +20,7 @@ var
   XML: TNativeXml;
   LoadedXom:TXom;
   node,xomObjects,xomTypes,XContainer,XType: TXmlNode;
-  s: string;
+  s, dir: string;
   code: string;
   xomArchive,XNode: TsdElement;
   i,Xver: integer;
@@ -44,6 +44,9 @@ begin
   if not clear then begin
  // Types
   xomTypes := XML.NodeNew('xomTypes');
+  if LoadedXom.XomHandle.nType <> $2000000 then // MOIK default version
+    xomTypes.AttributeAdd(XML.AttrText('Xver', IntToStr(LoadedXom.XomHandle.nType shr 24)));
+
   try
   for i:=0 to LoadedXom.XomHandle.NumTypes-1 do begin
         XNode := TsdElement.CreateParent(XML,xomTypes);
@@ -73,9 +76,11 @@ begin
   If LoadedXom.BaseCntr.CntrArr.Count-1 > LoadedXom.XMLNumCntr then
     Writeln(Format('Warning: Loaded %d of %d',[LoadedXom.XMLNumCntr,LoadedXom.BaseCntr.CntrArr.Count-1]));
   xomArchive.NodeAdd(xomObjects);
-  if outfile then
-    s := OFileName
-  else
+  if outfile then begin
+    dir := ExtractFilePath(OFileName);
+    if not DirectoryExists(dir) then CreateDir(dir);
+    s := OFileName;
+  end else
   s := ChangeFileExt(FileName,'.xml');
   Writeln('... conversion ', ExtractFileName(FileName), ' >> ', ExtractFileName(s) ,' done.');
   XML.SaveToFile(s);
@@ -88,7 +93,7 @@ var
   XML: TNativeXml;
   NewXom:TXom;
   node,xomObjects,xomTypes,XContainer: TXmlNode;
-  s: string;
+  s, dir: string;
   code: string;
 begin
   XML:=TNativeXml.CreateName('xomArchive');
@@ -102,9 +107,11 @@ begin
   NewXom:=TXom.Create;
   NewXom.LogXML:=log;
   NewXom.LoadFromXML(xomTypes,xomObjects,XContainer);
-  if outfile then
-    s := OFileName
-  else
+  if outfile then begin
+    dir := ExtractFilePath(OFileName);
+    if not DirectoryExists(dir) then CreateDir(dir);
+    s := OFileName;
+  end else
   s := ChangeFileExt(FileName,'.xom');
   Writeln('... conversion ', ExtractFileName(FileName), ' >> ', ExtractFileName(s) ,' done.');
   NewXom.SaveXom(s);
@@ -179,7 +186,6 @@ begin
   outfile := FindCmdLineSwitch('out');
   xomfile := FindCmdLineSwitch('xom');
   hqfloat := FindCmdLineSwitch('xfloat');
-  ximg.base64 := FindCmdLineSwitch('ximg-base64');
   ximg.isfile := FindCmdLineSwitch('ximg-file');
   ximg.outfile := 'png';
   ximg.isdir := FindCmdLineSwitch('ximg-dir');
@@ -223,8 +229,6 @@ begin
     Writeln('   -l                   Logs process of reading');
     Writeln('   -cl                  Export XML in game format');
     Writeln('   -xfloat              Slow writing float values with max precision');
-    Writeln('   -ximg-base64         Save XImage data as Base64 encoding.');
-    Writeln('                        Otherwise save XImage data as file.');
     Writeln('   -ximg-file <format>  Set XImage data in format:');
     Writeln('    -ximg-file bin      BIN with Mipmaps');
     Writeln('    -ximg-file dds      DDS with Mipmaps');
