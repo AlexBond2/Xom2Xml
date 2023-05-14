@@ -1186,8 +1186,8 @@
     <ChatMessagesContainer guid="{90E0A02B-91B4-4F2F-BF26-474469134E6A}" Xver="0" id="XRef">
       <Sender Xtype="XCollection">XString</Sender>
       <Content Xtype="XCollection">XString</Content>
-      <SenderColour Xtype="XCollection">XUInt</SenderColour>
-      <ContentColour Xtype="XCollection">XUInt</ContentColour>
+      <SenderColour Xtype="XCollection" r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8"/>
+      <ContentColour Xtype="XCollection" r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8"/>
       <Scope Xtype="XCollection">XUInt</Scope>
     </ChatMessagesContainer>
     <W3DLumpConnector guid="{1A12DD58-D8C7-424B-911B-FBFBDDCF27F4}" Xver="0" id="XRef">
@@ -1566,8 +1566,8 @@
       <RefPointOrientation Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
       <BPName Xtype="XCollection">XString</BPName>
       <BPPosition x="XFloat" y="XFloat" z="XFloat" Xtype="XCollection" />
-      <BPVictoryLocation>XBool</BPVictoryLocation>
-      <BPBuildingType>XInt8</BPBuildingType>
+      <BPVictoryLocation Xtype="XCollection">XBool</BPVictoryLocation>
+      <BPBuildingType Xtype="XCollection">XInt8</BPBuildingType>
       <BPBonusType Xtype="XCollection">XUInt8</BPBonusType>
       <BPBuildingName Xtype="XCollection">XString</BPBuildingName>
       <BPBuildingPlayerId Xtype="XCollection">XInt</BPBuildingPlayerId>
