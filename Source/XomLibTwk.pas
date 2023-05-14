@@ -81,7 +81,8 @@ type
     function ReadXContainer(p:pointer;NType:XTypes; var Name:String; var IsCtnr:Boolean; Schema: Integer):Pointer;
     procedure AddXTypeXML( XContainer,xomObjects:TXmlNode);
     procedure LoadXTypeXML( XContainer,xomTypes:TXmlNode);
-    function GetXTypeName(Name:String;XContainer:TXmlNode):String;
+    function GetXTypeNode(Name:String;XContainer:TXmlNode):TXmlNode; overload;
+    function GetXTypeNode(nType:Integer;XContainer:TXmlNode):TXmlNode; overload;
     procedure WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXmlNode);
     function AddXMLNode(XCntr:TContainer; XContainer:TXmlNode; XName:String; XML:TNativeXml; xomObjects:TXmlNode):String;
     function XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
@@ -1466,14 +1467,14 @@ end;
 // XML part
 
 const
-  VTYPES = 20;
+  VTYPES = 21;
 
   XCheckedValues : array [0..VTYPES] of String = (
     'XInt','XUInt','XInt8','XUInt8',
     'XInt16','XUInt16','XString',
     'XFloat','XBool','XEnum','XColor4ub',
     'XVector2f','XVector3f','XVector4f',
-    'XUIntHex', 'XGUID','XMatrix34','XMatrix','XBoundBox',
+    'XUIntHex', 'XGUID','XMatrix34','XMatrix3','XMatrix','XBoundBox',
     'XBase64Byte', 'XKey');
 var
 XGlobid:Integer=0;
@@ -1486,8 +1487,11 @@ var
   Width, Height, xFormat, Bits, MipMaps: Integer;
 begin
   if XImg.isfile then begin
-
-    Name := ExtractFileName(StringReplace(XImageNode.NodeByName('Name').ValueUnicode,'/','\',[rfReplaceAll]));
+    Name := format('-%d.tga',[XGlobid-1]);
+    Name := StringReplace(XImageNode.NodeByName('Name').ValueUnicode,'/-1',Name,[rfReplaceAll]);
+    Name := StringReplace(Name,'maya:','',[rfReplaceAll]);
+    Name := StringReplace(Name,'/','\',[rfReplaceAll]);
+    Name := ExtractFileName(Name);
 
     if Pos('.',Name)>0 then
       Name:=ChangeFileExt(Name,'.'+Ximg.outfile)
@@ -1692,11 +1696,16 @@ var
       Result:=XReadFloat + ' ' + XReadFloat + ' ' + XReadFloat;
     end else if XValue='XVector4f' then begin
       Result:=XReadFloat + ' ' + XReadFloat + ' ' + XReadFloat + ' ' + XReadFloat;
+    end else if XValue='XMatrix3' then begin
+      Result:='';
+      for n:=1 to 8 do
+        Result:=Result+XReadFloat + ' ';
+      Result:=Result+XReadFloat;
     end else if XValue='XMatrix34' then begin
       Result:='';
       for n:=1 to 11 do
         Result:=Result+XReadFloat + ' ';
-      Result:=Result+XReadFloat;  
+      Result:=Result+XReadFloat;
     end else if XValue='XMatrix' then begin
       Result:='';
       for n:=1 to 15 do
@@ -1913,7 +1922,7 @@ var
 begin
   if XCntr.XRef<>'' then begin Result:=XCntr.XRef; Exit; end;
   XType := PCharXTypes[XCntr.Xtype];
-  SXCont := XContainer.FindNode(XType);
+  SXCont := GetXTypeNode(XType, XContainer);
   if SXCont=nil then begin
     WriteLn(Format('Error: %s not found in xomSCHM',[XType]));
     Halt;
@@ -1963,17 +1972,18 @@ begin
   Result := XRef;
 end;
 
-function TXom.GetXTypeName(Name: String; XContainer: TXmlNode): String;
+
+function TXom.GetXTypeNode(Name: String; XContainer: TXmlNode): TXmlNode;
 var found:Boolean;
-OutName: String;
+FndNode: TXmlNode;
   procedure CheckXTypeNode(XCont:TXmlNode);
   var i:integer;
   begin
     if not Found then begin
-      if XCont.HasAttribute('guid') and (StrLComp(PChar(XCont.Name),PChar(Name),31)=0) then
+      if XCont.HasAttribute('guid') and (XCont.Name = Name) then
       begin
         Found:=true;
-        OutName:=XCont.Name;
+        FndNode:=XCont;
       end else begin
         for i:=0 to XCont.ElementCount-1 do begin
           CheckXTypeNode(XCont.Elements[i]);
@@ -1984,10 +1994,38 @@ OutName: String;
   end;
 
 begin
-  OutName:=Name;
-  Found:=false;
+  FndNode := nil;
+  Found := false;
   CheckXTypeNode(XContainer);
-  Result:= OutName;
+  Result := FndNode;
+end;
+
+function TXom.GetXTypeNode(nType:Integer; XContainer: TXmlNode): TXmlNode;
+var found:Boolean;
+sGuid: String;
+FndNode: TXmlNode;
+  procedure CheckXTypeNode(XCont:TXmlNode);
+  var i:integer;
+  begin
+    if not Found then begin
+      if XCont.HasAttribute('guid') and (XCont.AttributeValueByName['guid'] = sGuid) then
+      begin
+        Found:=true;
+        FndNode:=XCont;
+      end else begin
+        for i:=0 to XCont.ElementCount-1 do begin
+          CheckXTypeNode(XCont.Elements[i]);
+          if Found then break;
+        end;
+      end;
+    end;
+  end;
+begin
+  sGuid := GUIDToString(XomHandle.TypesInfo[nType].GUID);
+  FndNode := nil;
+  Found := false;
+  CheckXTypeNode(XContainer);
+  Result := FndNode;
 end;
 
 procedure TXom.LoadXTypeXML(XContainer, xomTypes: TXmlNode);
@@ -2026,7 +2064,7 @@ begin
    for i:=0 to xomTypes.ElementCount-1 do begin
       XTypeName:= xomTypes.Elements[i].Name;
       v := StrToIntDef(xomTypes.Elements[i].AttributeValueByName['Xver'],-1);
-      XClass := XContainer.FindNode(XTypeName);
+      XClass := GetXTypeNode(XTypeName, XContainer);
       if XClass = nil then begin
       WriteLn('Error: ' + XTypeName + ' not found in scheme');
       Halt;
@@ -2283,6 +2321,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
 
           if (XValueType = 'XVector4f') or
             (XValueType = 'XMatrix34') or
+            (XValueType = 'XMatrix3') or
             (XValueType = 'XMatrix') or
             (XValueType = 'XBoundBox') then
           begin
@@ -2460,7 +2499,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
       Zero:=XCntr.Zver;
       if XCntr.CTNR then
         Buf.Write(zero, 3);
-      XClass := XContainer.FindNode(XCont.Name);
+      XClass := GetXTypeNode(XCont.Name, XContainer);
       if XClass.AttributeValueByName['Xtype'] = 'XDesc' then
         ReadParentProp(XClass.Parent,XCont,Buf);
 
