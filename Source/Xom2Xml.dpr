@@ -21,7 +21,6 @@ var
   LoadedXom:TXom;
   node,xomObjects,xomTypes,XContainer,XType: TXmlNode;
   s, dir: string;
-  code: string;
   xomArchive,XNode: TsdElement;
   i,Xver: integer;
 begin
@@ -47,22 +46,20 @@ begin
   if LoadedXom.XomHandle.nType <> $2000000 then // MOIK default version
     xomTypes.AttributeAdd(XML.AttrText('Xver', IntToStr(LoadedXom.XomHandle.nType shr 24)));
 
-  try
   for i:=0 to LoadedXom.XomHandle.NumTypes-1 do begin
         XNode := TsdElement.CreateParent(XML,xomTypes);
-        XNode.Name := LoadedXom.GetXTypeName(LoadedXom.XomHandle.TypesInfo[i].Name,schmnode);
-        XType:=schmnode.FindNode(XNode.Name);
+        XType := LoadedXom.GetXTypeNode(i, schmnode);
+        if XType=nil then begin
+          WriteLn(Format('Error: Try read %s type [%d]',[LoadedXom.XomHandle.TypesInfo[i].Name, i]));
+          Halt;
+        end;
+        XNode.Name := XType.Name;
         XVer:=StrToInt(XType.AttributeValueByName['Xver']);
         if LoadedXom.XomHandle.TypesInfo[i].btype<>XVer then
         XNode.AttributeAdd(XML.AttrText('Xver', IntToStr(LoadedXom.XomHandle.TypesInfo[i].btype)));
         XNode.NodeClosingStyle := ncClose;
   end;
-  Except
-      on E : Exception do   begin
-       WriteLn(Format('Error: Try read %s type [%d]',[XNode.Name, i]));
-       Halt;
-    end;
-  end;
+  
   xomArchive.NodeAdd(xomTypes);
   end;
  // Objects
