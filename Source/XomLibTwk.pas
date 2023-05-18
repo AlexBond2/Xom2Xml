@@ -85,6 +85,7 @@ type
     function GetXTypeNode(nType:Integer;XContainer:TXmlNode):TXmlNode; overload;
     procedure WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXmlNode);
     function AddXMLNode(XCntr:TContainer; XContainer:TXmlNode; XName:String; XML:TNativeXml; xomObjects:TXmlNode):String;
+    function XBitmapAddBlocks(Point:Pointer; Size: Integer):String;
     function XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
     procedure XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
     procedure LoadFromXML(xomTypes, xomObjects, XContainer:TXmlNode);
@@ -1467,7 +1468,7 @@ end;
 // XML part
 
 const
-  VTYPES = 21;
+  VTYPES = 22;
 
   XCheckedValues : array [0..VTYPES] of String = (
     'XInt','XUInt','XInt8','XUInt8',
@@ -1475,9 +1476,41 @@ const
     'XFloat','XBool','XEnum','XColor4ub',
     'XVector2f','XVector3f','XVector4f',
     'XUIntHex', 'XGUID','XMatrix34','XMatrix3','XMatrix','XBoundBox',
-    'XBase64Byte', 'XKey');
+    'XBase64Byte', 'XKey','XBitmap16');
 var
 XGlobid:Integer=0;
+XGlobBlocks:array of TBitmap32;
+XBlockIndex:Integer=0;
+XBlockName:String;
+
+function TXom.XBitmapAddBlocks(Point:Pointer; Size: Integer):String;
+var
+  Bitmap: TBitmap32;
+  Mem: TMemoryStream;
+begin
+  Bitmap := TBitmap32.Create;
+  Bitmap.Width := 64;
+  Bitmap.Height := 64;
+  Bitmap.LoadFromBlocks(Point, 8, 8, 16);
+  Inc(XBlockIndex);
+ // -------
+  Mem:= TMemoryStream.Create;
+  if XImg.outfile = 'png' then
+     Bitmap.SaveToPNG(Mem);
+  XBlockName := format('%d.%s',[ XBlockIndex, Ximg.outfile]);
+
+    if XImg.dir <> '' then begin
+      if not DirectoryExists(XImg.dir) then CreateDir(XImg.dir);
+      XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
+    end;
+
+    XBlockName:= XImg.dir + XBlockName;
+  Mem.SaveToFile(XBlockName);
+ // --------
+//  SetLength(XGlobBocks,XBlockIndex);
+//  XGlobBocks[XBlockIndex] := Bitmap;
+  Result := XBlockName;
+end;
 
 function TXom.XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
 var
@@ -1731,6 +1764,9 @@ var
     end else if XValue='XUInt16' then begin
       Result:=Format('%d', [Word(p2^)]);
       Inc(Longword(p2), 2);
+    end else if XValue='XBitmap16' then begin
+      Result:=IntToHex(Word(p2^), 4);
+      Inc(Longword(p2), 2);
     end else if XValue='XGUID' then begin
       Result:=GUIDToString(TGUID(p2^));
       Inc(Longword(p2), 16);
@@ -1772,6 +1808,9 @@ var
             else
               s := EncodePointer(p2,n);
             Inc(Longword(p2), n);
+          end else if (XValueType = 'XBitmap16') and Ximg.isfile then begin
+            s := XBitmapAddBlocks(p2, n);
+            Inc(Longword(p2), n * 2);
           end else begin
             for i := 1 to n do
               s := s + XReadValue(XValueType)+' ';
