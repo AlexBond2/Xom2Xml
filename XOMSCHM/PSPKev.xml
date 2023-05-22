@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xomSCHM Xgame="PSP">
+  <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" id="XRef" Xtype="XClass">
+    <XNode guid="{BF1E8B2B-025D-4EB2-B937-05575E5771D3}" Xver="0" id="XRef" Xtype="XClass">
+      <XShape guid="{F39F012E-DE00-451B-9B10-CB09402F24B4}" Xver="3" id="XRef" Xtype="XClass">
+        <XBitmapLandscape guid="{A70BE9AD-52DF-4DF2-9810-A5D1AF98681D}" Xver="0" id="XRef" Xtype="XClass">
+          <XPSPBitmapLandscape guid="{B5200D44-E5F9-4F9A-8D69-054718E1D05A}" Xver="0" id="XRef">
+            <ImageChunks Xtype="XCollection" href="XPSPBitmapImage" />
+          </XPSPBitmapLandscape>
+          <Width>XUInt</Width>
+          <Height>XUInt</Height>
+        </XBitmapLandscape>
+        <Flags>XUInt</Flags>
+        <Shader href="XShader" />
+        <Geometry href="XGeometry" />
+        <SortKey>XUInt</SortKey>
+        <Parameters Xtype="XCollection" href="XParameterChunk" />
+      </XShape>
+      <Bounds x="XFloat" y="XFloat" z="XFloat" Radius="XFloat" />
+      <BoundMode>XEnum</BoundMode>
+      <Name>XString</Name>
+    </XNode>
+    <XPSPBitmapImage guid="{9690B3BB-B508-416F-9060-07839DFC0854}" Xver="0" id="XRef">
+      <Type>XUInt</Type>
+      <ImageData Xtype="XCollection" Xpack="true">XBitmap16</ImageData>
+    </XPSPBitmapImage>
+  </XContainer>
+</xomSCHM>
