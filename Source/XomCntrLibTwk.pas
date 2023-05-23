@@ -314,6 +314,7 @@ type
     XBinSelector,
     XBinormal3fSet,
     XBitmapDescriptor,
+    XBitmapLandscape,
     XBlendModeGL,
     XBone,
     XBrickDetails,
@@ -387,6 +388,8 @@ type
     XOglShadowSpotLight,
     XOglTextureMap,
     XOglTextureStage,
+    XPSPBitmapImage,
+    XPSPBitmapLandscape,
     XPalette,
     XPaletteWeightSet,
     XParticleEmitter,
@@ -724,6 +727,7 @@ const
     'XBinSelector',
     'XBinormal3fSet',
     'XBitmapDescriptor',
+    'XBitmapLandscape',
     'XBlendModeGL',
     'XBone',
     'XBrickDetails',
@@ -797,6 +801,8 @@ const
     'XOglShadowSpotLight',
     'XOglTextureMap',
     'XOglTextureStage',
+    'XPSPBitmapImage',
+    'XPSPBitmapLandscape',
     'XPalette',
     'XPaletteWeightSet',
     'XParticleEmitter',
@@ -1107,6 +1113,7 @@ var
   WB: boolean = false;
   WR: boolean = false;
   WC: boolean = false;
+  PSP: boolean = false;
   W3DGC: Boolean = false;
   Xbit: Integer;
   GLError: boolean = false;
