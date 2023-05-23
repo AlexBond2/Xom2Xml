@@ -25,7 +25,7 @@ var
   i,Xver: integer;
 begin
   LoadedXom:=TXom.Create;
-  LoadedXom.LoadXomFileName(FileName, s,false);
+  LoadedXom.LoadXomFileName(FileName);
   LoadedXom.LogXML:=log;
   LoadedXom.IsXid:=isxid;
   LoadedXom.XImg:=XImg;
@@ -127,7 +127,7 @@ var
   i: integer;
 begin
   NewXom:=TXom.Create;
-  NewXom.LoadXomFileName(FileName, s,false);
+  NewXom.LoadXomFileName(FileName);
   XML := TNativeXml.CreateName('xomSCHM');
   XML.XmlFormat := xfReadable;
   xomGUID := XML.Root;
@@ -257,7 +257,8 @@ begin
        else if Xgame='WF' then WF:=true
        else if Xgame='WB' then WB:=true
        else if Xgame='WR' then WR:=true
-       else if Xgame='W3DGC' then W3DGC:=true;
+       else if Xgame='W3DGC' then W3DGC:=true
+       else if Xgame='PSP' then PSP:=true;
        Writeln('Xgame = ', Xgame);
      end else begin
        Writeln('Xgame not found.');
