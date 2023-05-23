@@ -72,10 +72,17 @@ type
     hqFloat:boolean;
     XMLNumCntr: Integer;
     XImg:TXImg;
+    XomFileName: String;
+
+    XGlobBlocks: array of TBitmap32;
+    XBlockIndex: Integer;
+    XBlockName: String;
+    XBlockBitmap: TBitmap32;
+
+    XGlobid: Integer;
+
     function GetXType(XName:PChar;var XType:XTypes):Boolean;
-    procedure LoadXomFileName(FileName: string; var OutCaption: string; ShowProgress:boolean=true);
-
-
+    procedure LoadXomFileName(FileName: String);
     procedure SaveXom(FileName: String);
   //  function BuildTree( XCntr: TContainer; Tree: TTreeView; Node: TTreeNode): XTypes;
     function ReadXContainer(p:pointer;NType:XTypes; var Name:String; var IsCtnr:Boolean; Schema: Integer):Pointer;
@@ -85,7 +92,10 @@ type
     function GetXTypeNode(nType:Integer;XContainer:TXmlNode):TXmlNode; overload;
     procedure WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXmlNode);
     function AddXMLNode(XCntr:TContainer; XContainer:TXmlNode; XName:String; XML:TNativeXml; xomObjects:TXmlNode):String;
+    procedure SetBitmapBlocks;
+    procedure SaveBitmapBlocks(Width, Height: Integer);
     function XBitmapAddBlocks(Point:Pointer; Size: Integer):String;
+    function XBitmapDecode(XValue: String; Buf:TStream): Boolean;
     function XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
     procedure XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
     procedure LoadFromXML(xomTypes, xomObjects, XContainer:TXmlNode);
@@ -224,6 +234,7 @@ constructor TXom.Create;
 begin
   inherited Create;
   CntrArr := TContainers.Create(true);
+  XGlobid := 0;
 end;
 
 
@@ -274,7 +285,7 @@ indx := TestByte128(p);
 end;
 
 
-procedure TXom.LoadXomFileName(FileName: string; var OutCaption: string;ShowProgress:boolean=true);
+procedure TXom.LoadXomFileName(FileName: String);
 var
   s: string;
   ws: WideString;
@@ -304,8 +315,7 @@ begin
 // очищаем список
 
   s := ExtractFileName(FileName);
-  OutCaption := Format('%s - [%s]', [APPVER,s]);
-
+  XomFileName := s;
 
 //--------
       InitXomHandle;
@@ -1477,38 +1487,125 @@ const
     'XVector2f','XVector3f','XVector4f',
     'XUIntHex', 'XGUID','XMatrix34','XMatrix3','XMatrix','XBoundBox',
     'XBase64Byte', 'XKey','XBitmap16');
+
+procedure TXom.SetBitmapBlocks;
+begin
+  XBlockIndex := 0;
+  SetLength(XGlobBlocks, XBlockIndex);
+  XBlockName := ChangeFileExt(XomFileName,'.'+Ximg.outfile);
+  if XImg.dir <> '' then begin
+     if not DirectoryExists(XImg.dir) then CreateDir(XImg.dir);
+     XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
+  end;
+  XBlockName:= XImg.dir + XBlockName;
+end;
+
+
+function TXom.XBitmapDecode(XValue: String; Buf: TStream): Boolean;
 var
-XGlobid:Integer=0;
-XGlobBlocks:array of TBitmap32;
-XBlockIndex:Integer=0;
-XBlockName:String;
+  Mem: TMemoryStream;
+  outfile: String;
+  len, dWidth, dHeight, i, x, y: integer;
+begin
+ Result := false;
+
+ if Pos('.', XValue)>0 then begin
+  if XBlockIndex = 0 then begin
+
+    if not FileExists(XValue) then
+    begin
+       WriteLn(Format('Error: File %s not exist',[XValue]));
+       Halt;
+    end;
+    len := Length(XValue);
+    outfile := LowerCase(Copy(XValue, len - 2, 3));
+    XBlockBitmap := TBitmap32.Create;
+    Mem := TMemoryStream.Create;
+    Mem.LoadFromFile(XValue);
+
+      if outfile = 'png' then
+        XBlockBitmap.LoadFromPNG(Mem)
+      else if outfile = 'tga' then
+        XBlockBitmap.LoadFromTGA(Mem)
+      else if outfile = 'dds' then
+        XBlockBitmap.LoadFromDDS(Mem);
+
+    Mem.Free;
+  end;
+
+  if not Assigned(XBlockBitmap) then
+  begin
+     WriteLn('Error: XBitmap not loaded');
+     Halt;
+  end;
+
+  i:=0;
+  dWidth := XBlockBitmap.Width div 64;
+  dHeight := XBlockBitmap.Height div 64;
+  for y:=0 to dHeight-1 do begin
+    for x:=0 to dWidth-1 do begin
+      if i = XBlockIndex then begin
+       XBlockBitmap.SaveBlock64(Buf, x*64, y*64);
+       Inc(XBlockIndex);
+       Result := true;
+       Exit;
+      end;
+      inc(i);
+    end;
+  end;
+ end;
+
+end;
+
+procedure TXom.SaveBitmapBlocks(Width, Height: Integer);
+var
+  Mem: TMemoryStream;
+  x, y, i, dWidth, dHeight: Integer;
+  Bitmap: TBitmap32;
+begin
+  Bitmap := TBitmap32.Create;
+  Bitmap.Width := Width;
+  Bitmap.Height := Height;
+
+  i:=0;
+  dWidth := Width div 64;
+  dHeight := Height div 64;
+  for y:=0 to dHeight-1 do begin
+    for x:=0 to dWidth-1 do begin
+      if XGlobBlocks[i] <> nil then begin
+        Bitmap.DrawBlock(x*64, y*64, XGlobBlocks[i]);
+        XGlobBlocks[i].Free;
+      end;
+      inc(i);
+    end;
+  end;
+  SetLength(XGlobBlocks, 0);
+  Mem:= TMemoryStream.Create;
+  if XImg.outfile = 'png' then
+     Bitmap.SaveToPNG(Mem)
+  else if XImg.outfile = 'tga' then
+     Bitmap.SaveToTGA(Mem, 32)
+  else if XImg.outfile = 'dds' then
+     Bitmap.SaveToDDS(Mem, 32);
+  Mem.SaveToFile(XBlockName);
+  Mem.Free;
+  XBlockIndex := 0;
+end;
+
 
 function TXom.XBitmapAddBlocks(Point:Pointer; Size: Integer):String;
 var
   Bitmap: TBitmap32;
-  Mem: TMemoryStream;
 begin
   Bitmap := TBitmap32.Create;
   Bitmap.Width := 64;
   Bitmap.Height := 64;
-  Bitmap.LoadFromBlocks(Point, 8, 8, 16);
+  Bitmap.LoadFromBlocks(Point);
+
+  SetLength(XGlobBlocks,XBlockIndex+1);
+  XGlobBlocks[XBlockIndex] := Bitmap;
   Inc(XBlockIndex);
- // -------
-  Mem:= TMemoryStream.Create;
-  if XImg.outfile = 'png' then
-     Bitmap.SaveToPNG(Mem);
-  XBlockName := format('%d.%s',[ XBlockIndex, Ximg.outfile]);
 
-    if XImg.dir <> '' then begin
-      if not DirectoryExists(XImg.dir) then CreateDir(XImg.dir);
-      XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
-    end;
-
-    XBlockName:= XImg.dir + XBlockName;
-  Mem.SaveToFile(XBlockName);
- // --------
-//  SetLength(XGlobBocks,XBlockIndex);
-//  XGlobBocks[XBlockIndex] := Bitmap;
   Result := XBlockName;
 end;
 
@@ -1607,7 +1704,7 @@ begin
        WriteLn(Format('Error: File %s not exist',[XValue]));
        Halt;
     end;
-    
+
       Mem:= TMemoryStream.Create;
 
       outfile := LowerCase(Copy(XValue, len - 2, 3));
@@ -1994,12 +2091,21 @@ begin
   if SXCont.AttributeValueByName['Xtype'] = 'XDesc' then
     ReadParentProp(SXCont.Parent);
 
+  if SXCont.Name='XPSPBitmapLandscape' then
+    SetBitmapBlocks;
+
   For i:=0 to SXCont.ElementCount-1 do
     ReadAndAddProp(SXCont.Elements[i], XCont);
   // check prop parrents
   if (SXCont.Parent.Name<>'XContainer') and (SXCont.AttributeValueByName['Xtype'] <> 'XDesc') then
      ReadParentProp(SXCont.Parent);
 
+  if (SXCont.Name='XPSPBitmapLandscape') and (XBlockIndex>0) then begin
+    SaveBitmapBlocks(
+      XCont.NodeByName('Width').ValueAsInteger,
+      XCont.NodeByName('Height').ValueAsInteger
+    );
+  end;
 
   if (Longword(p2)-Longword(XCntr.Point))<>XCntr.Size then
       Writeln(Format('Error: %s Size: %d <> %d',[XType,Longword(p2)-Longword(XCntr.Point),XCntr.Size]));
@@ -2295,6 +2401,9 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
     end else if XValueType='XUInt16' then begin
       xui16:= StrToInt(XValue);
       Buf.Write(xui16,2);
+    end else if XValueType='XBitmap16' then begin
+      xui16:= StrToCard('$'+XValue);
+      Buf.Write(xui16,2);
     end else if XValueType='XGUID' then begin
       xGUID:= StringToGUID(XValue);
       Buf.Write(xGUID,16);
@@ -2326,6 +2435,9 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
              XImageDecode(XCont.Parent, XValue, Buf)
             else
              DecodeStreamString(XValue,Buf);
+            exit;
+          end else if XValueType = 'XBitmap16' then begin
+            If XBitmapDecode(XValue, Buf) then
             exit;
           end;
           XValues := TStringList.Create;
@@ -2594,6 +2706,8 @@ begin
     AddXTypeXML(XContainer,xomObjects)
    else
     LoadXTypeXML(XContainer,xomTypes);
+
+   XBlockIndex := 0;
 // Set Container Numbers
    indx:=0;
    CntrArr.Count := indx + 1;
@@ -2617,10 +2731,12 @@ begin
    end;
    WriteXMLContaiter(XomHandle.RootCount,XRoot,XContainer); // write tree
 
+   if Assigned(XBlockBitmap) then XBlockBitmap.Free;
 end;
 
 destructor TXom.Destroy;
 begin
+  SetLength(XGlobBlocks, 0);
   CntrArr.Free;
   SetLength(XomHandle.TypesInfo,0);
   XomHandle.StringTable.Free;
