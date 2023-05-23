@@ -115,8 +115,11 @@ type
     FMipMaps: array of PColor32Array;
   public
     constructor Create;
-    destructor Destroy;  
+    destructor Destroy;
     procedure LoadFromData(Data: Pointer; Width, Height: Integer; ColorBits: Integer; MipMaps: Integer = 1);
+    procedure LoadFromBlocks(Data: Pointer);
+    procedure DrawBlock(X, Y: Integer; Bitmap: TBitmap32);
+    procedure SaveBlock64(Data: TStream; X, Y :Integer);
     function GenMipMaps: Integer;
     procedure FreeMipMaps;
     procedure SaveToStream(Data: TStream; ColorBits: Integer);
@@ -345,6 +348,79 @@ begin
     end;
   end;
 
+end;
+
+procedure TBitmap32.DrawBlock(X, Y: Integer; Bitmap: TBitmap32);
+var
+ i, xin, j, yin, MWidth, MHeight: Integer;
+ PixelIn, PixelOut: PColor32;
+begin
+ MWidth := X + Bitmap.Width;
+ MHeight := Y + Bitmap.Height;
+ yin := 0;
+ for j := Y to MHeight - 1 do begin
+  PixelOut := PixelPtr[X, j];
+  PixelIn := Bitmap.PixelPtr[0, yin];
+  Move(PixelIn^, PixelOut^, Bitmap.Width * 4);
+  inc(yin);
+ end;
+
+end;
+
+// Blocks 8x8
+
+procedure TBitmap32.LoadFromBlocks(Data: Pointer);
+var
+ x, y, i, j : Integer;
+ Pixel: PColor32;
+ Color: TColor32Entry;
+ Color16: Word;
+begin
+  for j:=0 to 7 do
+    for i:=0 to 7 do
+      for y:=0 to 7 do
+        for x:=0 to 7 do
+          begin
+            Pixel := @Bits[(i * 8 + x) + (j * 8 + y) * Width];
+            Color16 := Word(Data^);
+            Color.R := (Color16 and $1F) * 8;
+            Color.G := ((Color16 shr 5) and $1F) * 8;
+            Color.B := ((Color16 shr 10) and $1F) * 8;
+            Color.A := (Color16 shr 15) * $FF;
+            Inc(LongWord(Data), 2);
+            TColor32Entry(Pixel^) := Color;
+          end;
+end;
+
+procedure TBitmap32.SaveBlock64(Data: TStream; X, Y :Integer );
+var
+ i, j, xb, yb, bWidth, bHeight: Integer;
+ Pixel: PColor32;
+ Color: TColor32Entry;
+ Color16: Word;
+
+  function Ato1(A: Byte): Byte;
+  begin
+  if A > 127 then
+    Result := 1
+  else
+    Result := 0;
+  end;
+
+begin
+  for j:=0 to 7 do
+    for i:=0 to 7 do
+      for yb:=0 to 7 do
+        for xb:=0 to 7 do
+          begin
+            Pixel := PixelPtr[X + i * 8 + xb, Y + j * 8 + yb];
+            Color := TColor32Entry(Pixel^);
+            Color16 := (Color.R div 8) or
+              ((Color.G div 8) shl 5) or
+              ((Color.B div 8) shl 10) or
+              ( Ato1(Color.A) shl 15);
+            Data.Write(Color16, 2);
+          end;
 end;
 
 // BGR Image
