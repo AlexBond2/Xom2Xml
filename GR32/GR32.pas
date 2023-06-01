@@ -81,6 +81,8 @@ type
 
 // Compact TCustomBitmap32 by AlexBond
 
+  AByte = array of Byte;
+
   TCustomBitmap32 = class(TPersistent)
   private
     FBits: PColor32Array;
@@ -112,19 +114,22 @@ type
   TBitmap32 = class(TCustomBitmap32)
   private
     FNumMipMaps: Integer;
+    FPalette: PPalette32;
+    FIndexes: AByte;
     FMipMaps: array of PColor32Array;
   public
     constructor Create;
     destructor Destroy;
-    procedure LoadFromData(Data: Pointer; Width, Height: Integer; ColorBits: Integer; MipMaps: Integer = 1);
+    procedure LoadFromData(Data: Pointer; Width, Height, ColorBits, MipMaps: Integer; Palette: Pointer);
     procedure LoadFromBlocks(Data: Pointer);
     procedure DrawBlock(X, Y: Integer; Bitmap: TBitmap32);
     procedure SaveBlock64(Data: TStream; X, Y :Integer);
     function GenMipMaps: Integer;
     procedure FreeMipMaps;
     procedure SaveToStream(Data: TStream; ColorBits: Integer);
+    function LoadPaletteFromTGA(Stream, Data: TStream): Boolean;
     procedure LoadFromTGA(Stream: TStream);
-    procedure SaveToTGA(Stream: TStream; ColorBits: Integer);
+    procedure SaveToTGA(Stream: TStream; ColorBits: Integer; RLE: Boolean = True);
     procedure LoadFromPNG(Stream: TStream);
     procedure SaveToPNG(Stream: TStream);
     procedure LoadFromDDS(Stream: TStream);
@@ -219,6 +224,7 @@ destructor TBitmap32.Destroy;
 var i:integer;
 begin
   FreeMipMaps;
+  SetLength(FIndexes, 0);
   inherited;
 end;
 
@@ -253,97 +259,267 @@ type
     ImageDescriptor: Byte;
   end;
 
-procedure TBitmap32.SaveToTGA(Stream: TStream; ColorBits: Integer);
+procedure EncodeRLE(var Pixels: AByte; Width, Height, PixelSize: Integer);
+var
+  i, c, y, ScanLineSize, Pos, Len, Count, CountBpp: integer;
+  Chunk: Byte;
+  Compressed, RowData: AByte;
+  Zero, IsRLE: Boolean;
+  Pixel, NextPixel: TColor32;
+begin
+  Len := Length(Pixels);
+  SetLength(Compressed, Len*2);
+  c := 0;
+
+  Pixel := 0;
+  NextPixel := 0;
+
+  ScanLineSize := Width * PixelSize;
+  SetLength(RowData, ScanLineSize);
+  Count := 0;
+  for y := 0 to Height-1 do
+  begin
+    Pos := 0;
+    Move(Pixels[y * ScanLineSize], RowData[0], ScanLineSize);
+
+    while (Pos < ScanLineSize) do
+    begin
+    if (Pos >= ScanLineSize - PixelSize) then
+    begin
+      Compressed[c]:=0; Inc(c);
+      Move(RowData[Pos], Compressed[c], PixelSize);  Inc(c, PixelSize);
+      Inc(Pos, PixelSize);
+      break;
+    end;
+
+    Count := 1;
+    Move(RowData[Pos], Pixel, PixelSize);
+    Move(RowData[Pos + PixelSize], NextPixel, PixelSize);
+    IsRLE := (Pixel = NextPixel);
+
+    i := Pos + PixelSize;
+    while  ( i < Math.Min(Pos + 128 * PixelSize, ScanLineSize) - PixelSize) do
+    begin
+      if IsRLE then
+      Move(RowData[Pos], Pixel, PixelSize)
+      else
+      Move(RowData[i], Pixel, PixelSize);
+      Move(RowData[i + PixelSize], NextPixel, PixelSize);
+
+      if (IsRLE xor (Pixel = NextPixel)) then
+      begin
+      if (Pixel = NextPixel) then Dec(Count);
+      break;
+      end
+      else
+      Inc(Count);
+
+      Inc(i, PixelSize);
+    end;
+
+    CountBpp := (Count + 1) * PixelSize;
+    if IsRLE then begin
+      Compressed[c]:= Count or 128; Inc(c);
+      Move(RowData[Pos], Compressed[c], PixelSize);  Inc(c, PixelSize);
+    end else begin
+      Compressed[c]:= Count; Inc(c);
+      Move(RowData[Pos], Compressed[c], CountBpp);  Inc(c, CountBpp);
+    end;
+
+    Inc(Pos, CountBpp);
+    end;
+  end;
+  
+  SetLength(Compressed, c);
+  SetLength(RowData, 0);
+  SetLength(Pixels, 0);
+  Pixels := Compressed;
+end;
+
+procedure TBitmap32.SaveToTGA(Stream: TStream; ColorBits: Integer; RLE: Boolean = True);
 var
   Tga: TGAHeader;
-  x,y: Integer;
+  x,y,p: Integer;
   Pixel: PColor32;
-  PixelSize: Integer;
+  PixelSize, Count: Integer;
+  Index: Byte;
+  Pixels: AByte;
+
 begin
   ZeroMemory(@Tga, SizeOf(TGAHeader));
-  Tga.ImageType := 2;
+  if RLE then
+    Tga.ImageType := 8;
+  if ColorBits > 8 then
+    Tga.ImageType := Tga.ImageType or 2 // true-color image
+  else begin
+    Tga.ImageType := Tga.ImageType or 1; // color-mapped image
+    Tga.ColorMapType := 1;
+    Tga.ColourMapOrigin := 0;
+    Tga.ColourMapLength := 256;
+    Tga.ColourMapDepth := 32;
+  end;
+
   Tga.Width := FWidth;
   Tga.Height := FHeight;
   Tga.BitsPerPixel := ColorBits;
   Stream.Write(Tga, SizeOf(TGAHeader));
+
   PixelSize := ColorBits div 8;
+  SetLength(Pixels, FHeight * FWidth * PixelSize);
+
+  if PixelSize = 1 then begin
+   for x:=0 to 255 do begin
+    Stream.Write(TColor32Entry(FPalette[x]).R, 1);
+    Stream.Write(TColor32Entry(FPalette[x]).G, 1);
+    Stream.Write(TColor32Entry(FPalette[x]).B, 1);
+    Stream.Write(TColor32Entry(FPalette[x]).A, 1);
+   end;
+  end;
+
+  Count := 0;
   for y := FHeight - 1 downto 0 do
     for x := 0 to FWidth - 1 do
     begin
-      Pixel := PixelPtr[x,y];
-      Stream.Write(Pixel^, PixelSize);
+      if PixelSize = 1 then begin
+        Index := FIndexes[x + y*FWidth];
+        Pixels[Count] := Index; Inc(Count);
+      end else begin
+        Pixel := PixelPtr[x, y];
+        Move(Pixel^, Pixels[Count], PixelSize);
+        Inc(Count, PixelSize);
+      end;
     end;
+
+ if RLE then
+   EncodeRLE(Pixels, FWidth, FHeight, PixelSize);
+
+  Stream.Write(Pixels[0], Length(Pixels));
+end;
+
+Function TBitmap32.LoadPaletteFromTGA(Stream, Data: TStream):Boolean;
+var
+  Tga: TGAHeader;
+  i, PixelSize: integer;
+  Color: TColor32Entry;
+begin
+  Stream.Read(Tga, sizeOf(TGAHeader));
+  if Tga.ImageType and 1 = 1 then begin
+  PixelSize := Tga.ColourMapDepth div 8;
+    for i := 0 to 255 do begin
+     Stream.Read(Color, PixelSize);
+     Data.Write(Color.R, 1);
+     Data.Write(Color.G, 1);
+     Data.Write(Color.B, 1);
+     Data.Write(Color.A, 1);
+    end;
+    Result := True;
+  end else
+    Result := False;
+end;
+
+procedure DecodeRLE(Stream: TStream; var Pixels:AByte; Width, Height, PixelSize:Integer);
+var
+  x, y, i, counter: integer;
+  chunkHeader: byte;
+  Color: TColor32;
+begin
+  y := 0;
+  x := 0;
+  i := 0;
+  while y < Height do
+  begin //repeat
+    Stream.Read(chunkHeader,1);
+    if chunkHeader < 128 then //array of colors
+    begin
+    Inc(chunkHeader);
+    for counter := 0 to chunkHeader -1 do
+    begin
+      if x > Width - 1 then
+      begin
+      Inc(y);
+      x := 0;
+      end;
+      Stream.Read(Pixels[i], PixelSize);
+      Inc(i, PixelSize);
+      Inc(x);
+    end;
+    end
+    else  //repeat color
+    begin
+    chunkHeader := chunkHeader - 127;
+    Stream.Read(Color, PixelSize);
+    for counter:=0 to chunkHeader -1 do
+    begin
+      if x > Width - 1 then
+      begin
+      Inc(y);
+      x := 0;
+      end;
+      Move(Color, Pixels[i], PixelSize);
+      Inc(i, PixelSize);
+      Inc(x);
+    end;
+    end;
+  end;
 end;
 
 procedure TBitmap32.LoadFromTGA(Stream: TStream);
 var
-  x,y, counter: integer;
+  x, y, i, counter: integer;
   chunkHeader: byte;
   Tga: TGAHeader;
   Pixel: PColor32;
   Color: TColor32Entry;
-  PixelSize: Integer;
+  PixelSize, PalSize, Index: Integer;
+  Palette: array of TColor32;
+  Pixels: AByte;
 begin
 
   Stream.Read(Tga, sizeOf(TGAHeader));
 
   SetSize(Tga.Width, Tga.Height);
-  PixelSize := tga.BitsPerPixel div 8;
+  PixelSize := Tga.BitsPerPixel div 8;
 
-  if Tga.ImageType = 2 then
+  SetLength(Pixels, Tga.Width * Tga.Height * PixelSize);
+
+  if Tga.ImageType and 2 = 2 then  // true-color image
   begin
+    if Tga.ImageType and 8 = 8 then // RLE
+       DecodeRLE(Stream, Pixels, Tga.Width, Tga.Height, PixelSize)
+    else
+       Stream.Read(Pixels[0],Length(Pixels));
+    i := 0;
     for y := Tga.Height - 1 downto 0 do
     begin
       for x := 0 to Tga.Width - 1 do
       begin
         Pixel := PixelPtr[x,y];
-        Stream.Read(Pixel^, PixelSize);
+        Move(Pixels[i],Pixel^, PixelSize); Inc(i, PixelSize);
         if PixelSize = 3 then TColor32Entry(Pixel^).A := 255;
       end;
     end;
   end
-  else //compressed
+  else if Tga.ImageType and 1 = 1 then  // color-mapped image
   begin
-    y := tga.Height -1;
-    x := 0;
-
-    while y >= 0 do
+    SetLength(Palette, 256);
+    SetLength(FIndexes, Tga.Height * Tga.Width);
+    PalSize := Tga.ColourMapDepth div 8;
+    for i := 0 to 255 do
+     Stream.Read(Palette[i], PalSize);
+    if Tga.ImageType and 8 = 8 then // RLE
+       DecodeRLE(Stream, Pixels, Tga.Width, Tga.Height, PixelSize)
+    else
+       Stream.Read(Pixels[0],Length(Pixels));
+    i := 0;
+    for y := Tga.Height - 1 downto 0 do
     begin
-    //repeat
-      Stream.Read(chunkHeader,1);
-      if chunkHeader < 128 then //array of colors
+      for x := 0 to Tga.Width - 1 do
       begin
-        Inc(chunkHeader);
-        for counter := 0 to chunkHeader -1 do
-        begin
-          if x > Tga.Width -1 then
-          begin
-            Dec(y);
-            x := 0;
-          end;
-          Pixel := PixelPtr[x,y];
-          Stream.Read(Pixel^, PixelSize);
-          if PixelSize = 3 then TColor32Entry(Pixel^).A := 255;
-          Inc(x);
-        end;
-      end
-      else  //repeat color
-      begin
-        chunkHeader := chunkHeader - 127;
-        Stream.Read(Color, PixelSize);
-        if PixelSize = 3 then Color.A := 255;
-
-        for counter:=0 to chunkHeader -1 do
-        begin
-          if x > Tga.Width - 1 then
-          begin
-            Dec(y);
-            x := 0;
-          end;
-          Pixel := PixelPtr[x,y];
-          TColor32Entry(Pixel^) := Color;
-          Inc(x);
-        end;
+        Pixel := PixelPtr[x,y];
+        Index := Pixels[i]; Inc(i);
+        FIndexes[x +  y * Tga.Width] := Index;
+        Pixel^ := Palette[Index];
+        if PalSize = 3 then TColor32Entry(Pixel^).A := 255;
       end;
     end;
   end;
@@ -394,7 +570,7 @@ end;
 
 procedure TBitmap32.SaveBlock64(Data: TStream; X, Y :Integer );
 var
- i, j, xb, yb, bWidth, bHeight: Integer;
+ i, j, xb, yb : Integer;
  Pixel: PColor32;
  Color: TColor32Entry;
  Color16: Word;
@@ -426,7 +602,7 @@ end;
 // BGR Image
 
 procedure TBitmap32.LoadFromData(Data: Pointer; Width, Height,
-  ColorBits: Integer; MipMaps: Integer = 1);
+  ColorBits: Integer; MipMaps: Integer; Palette: Pointer);
 var
  PixelSize, i, MWidth, MHeight: Integer;
  Pixels: PColor32Array;
@@ -437,7 +613,7 @@ var
  Pixel: PColor32;
  Color: TColor32Entry;
  begin
-  for y := dHeight - 1 downto 0 do
+    for y := dHeight - 1 downto 0 do
     for x := 0 to dWidth - 1 do
     begin
       Pixel := @Pixels[x + y * dWidth];
@@ -453,11 +629,51 @@ var
     end;
  end;
 
+ procedure ReadDataBGRP(dWidth, dHeight:Integer);
+ var
+ x, y, i, j : Integer;
+ Pixel: PColor32;
+ Color, PColor: TColor32Entry;
+ Index: Byte;
+ bWidth, bHeight: Integer;
+ begin
+  if Palette <> nil then
+  begin
+  // PixelSize := (Palette.Size div 256);
+   SetLength(FIndexes, dWidth * dHeight);
+
+   FPalette := Palette;
+   bWidth := FWidth div 16;
+   bHeight := FHeight div 8;
+
+   for y := bHeight - 1 downto 0 do
+    for x := 0 to bWidth - 1 do
+     for j := 7 downto 0 do
+      for i := 0 to 15 do
+       begin
+      Pixel := PixelPtr[x * 16 + i, y * 8 + j];
+      Index := Byte(Data^);
+      FIndexes[x * 16 + i + (y * 8 + j)* dWidth] := Index;
+      PColor := TColor32Entry(FPalette[Index]);
+      Color.R := PColor.B;
+      Color.G := PColor.G;
+      Color.B := PColor.R;
+      Color.A := PColor.A;
+      Inc(LongWord(Data));
+      TColor32Entry(Pixel^) := Color;
+    end;
+
+  end;
+ end;
+
 begin
   SetSize(Width, Height);
   PixelSize := ColorBits div 8;
-  Pixels := Bits;
-  ReadDataBGR(FWidth, FHeight);
+  Pixels := FBits;
+  if (PixelSize = 1) then
+    ReadDataBGRP(FWidth, FHeight)
+  else
+    ReadDataBGR(FWidth, FHeight);
 
   If MipMaps>1 then begin
     MWidth := Width;
@@ -467,9 +683,9 @@ begin
     SetLength(FMipMaps, FNumMipMaps);
     for i:=0 to FNumMipMaps-1 do begin
       MWidth := MWidth div 2;
-	    if MWidth = 0 then MWidth := 1;
+      if MWidth = 0 then MWidth := 1;
       MHeight := MHeight div 2;
-	    if MHeight = 0 then MHeight := 1;
+      if MHeight = 0 then MHeight := 1;
       Pixels := AllocMem(MWidth * MHeight * Sizeof(TColor32));
       ReadDataBGR(MWidth, MHeight);
       FMipMaps[i] := Pixels;
@@ -569,17 +785,17 @@ begin
 
   sData := FBits;
   SetLength(FMipMaps, FNumMipMaps);
-	for i := 0 to FNumMipMaps - 1 do
-	begin
+  for i := 0 to FNumMipMaps - 1 do
+  begin
     MWidth  := MWidth div 2;
-	  if MWidth = 0 then MWidth := 1;
+    if MWidth = 0 then MWidth := 1;
     MHeight := MHeight div 2;
-	  if MHeight = 0 then MHeight := 1;
+    if MHeight = 0 then MHeight := 1;
     if i < nMM then continue;
     mData := AllocMem(MWidth * MHeight * Sizeof(TColor32));
     DownScale(sData, PixelSize, FWidth, FHeight, MWidth, MHeight, mData);
     FMipMaps[i] := mData;
-	end;
+  end;
   Result := FNumMipMaps;
 end;
 
@@ -587,6 +803,25 @@ procedure TBitmap32.SaveToStream(Data: TStream; ColorBits: Integer);
 var
  i, PixelSize, Maps, NMaps, MWidth, MHeight: Integer;
  Pixels: PColor32Array;
+
+ procedure WriteBGRP(dWidth, dHeight: Integer);
+ var
+ i, j, x, y, bWidth, bHeight : Integer;
+ Index: Byte;
+ begin
+   bWidth := dWidth div 16;
+   bHeight := dHeight div 8;
+
+   for y := bHeight - 1 downto 0 do
+    for x := 0 to bWidth - 1 do
+     for j := 7 downto 0 do
+      for i := 0 to 15 do
+       begin
+       Index := FIndexes[x * 16 + i + (y * 8 + j)* dWidth];
+       Data.Write(Index, 1);
+       end;
+
+ end;
 
  procedure WriteBGR(dWidth, dHeight: Integer);
  var
@@ -610,18 +845,22 @@ var
 begin
   PixelSize := ColorBits div 8;
   Pixels := FBits;
-  WriteBGR(FWidth, FHeight);
+
+  if (PixelSize = 1) then
+    WriteBGRP(FWidth, FHeight)
+  else
+    WriteBGR(FWidth, FHeight);
 
   MWidth := FWidth;
   MHeight := FHeight;
 
-	for i := 0 to FNumMipMaps - 1 do
-	begin
+  for i := 0 to FNumMipMaps - 1 do
+  begin
     Pixels := FMipMaps[i];
     MWidth  := MWidth div 2;
-	  if MWidth = 0 then MWidth := 1;
+    if MWidth = 0 then MWidth := 1;
     MHeight := MHeight div 2;
-	  if MHeight = 0 then MHeight := 1;
+    if MHeight = 0 then MHeight := 1;
     WriteBGR(MWidth, MHeight);
   end;
 end;
@@ -768,9 +1007,9 @@ begin
     SetLength(FMipMaps, FNumMipMaps);
     for i:=0 to FNumMipMaps-1 do begin
       MWidth := MWidth div 2;
-	    if MWidth = 0 then MWidth := 1;
+      if MWidth = 0 then MWidth := 1;
       MHeight := MHeight div 2;
-	    if MHeight = 0 then MHeight := 1;
+      if MHeight = 0 then MHeight := 1;
       Pixels := AllocMem(MWidth * MHeight * Sizeof(TColor32));
       ReadDataRGB(MWidth, MHeight);
       FMipMaps[i] := Pixels;
@@ -842,13 +1081,13 @@ begin
   MWidth := FWidth;
   MHeight := FHeight;
 
-	for i := 0 to FNumMipMaps - 1 do
-	begin
+  for i := 0 to FNumMipMaps - 1 do
+  begin
     Pixels := FMipMaps[i];
     MWidth  := MWidth div 2;
-	  if MWidth = 0 then MWidth := 1;
+    if MWidth = 0 then MWidth := 1;
     MHeight := MHeight div 2;
-	  if MHeight = 0 then MHeight := 1;
+    if MHeight = 0 then MHeight := 1;
     WriteRGB(MWidth, MHeight);
   end;
 
