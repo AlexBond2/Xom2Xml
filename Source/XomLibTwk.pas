@@ -40,7 +40,7 @@ type TXomHandle = packed record
     Values: array [0..12] of Integer;
   end;
 
-  TXImg = record
+  TDataInfo = record
     isfile: boolean;
     outfile: string;
     isdir: boolean;
@@ -71,15 +71,16 @@ type
     IsXid:boolean;
     hqFloat:boolean;
     XMLNumCntr: Integer;
-    XImg:TXImg;
+    XData:TDataInfo;
     XomFileName: String;
 
     XGlobBlocks: array of TBitmap32;
     XBlockIndex: Integer;
     XBlockName: String;
     XBlockBitmap: TBitmap32;
-
+    XPaletteName: String;
     XGlobid: Integer;
+    XFrequency: Integer;
 
     function GetXType(XName:PChar;var XType:XTypes):Boolean;
     procedure LoadXomFileName(FileName: String);
@@ -96,6 +97,10 @@ type
     procedure SaveBitmapBlocks(Width, Height: Integer);
     function XBitmapAddBlocks(Point:Pointer; Size: Integer):String;
     function XBitmapDecode(XValue: String; Buf:TStream): Boolean;
+    function LoadXPalette(Index:Integer):Pointer;
+    procedure XPaletteDecode(XValue:String; Buf:TStream);
+    function XSampleEncode(XName:String; Point:Pointer; Size: Integer):String;
+    procedure XSampleDecode(XValue: String; Buf:TStream);
     function XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
     procedure XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
     procedure LoadFromXML(xomTypes, xomObjects, XContainer:TXmlNode);
@@ -625,6 +630,14 @@ p2:Pointer;
 k,s,x,x1,x2,k3,k2,inx, inx1,inx2:integer;
 px:Longword;
 ExpAnim: Boolean;
+
+  procedure XBaseResourceDescriptorRead;
+  begin
+     p2 := p;
+     Name := GetStr128(p2); // ResourceId
+     if WUM then  Inc(Longword(p2));
+     Inc(Longword(p2));   // SectionId
+  end;
 begin
 
           if (Longword(p^) = Ctnr) then
@@ -682,14 +695,81 @@ begin
             end;
             XBitmapDescriptor:
             begin
+              XBaseResourceDescriptorRead;
+              k2 := TestByte128(p2);  // SpriteScene
+              k3 := Word(p2^);
+              Inc(Longword(p2), 4);    // ImageWidth ImageHeight
+             // if WUM then  Inc(Longword(p2));
+             if WR or PSP then  Inc(Longword(p2),13); //SceneIndex..NumFrames
+              IsCtnr := false;
+            end;
+            XCustomDescriptor:
+            begin
+              XBaseResourceDescriptorRead;
+              Inc(Longword(p2), 2); // Flags
+              if WR or PSP then  Inc(Longword(p2),13); //SceneIndex..CustomDataIndex
+              IsCtnr := false;
+            end;
+            XMeshDescriptor:
+            begin
+              XBaseResourceDescriptorRead;
+              x := TestByte128(p2);   // GraphSet
+              Inc(Longword(p2), 2);// Flags
+              if WR or PSP then  begin
+               Inc(Longword(p2)); // SceneIndex
+
+               Inc(Longword(p2),4);// InitCallbackNameIndex
+               TestByte128(p2);    // AnimInfo
+               if WR or WBI then TestByte128(p2); // ExpandedAnimInfo
+               TestByte128(p2);    // GraphRootNode
+              end;
+              IsCtnr := false;
+            end;
+            XSpriteSetDescriptor:
+            begin
+              XBaseResourceDescriptorRead;
+              k3 := TestByte128(p2);  // SpriteSetGroup
+              if WR or PSP then begin
+                TestByte128(p2); // SpriteSetShape
+                Inc(Longword(p2)); // SceneIndex
+                Inc(Longword(p2),2); //Flags
+                Inc(Longword(p2),2); //FramesAcross
+                Inc(Longword(p2),2); //FramesUp
+                Inc(Longword(p2),2); //FrameWidth
+                Inc(Longword(p2),2); //FrameHeight
+                Inc(Longword(p2),2); //NumFrames
+              end;
+              IsCtnr := false;
+            end;
+            XNullDescriptor:
+            begin
+              XBaseResourceDescriptorRead;
+              IsCtnr := false;
+            end;
+            XTextDescriptor:
+            begin
+              XBaseResourceDescriptorRead;
+              k := TestByte128(p2); //  TextGroup
+              if WR or PSP then begin
+                k := TestByte128(p2); // TextShape
+                k := TestByte128(p2); // TextFont
+              end;
+              k := LongWord(p2^);       // NumChars
+              if WR or PSP then begin
+              Inc(Longword(p2), 23); // SceneIndex..BackgroundColour
+              end else
+              Inc(Longword(p2), 4); // 1
+              for x := 1 to k do  // Char
+                Inc(Longword(p2), 6); // Index MappedVal Unicode
+              //     k3:=TestByte128(p2);
+              IsCtnr := false;
+            end;
+            XDirectMusicDescriptor:
+             begin
               p2 := p;
               s := TestByte128(p2);
-              if WUM then  Inc(Longword(p2));
-              Inc(Longword(p2));
-              k2 := TestByte128(p2);
-              Inc(Longword(p2), 4);
-             // if WUM then  Inc(Longword(p2));
-             if WR then  Inc(Longword(p2),13); //?
+              s := TestByte128(p2);
+              Inc(Longword(p2),4);
               IsCtnr := false;
             end;
             XXomInfoNode:
@@ -730,31 +810,6 @@ begin
               s := TestByte128(p2);
               IsCtnr := false;
             end;
-            XCustomDescriptor:
-            begin
-              p2 := p;
-              s := TestByte128(p2);
-              if WUM then  Inc(Longword(p2));
-              Inc(Longword(p2), 3);
-              if WR then  Inc(Longword(p2),13); //?
-              IsCtnr := false;
-            end;
-            XMeshDescriptor:
-            begin
-              p2 := p;
-              s := TestByte128(p2);
-              if WUM then Inc(Longword(p2));
-              k3 := byte(p2^);//14
-              Inc(Longword(p2));
-              x := TestByte128(p2);
-              Inc(Longword(p2), 2);// 80 00
-              if WR then  begin
-              Inc(Longword(p2),6);
-               TestByte128(p2);
-               TestByte128(p2);
-              end;
-              IsCtnr := false;
-            end;
             XEnvironmentMapShader:
             begin
               p2 := Pointer(Longword(p) + 7);
@@ -778,42 +833,6 @@ begin
                 inc(Longword(p2),4);
                 s:=TestByte128(p2);
             end;
-            XTextDescriptor:
-            begin
-              p2 := p;
-              s := TestByte128(p2);
-              if WUM then  Inc(Longword(p2));
-              k := TestByte128(p2); //1  number
-              k := TestByte128(p2); //2  link
-              if WR then begin
-              Inc(Longword(p2), 2);
-              end;
-              k := Word(p2^);       // size
-              if WR then begin
-              Inc(Longword(p2), 23);
-              end else
-              Inc(Longword(p2), 4); // 1
-              for x := 1 to k do
-                Inc(Longword(p2), 6); // num, wchar, wchar
-              //     k3:=TestByte128(p2);
-              IsCtnr := false;
-            end;
-            XDirectMusicDescriptor:
-             begin
-              p2 := p;
-              s := TestByte128(p2);
-              s := TestByte128(p2);
-              Inc(Longword(p2),4);
-              IsCtnr := false;
-            end;
-            XNullDescriptor:
-            begin
-              p2 := p;
-              s := TestByte128(p2);
-              if WUM then  Inc(Longword(p2));
-              k := TestByte128(p2);
-              IsCtnr := false;
-            end;
             XSpriteSet:
             begin
              p2 := Pointer(Longword(p) + 4);
@@ -823,17 +842,6 @@ begin
              Inc(Longword(p2),36);
              IsCtnr := false;
              end;
-            end;
-            XSpriteSetDescriptor:
-            begin
-              p2 := p;
-              s := TestByte128(p2);
-              if WUM then  Inc(Longword(p2));
-              Inc(Longword(p2), 1);// 0
-              k3 := TestByte128(p2);
-              if WR then TestByte128(p2);
-              if WR then Inc(Longword(p2),13);
-              IsCtnr := false;
             end;
             XCollisionData:
             begin
@@ -913,51 +921,33 @@ begin
             XAnimClipLibrary:
             begin
               p2 := p;
-              s := TestByte128(p2);  // Name
+              Name := GetStr128(p2);  // Name
               inx1 := Integer(p2^); // NumKeys
               //    if inx>16000 then break;
               Inc(Longword(p2), 4);
-              for x := 1 to inx1 do
+              for x := 1 to inx1 do   //  AttributeMap
               begin   // Keys
-                Inc(Longword(p2), 4);   //AnimType
-                s := TestByte128(p2); //Object
+                Inc(Longword(p2), 4);   //Field Flags SubEntry
+                s := TestByte128(p2); // NodePath
               end;
               inx2 := Integer(p2^);  // NumClips
               Inc(Longword(p2), 4);
-              for x := 1 to inx2 do 
+              for x := 1 to inx2 do   // AnimClips
               begin
-                Inc(Longword(p2), 4); // time
-                s := TestByte128(p2); // name
-                inx := Word(p2^);     // NumAnimKeys
-                ExpAnim := not WR and ((inx = 256) or (inx=257));
-                // 00 01   - zero Frame
-                // 01 01   - frame no Index
-                // 24 00   - index frame
-                //  ExpAnim:= inx <> integer($0101);
-                if ExpAnim then
-                  inx := inx1
-                else
-                  Inc(Longword(p2), 4);
+                Inc(Longword(p2), 4); // Duration
+                s := TestByte128(p2); // Name
+                inx := Integer(p2^);
+                Inc(Longword(p2), 4);   // NumAnimChannel
                 for x1 := 1 to inx do
-                begin // AnimKeys
-                  x2 := Word(p2^);
-                  if x2 = 256 then
-                  begin
-                    Inc(Longword(p2), 16);
-                    Continue;
-                  end;
-                  Inc(Longword(p2), 4); // 1 1 0 0
-                  if not ExpAnim then
-                  begin
-                    k2 := Word(p2^); 
-                    Inc(Longword(p2), 2);
-                  end;
-                  k3 := Word(p2^);
+                begin  // AnimChannel
+                  Inc(Longword(p2), 4); // MustContribute IsWeighted IsStatic IsLinear
+                  k3 := Word(p2^);   // MapID
                   Inc(Longword(p2), 2);
-                  Inc(Longword(p2), 6);
-                  k := Integer(p2^); 
+                  Inc(Longword(p2), 4); // PostInfinity
+                  Inc(Longword(p2), 4); // PreInfinity
+                  k := Integer(p2^);
                   Inc(Longword(p2), 4);
-                  for x2 := 1 to k do
+                  for x2 := 1 to k do   // KeyArray
                     Inc(Longword(p2), 6 * 4);
                 end;
               end;
@@ -980,7 +970,7 @@ begin
               Inc(Longword(p2), 3); //Flags
               k3 := TestByte128(p2); // Shader
               k3 := TestByte128(p2);  // Geometry
-              if WUM or W4 then begin
+              if Schema >= 2 then begin
                 Inc(Longword(p2), 4); // SortKey
                 if Schema = 3 then k3 := TestByte128(p2) else  // Parameters
                 if Schema = 4 then begin
@@ -1003,6 +993,24 @@ begin
               px := Longword(p2);
               p2 := Pointer(Longword(p2) + 4 * 5);
               s := TestByte128(p2);
+            end;
+            XBundleStringTables:
+            begin
+              for x := 1 to k do   // BundleNames
+                k3 := TestByte128(p2);
+              k := TestByte128(p2); 
+              for x := 1 to k do   // SceneNames
+                k3 := TestByte128(p2);
+              k := TestByte128(p2);
+              for x := 1 to k do   // CallbackFunctions
+                k3 := TestByte128(p2);
+              k := TestByte128(p2);
+              for x := 1 to k do   // CustomData
+                k3 := TestByte128(p2);
+              k := TestByte128(p2);    //Children
+              p2 := Pointer(Longword(p2) + 4 * 5);  // Bounds BoundMode
+              Name := GetStr128(p2);    // Name
+              IsCtnr := false;
             end;
             XTransform:
             begin
@@ -1402,33 +1410,52 @@ begin
             XSampleData:
             begin
                 p2 := p;
-                TestByte128(p2); //01:Sound ID Key
-                TestByte128(p2);//02:Sound Direct Key
+                Name := GetStr128(p2); // Name
+                TestByte128(p2);// LipSyncData
                 if WB then Inc(Longword(p2), 34)
                  else
-                 Inc(Longword(p2), 47);
+                 Inc(Longword(p2), 47);// Looping..FadeOutTimeMs
                 IsCtnr := false;
             end;
             XStreamData:
             begin
               p2 := p;
-                TestByte128(p2); //01:Sound ID Key
-                TestByte128(p2);//02:Sound Direct Key
-                Inc(Longword(p2),4);     //44 AC: Hz 44100
-                Inc(Longword(p2), 4); //float
-                inc(Longword(p2),4); //int
-                inc(Longword(p2),1); // byte
-                Inc(Longword(p2), 4); //00 00 7A 44 - 1000
-                Inc(Longword(p2), 4); //00 40 9C 45- 5000
-                Inc(Longword(p2), 4); //00 00 CB 42 -101,5   float
-                Inc(Longword(p2), 4); //00 80 BB 44  float
-                Inc(Longword(p2), 4); //00 80 BB 44  float
-                Inc(Longword(p2), 4*3); //?
+                Name := GetStr128(p2); // Name
+                TestByte128(p2); // Filename
+                Inc(Longword(p2),4); // Frequency
+                Inc(Longword(p2), 4); // Volume
+                inc(Longword(p2),4); // Priority
+                inc(Longword(p2),1); // Looping
+                Inc(Longword(p2), 4); // FadeIn
+                Inc(Longword(p2), 4); // FadeOut
+                Inc(Longword(p2), 4); // MinDistance
+                Inc(Longword(p2), 4); // MaxDistance
+                Inc(Longword(p2), 4); // Tempo
+                Inc(Longword(p2), 4*3); // NumChannels InterleavedBufferSize Group
                 k:= Longword(p2^);Inc(Longword(p2), 4);
-                Inc(Longword(p2),k);
-                Inc(Longword(p2), 4); //?
-                Inc(Longword(p2), 4); //?
+                Inc(Longword(p2),k); // LipSyncData
+                Inc(Longword(p2), 4); // StartOffset
+                Inc(Longword(p2), 4); // Length
 
+              IsCtnr := false;
+            end;
+            XPaperClipLibrary:
+            begin
+              p2 := Pointer(Longword(p) + 7);
+              Name := GetStr128(p2);
+              TestByte128(p2);  // Shader
+              Inc(Longword(p2), 4*6); // Axis..FrameTimeLength
+              k := TestByte128(p2);
+              for x := 1 to k do //FrameUVs
+                  Inc(Longword(p2), 4*4);
+              k := TestByte128(p2);
+              for x := 1 to k do //PaperNodes
+                  TestByte128(p2);
+              k := TestByte128(p2);
+              for x := 1 to k do //PaperClips
+                  TestByte128(p2);
+              p2 := Pointer(Longword(p2) + 4 * 5);  // Bounds BoundMode
+              Name := GetStr128(p2);    // Name
               IsCtnr := false;
             end;
             DetailEntityStore:
@@ -1478,12 +1505,12 @@ end;
 // XML part
 
 const
-  VTYPES = 22;
+  VTYPES = 23;
 
   XCheckedValues : array [0..VTYPES] of String = (
     'XInt','XUInt','XInt8','XUInt8',
     'XInt16','XUInt16','XString',
-    'XFloat','XBool','XEnum','XColor4ub',
+    'XFloat','XBool','XEnum','XColor4ub','XColor4444',
     'XVector2f','XVector3f','XVector4f',
     'XUIntHex', 'XGUID','XMatrix34','XMatrix3','XMatrix','XBoundBox',
     'XBase64Byte', 'XKey','XBitmap16');
@@ -1492,12 +1519,12 @@ procedure TXom.SetBitmapBlocks;
 begin
   XBlockIndex := 0;
   SetLength(XGlobBlocks, XBlockIndex);
-  XBlockName := ChangeFileExt(XomFileName,'.'+Ximg.outfile);
-  if XImg.dir <> '' then begin
-     if not DirectoryExists(XImg.dir) then CreateDir(XImg.dir);
-     XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
+  XBlockName := ChangeFileExt(XomFileName,'.'+XData.outfile);
+  if XData.dir <> '' then begin
+     if not DirectoryExists(XData.dir) then CreateDir(XData.dir);
+     XData.dir := IncludeTrailingPathDelimiter(XData.dir);
   end;
-  XBlockName:= XImg.dir + XBlockName;
+  XBlockName:= XData.dir + XBlockName;
 end;
 
 
@@ -1522,7 +1549,7 @@ begin
     XBlockBitmap := TBitmap32.Create;
     Mem := TMemoryStream.Create;
     Mem.LoadFromFile(XValue);
-
+    Writeln('<< '+XValue);
       if outfile = 'png' then
         XBlockBitmap.LoadFromPNG(Mem)
       else if outfile = 'tga' then
@@ -1581,13 +1608,14 @@ begin
   end;
   SetLength(XGlobBlocks, 0);
   Mem:= TMemoryStream.Create;
-  if XImg.outfile = 'png' then
+  if XData.outfile = 'png' then
      Bitmap.SaveToPNG(Mem)
-  else if XImg.outfile = 'tga' then
+  else if XData.outfile = 'tga' then
      Bitmap.SaveToTGA(Mem, 32)
-  else if XImg.outfile = 'dds' then
+  else if XData.outfile = 'dds' then
      Bitmap.SaveToDDS(Mem, 32);
   Mem.SaveToFile(XBlockName);
+  Writeln('>> '+XBlockName);
   Mem.Free;
   XBlockIndex := 0;
 end;
@@ -1609,14 +1637,193 @@ begin
   Result := XBlockName;
 end;
 
+function TXom.LoadXPalette(Index:Integer):Pointer;
+var
+  Mem: TMemoryStream;
+  P: Pointer;
+  IndexSize, Flags, Format, i, Size: Integer;
+begin
+  Mem := TMemoryStream.Create;
+  P := CntrArr[Index].GetPoint;
+  IndexSize := Byte(P^); Inc(LongWord(P));
+  Flags := Byte(P^); Inc(LongWord(P));
+  Format:= LongWord(P^); Inc(LongWord(P), 4);
+  Size := TestByte128(P);
+  Result := P;
+end;
+
+procedure TXom.XPaletteDecode(XValue:String; Buf:TStream);
+var
+  Bitmap: TBitmap32;
+  Mem: TMemoryStream;
+  isfile: Boolean;
+  ExtPart, FileName, outfile: String;
+  Len: Integer;
+begin
+
+  outfile := '';
+  Len := Length(XValue);
+  if Len > 4 then begin
+    ExtPart := Copy(XValue, len - 3, 1); // .tga
+    if ExtPart = '.' then begin
+    outfile := LowerCase(Copy(XValue, len - 2, 3));
+    end;
+  end;
+
+  if outfile = 'tga' then begin
+
+    if not FileExists(XValue) then
+    begin
+       WriteLn(Format('Error: File %s not exist',[XValue]));
+       Halt;
+    end;
+
+      Mem:= TMemoryStream.Create;
+      FileName := XValue;
+      Mem.LoadFromFile(FileName);
+      Writeln('<< '+FileName);
+      Bitmap:= TBitmap32.Create;
+      if not Bitmap.LoadPaletteFromTGA(Mem, Buf) then begin
+       WriteLn(Format('Error: File %s not have palette',[FileName]));
+       Halt;
+      end;
+      Bitmap.Free;
+      Mem.Free;
+  end else
+     DecodeStreamString(XValue, Buf);
+end;
+
+type
+
+  WAVHDR = packed record
+    riff:		array[0..3] of AnsiChar;
+    clen:		Integer;
+    cWavFmt:		array[0..7] of AnsiChar;
+    dwHdrLen:		Integer;
+    wFormat:		Word;
+    wNumChannels:	Word;
+    dwSampleRate:	Integer;
+    dwBytesPerSec:	Integer;
+    wBlockAlign:	Word;
+    wBitsPerSample:	Word;
+    cData:		array[0..3] of AnsiChar;
+    dwDataLen:		Integer;
+  end;
+
+procedure TXom.XSampleDecode(XValue: String; Buf: TStream);
+var
+  Mem: TMemoryStream;
+  isfile: Boolean;
+  ExtPart, FileName, outfile: String;
+  Len: Integer;
+begin
+
+  isfile := false;
+  outfile := '';
+  Len := Length(XValue);
+  if Len > 4 then begin
+    ExtPart := Copy(XValue, len - 3, 1); // .wav
+    if ExtPart = '.' then isfile:=true;
+  end;
+
+  if isfile then begin
+    Mem:= TMemoryStream.Create;
+    FileName := XValue;
+    Mem.LoadFromFile(FileName);
+    if not FileExists(XValue) then
+    begin
+       WriteLn(Format('Error: File %s not exist',[XValue]));
+       Halt;
+    end;
+    Writeln('<< '+FileName);
+    outfile := LowerCase(Copy(XValue, len - 2, 3));
+    if outfile = 'wav' then begin
+      Mem.Position := SizeOf(WAVHDR);
+      Buf.CopyFrom(Mem, Mem.Size - SizeOf(WAVHDR));
+    end else
+      Buf.CopyFrom(Mem, Mem.Size);
+    
+    Mem.Free;
+  end else
+    DecodeStreamString(XValue, Buf);
+end;
+
+function TXom.XSampleEncode(XName:String; Point:Pointer; Size: Integer):String;
+var
+  Mem, WaveStream: TMemoryStream;
+  Name, FileName: String;
+  p: Pointer;
+  WaveHdr: WAVHDR;
+  NumChannels, BytesPerSample: Integer;
+begin
+  if XData.isfile then begin
+    Name := StringReplace(XName,'.','_',[rfReplaceAll]);
+    Name := format('%s-%d.%s',[Name, XGlobid-1, XData.outfile]);
+
+    if XData.dir <> '' then begin
+      if not DirectoryExists(XData.dir) then CreateDir(XData.dir);
+      XData.dir := IncludeTrailingPathDelimiter(XData.dir);
+    end;
+
+    FileName:= XData.dir + Name;
+
+     if XData.outfile = 'bin' then
+     begin
+       Mem:= TMemoryStream.Create;
+       Mem.Write(Point^,Size);
+       Mem.SaveToFile(FileName);
+       Writeln('>> '+FileName);
+       Mem.Free;
+       Result := FileName;
+     end
+     else if XData.outfile = 'wav' then
+     begin
+      p := Pointer(Longword(Point) + Size);
+      if LongWord(p^)=0 then Inc(LongWord(p),4) else
+        Inc(LongWord(p),LongWord(p^)+4);
+      NumChannels := LongWord(p^);
+      Inc(LongWord(p),4);
+      BytesPerSample := LongWord(p^);
+
+      with WaveHdr do
+        begin
+          riff := 'RIFF';
+          clen := Size + SizeOf(WAVHDR) - 8;
+          cWavFmt := 'WAVEfmt ';
+          dwHdrLen := 16;
+          wFormat := 1;
+          wNumChannels := NumChannels;
+          dwSampleRate := XFrequency;
+          wBitsPerSample := BytesPerSample * 8;
+          wBlockAlign := BytesPerSample * NumChannels;
+          dwBytesPerSec := dwSampleRate * wBlockAlign;
+          cData := 'data';
+          dwDataLen := Size;
+      end;
+
+      WaveStream:= TMemoryStream.Create;
+      WaveStream.Write(WaveHdr, SizeOf(WAVHDR));
+      WaveStream.Write(Point^, Size);
+      WaveStream.SaveToFile(FileName);
+      Writeln('>> '+FileName);
+      WaveStream.Free;
+
+      Result := FileName;
+     end
+  end else
+     Result := EncodePointer(Point, Size);
+
+end;
+
 function TXom.XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
 var
   Bitmap: TBitmap32;
   Mem: TMemoryStream;
   Name, attr, FileName: String;
-  Width, Height, xFormat, Bits, MipMaps: Integer;
+  p, Palette: Pointer;
+  Width, Height, xFormat, Bits, MipMaps, pindex: Integer;
 begin
-  if XImg.isfile then begin
+  if XData.isfile then begin
     Name := format('-%d.tga',[XGlobid-1]);
     Name := StringReplace(XImageNode.NodeByName('Name').ValueUnicode,'/-1',Name,[rfReplaceAll]);
     Name := StringReplace(Name,'maya:','',[rfReplaceAll]);
@@ -1624,23 +1831,24 @@ begin
     Name := ExtractFileName(Name);
 
     if Pos('.',Name)>0 then
-      Name:=ChangeFileExt(Name,'.'+Ximg.outfile)
+      Name:=ChangeFileExt(Name,'.'+XData.outfile)
     else begin
       attr := XImageNode.AttributeValueByName['id'];
-      Name := format('%s.%s',[ attr, Ximg.outfile]);
+      Name := format('%s.%s',[ attr, XData.outfile]);
     end;
 
-    if XImg.dir <> '' then begin
-      if not DirectoryExists(XImg.dir) then CreateDir(XImg.dir);
-      XImg.dir := IncludeTrailingPathDelimiter(XImg.dir);
+    if XData.dir <> '' then begin
+      if not DirectoryExists(XData.dir) then CreateDir(XData.dir);
+      XData.dir := IncludeTrailingPathDelimiter(XData.dir);
     end;
 
-    FileName:= XImg.dir + Name;
-     if XImg.outfile = 'bin' then
+    FileName:= XData.dir + Name;
+     if XData.outfile = 'bin' then
      begin
        Mem:= TMemoryStream.Create;
        Mem.Write(Point^,Size);
        Mem.SaveToFile(FileName);
+       Writeln('>> '+FileName);
        Mem.Free;
        Result := FileName;
      end else
@@ -1650,9 +1858,16 @@ begin
       Height := XImageNode.NodeByName('Height').ValueAsInteger;
       MipMaps := XImageNode.NodeByName('MipLevels').ValueAsInteger;
       xFormat := XImageNode.NodeByName('Format').ValueAsInteger;
+      Palette := nil;
       Case xFormat of
        0: Bits := 24;  // kImageFormat_R8G8B8
        1: Bits := 32; // kImageFormat_A8R8G8B8
+       7: begin
+          Bits := 8; // kImageFormat_P8
+          p := Pointer(Longword(Point)+ Size);
+          Palette := LoadXPalette(TestByte128(p));
+          XPaletteName := FileName;
+       end;
       else begin // TODO xFormat
          Bitmap.Free;
          Result := EncodePointer(Point, Size);
@@ -1660,17 +1875,20 @@ begin
         end;
       end;
 
-      Bitmap.LoadFromData(Point, Width, Height, Bits, MipMaps);
+      Bitmap.LoadFromData(Point, Width, Height, Bits, MipMaps, Palette);
       Mem:= TMemoryStream.Create;
 
-      if XImg.outfile = 'png' then
+      if XData.outfile = 'png' then
         Bitmap.SaveToPNG(Mem)
-      else if XImg.outfile = 'tga' then
+      else if XData.outfile = 'tga' then
         Bitmap.SaveToTGA(Mem, Bits)
-      else if XImg.outfile = 'dds' then
+      else if XData.outfile = 'dds' then begin
+        if Bits = 8 then Bits := 32; // dds have not palette
         Bitmap.SaveToDDS(Mem, Bits);
+      end;
 
       Mem.SaveToFile(FileName);
+      Writeln('>> '+FileName);
       Result := FileName;
 
       Mem.Free;
@@ -1710,6 +1928,7 @@ begin
       outfile := LowerCase(Copy(XValue, len - 2, 3));
       FileName := XValue;
       Mem.LoadFromFile(FileName);
+      Writeln('<< '+FileName);
 
      if outfile = 'bin' then
      begin
@@ -1722,12 +1941,16 @@ begin
       Height := XImageNode.NodeByName('Height').ValueAsInteger;
       MipMaps := XImageNode.NodeByName('MipLevels').ValueAsInteger;
       xFormat := XImageNode.NodeByName('Format').ValueAsInteger;
-      if xFormat>1 then begin // TODO
-         WriteLn(Format('Error: kImageFormat %s not supported',[ImageFormatWUM[xFormat]]));
+      if not(((xFormat = 7) and (outfile = 'tga')) or (xFormat<2)) then begin // TODO
+         WriteLn(Format('Error: %s not supported for %s',[ImageFormatWUM[xFormat], outfile]));
          Halt;
         end;
 
-      Bits := (3 + xFormat) * 8;
+      if xFormat = 7 then
+        Bits := 8
+      else
+        Bits := (3 + xFormat) * 8;
+      
       Mem.Position := 0;
 
       if outfile = 'png' then
@@ -1861,7 +2084,7 @@ var
     end else if XValue='XUInt16' then begin
       Result:=Format('%d', [Word(p2^)]);
       Inc(Longword(p2), 2);
-    end else if XValue='XBitmap16' then begin
+    end else if (XValue='XBitmap16') or (XValue='XColor4444') then begin
       Result:=IntToHex(Word(p2^), 4);
       Inc(Longword(p2), 2);
     end else if XValue='XGUID' then begin
@@ -1902,10 +2125,15 @@ var
           If XValueType = 'XBase64Byte' then begin
             if XCont.Name = 'XImage' then
               s := XImageEncode(XCont, p2, n)
+            else if (XCont.Name = 'XPalette') and (XData.outfile = 'tga') then
+              s := XPaletteName
+            else if (XCont.Name = 'XInternalSampleData') and
+            (XNode.Name = 'Data') then
+             s := XSampleEncode(XName,p2, n)
             else
               s := EncodePointer(p2,n);
             Inc(Longword(p2), n);
-          end else if (XValueType = 'XBitmap16') and Ximg.isfile then begin
+          end else if (XValueType = 'XBitmap16') and XData.isfile then begin
             s := XBitmapAddBlocks(p2, n);
             Inc(Longword(p2), n * 2);
           end else begin
@@ -1952,6 +2180,7 @@ var
                // XContainer
                n:=GetIdx128(p2);
                if n=0 then Continue;
+               if XCntr.Xtype = XSampleData then XFrequency:=LongWord(Pointer(LongWord(p2)+11)^);
                XValue:=AddXMLNode(XCntr.CntrArr[n], XContainer, XName, XML, xomObjects); // GetNameID
                XNode.AttributeAdd('href',XValue);
             end else begin
@@ -2002,6 +2231,10 @@ var
           else
           for i := 1 to n do
              AddProp(XSNode, XCont);
+       end else if XValueType='XCharCollection' then begin
+          n := XCont.NodeByName('NumChars').ValueAsInteger; // NumChars
+          for i := 1 to n do
+              AddProp(XSNode, XCont);
        end else if XValueType='XMapCollection' then begin
           n := Cardinal(p2^); // MapNum
           Inc(Longword(p2), 4);
@@ -2025,7 +2258,8 @@ var
             for j:=0 to XSNode.ElementCount-1 do
               ReadAndAddProp(XSNode.Elements[j], XNode);
           end;
-       end else if XValueType='XKeyCollection' then begin
+       end else if (XValueType='XKeyCollection') or
+        (XValueType='XDataCollection') then begin
           Xpack:=XSNode.AttributeValueByName['Xpack'];
           n := Cardinal(p2^); // KeyNum
           Inc(Longword(p2), 4);
@@ -2074,8 +2308,10 @@ begin
     if (SXCont.Name='LandFrameStore') or
      // (SXCont.Name='XGraphSet') or
       (SXCont.Name='XGroup') or
-      (SXCont.Name='XShape') or
+      //(SXCont.Name='XShape') or
       (SXCont.Name='XSimpleShader') or
+      (SXCont.Name='XStreamData') or
+      (SXCont.Name='XSampleData') or
       (SXCont.Name='XCollisionGeometry') then
       begin
         XName:=XCntr.Name;
@@ -2401,7 +2637,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
     end else if XValueType='XUInt16' then begin
       xui16:= StrToInt(XValue);
       Buf.Write(xui16,2);
-    end else if XValueType='XBitmap16' then begin
+    end else if (XValueType='XBitmap16') or (XValueType='XColor4444') then begin
       xui16:= StrToCard('$'+XValue);
       Buf.Write(xui16,2);
     end else if XValueType='XGUID' then begin
@@ -2416,11 +2652,11 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
     end;
   end;
 
-  procedure WritePropPack(XSNode,XCont:TXmlNode; Buf:TMemoryStream);
+  procedure WritePropPack(XSNode,XCont:TXmlNode; Buf:TMemoryStream; n: Integer);
   var
   XValueType, XValue: UTF8String;
   XValues:TStringList;
-  i,len:Integer;
+  i,len,pstart:Integer;
   begin
       if Length(XSNode.Value)>0 then  //< >Value</ >
       begin
@@ -2431,10 +2667,20 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
           else
             XValue :=sdReplaceString(TsdText(XCont.Nodes[1]).GetCoreValue);
           If XValueType = 'XBase64Byte' then begin
+            pstart := Buf.Position;
             if XCont.Parent.Name = 'XImage' then
              XImageDecode(XCont.Parent, XValue, Buf)
+            else if XCont.Parent.Name = 'XPalette' then
+             XPaletteDecode(XValue, Buf)
+            else if (XCont.Parent.Name = 'XInternalSampleData') and
+             (XCont.Name = 'Data') then
+             XSampleDecode(XValue, Buf)
             else
              DecodeStreamString(XValue,Buf);
+            if Buf.Position-pstart <> n then begin
+              WriteLn(Format('Error: Wrong length %d <> %d in %s',[n, Buf.Position-pstart, XCont.Parent.Name]));
+              Halt;
+            end;
             exit;
           end else if XValueType = 'XBitmap16' then begin
             If XBitmapDecode(XValue, Buf) then
@@ -2444,7 +2690,8 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
           XValues.Delimiter := ' ';
           XValues.DelimitedText := XValue;
           len := XValues.Count-1;
-          if (XValueType = 'XVector2f') or
+          if (XValueType = 'XVector4f') or
+            (XValueType = 'XVector2f') or
             (XValueType = 'XVector3f') or
             (XValueType = 'XKey') then XValueType:='XFloat';
           for i:=0 to len do
@@ -2570,7 +2817,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
            n := StrToInt(XNode.AttributeValueByName['Xpack']);
            WriteXByte(Buf,n);
            if n>0 then
-             WritePropPack(XSNode,XNode,Buf);
+             WritePropPack(XSNode,XNode,Buf,n);
           end
           else begin
            NodeList:= TList.Create;
@@ -2581,6 +2828,13 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
              WriteProp(XSNode,TXmlNode(NodeList[i]),Buf);
            NodeList.Clear;
           end;
+       end else if XValueType='XCharCollection' then begin
+           NodeList:= TList.Create;
+           XCont.NodesByName(XSNode.Name,NodeList);
+           n := NodeList.Count; // MapNum
+           for i := 0 to n-1 do
+             WriteProp(XSNode,TXmlNode(NodeList[i]),Buf);
+           NodeList.Clear;
        end else if XValueType='XMapCollection' then begin
            NodeList:= TList.Create;
            XCont.NodesByName(XSNode.Name,NodeList);
@@ -2610,14 +2864,14 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
                 ReadAndWriteProp(XSNode.Elements[j],TXmlNode(NodeList[i]), Buf);
            end;
            NodeList.Clear;
-       end else if XValueType='XKeyCollection' then begin
+       end else if (XValueType='XKeyCollection') or (XValueType='XDataCollection') then begin
           Xpack:=XSNode.AttributeValueByName['Xpack'];  // only true
           if Xpack = 'true' then begin
            XNode:=XCont.NodeByName(XSNode.Name);
            n := StrToInt(XNode.AttributeValueByName['Xpack']);
            Buf.Write(n,4);  // KeyNum
            if n>0 then
-             WritePropPack(XSNode,XNode,Buf);
+             WritePropPack(XSNode,XNode,Buf,n);
           end else begin
             WriteLn(Format('Error: Not found Xpack for %s',[XValueType]));
             Halt;
