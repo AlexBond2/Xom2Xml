@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xomSCHM Xgame="W3D">
+  <XInternalSampleData guid="{E175CBDF-954D-4B70-8186-9F9444DC71A8}" Xver="0" NoCntr="true" id="XRef">
+    <Data Xtype="XDataCollection" Xpack="true">XBase64Byte</Data>
+    <LipSyncData Xtype="XDataCollection" Xpack="true">XBase64Byte</LipSyncData>	
+    <NumChannels>XUInt</NumChannels>
+    <BytesPerSample>XUInt</BytesPerSample>
+  </XInternalSampleData>
+  <XSampleData guid="{21E5A5A8-7D50-4BA0-BC36-AB3BB9F51384}" Xver="0" NoCntr="true" id="XRef">
+    <Name>XString</Name>
+    <LipSyncData href="XInternalSampleData" />
+    <Looping>XBool</Looping>
+    <NumChannels>XUInt8</NumChannels>
+    <BytesPerSample>XUInt8</BytesPerSample>
+    <MaxDistance>XFloat</MaxDistance>
+    <MinDistance>XFloat</MinDistance>
+    <Frequency>XUInt</Frequency>
+    <Priority>XUInt</Priority>
+    <RandomFrequencyModifier>XFloat</RandomFrequencyModifier>
+    <RandomVolumeModifier>XFloat</RandomVolumeModifier>
+    <MaxVolume>XFloat</MaxVolume>
+    <MinVolume>XFloat</MinVolume>
+    <Group>XInt</Group>
+    <FadeInTimeMs>XUInt</FadeInTimeMs>
+    <FadeOutTimeMs>XUInt</FadeOutTimeMs>
+  </XSampleData>
+  <XSoundBank guid="{13A3A026-66D4-4FDE-9C96-F10A0C8CC6DE}" Xver="0" NoCntr="true" id="XRef">
+    <SoundData Xtype="XCollection" href="XContainer" />
+    <Name>XString</Name>
+  </XSoundBank> 
+  <XStreamData guid="{F2E511A2-F1B7-406C-90D2-694A01D94493}" Xver="0" NoCntr="true" id="XRef">
+    <Name>XString</Name>
+    <Filename>XString</Filename>
+    <Frequency>XInt</Frequency>
+    <Volume>XFloat</Volume>
+    <Priority>XUInt</Priority>
+    <Looping>XBool</Looping>
+    <FadeIn>XFloat</FadeIn>
+    <FadeOut>XFloat</FadeOut>
+    <MinDistance>XFloat</MinDistance>
+    <MaxDistance>XFloat</MaxDistance>
+    <Tempo>XFloat</Tempo>
+    <NumChannels>XInt</NumChannels>
+    <InterleavedBufferSize>XInt</InterleavedBufferSize>
+    <Group>XUInt</Group>
+    <LipSyncData Xtype="XDataCollection" Xpack="true">XBase64Byte</LipSyncData>
+    <StartOffset>XInt</StartOffset>
+    <Length>XInt</Length>
+  </XStreamData>
+
+</xomSCHM>
