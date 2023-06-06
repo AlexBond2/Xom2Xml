@@ -321,9 +321,11 @@ type
     XBrickGeometry,
     XBrickIndexSet,
     XBuildingShape,
+    XBundleStringTables,
     XChildSelector,
     XCollisionData,
     XCollisionGeometry,
+    XColor4444Set,
     XColor4ubSet,
     XColorResourceDetails,
     XColorSet,
@@ -366,6 +368,7 @@ type
     XIndexedTriangleStripSet,
     XIntResourceDetails,
     XInteriorNode,
+    XInterleavedGeoSet,
     XInternalSampleData,
     XJointTransform,
     XLight,
@@ -392,6 +395,9 @@ type
     XPSPBitmapLandscape,
     XPalette,
     XPaletteWeightSet,
+    XPaperNode,
+    XPaperClipLibrary,
+    XPaperClip,
     XParticleEmitter,
     XPathFinderData,
     XPfxBasicEmission,
@@ -734,9 +740,11 @@ const
     'XBrickGeometry',
     'XBrickIndexSet',
     'XBuildingShape',
+    'XBundleStringTables',
     'XChildSelector',
     'XCollisionData',
     'XCollisionGeometry',
+    'XColor4444Set',
     'XColor4ubSet',
     'XColorResourceDetails',
     'XColorSet',
@@ -779,6 +787,7 @@ const
     'XIndexedTriangleStripSet',
     'XIntResourceDetails',
     'XInteriorNode',
+    'XInterleavedGeoSet',
     'XInternalSampleData',
     'XJointTransform',
     'XLight',
@@ -805,6 +814,9 @@ const
     'XPSPBitmapLandscape',
     'XPalette',
     'XPaletteWeightSet',
+    'XPaperNode',
+    'XPaperClipLibrary',
+    'XPaperClip',
     'XParticleEmitter',
     'XPathFinderData',
     'XPfxBasicEmission',
@@ -1111,6 +1123,7 @@ var
   WF: boolean = false;
   W4: boolean = false;
   WB: boolean = false;
+  WBI: boolean = false;
   WR: boolean = false;
   WC: boolean = false;
   PSP: boolean = false;
