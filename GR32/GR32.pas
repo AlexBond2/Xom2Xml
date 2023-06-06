@@ -437,6 +437,7 @@ begin
       if x > Width - 1 then
       begin
       Inc(y);
+      if y = Height then Break;
       x := 0;
       end;
       Stream.Read(Pixels[i], PixelSize);
@@ -453,6 +454,7 @@ begin
       if x > Width - 1 then
       begin
       Inc(y);
+      if y = Height then Break;
       x := 0;
       end;
       Move(Color, Pixels[i], PixelSize);
@@ -523,7 +525,6 @@ begin
       end;
     end;
   end;
-
 end;
 
 procedure TBitmap32.DrawBlock(X, Y: Integer; Bitmap: TBitmap32);
