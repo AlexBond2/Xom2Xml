@@ -11,9 +11,10 @@ uses
   NativeXml;
 
 var
-  FileName, OFilename :String;
-  guid, help, schema, log, isxid, outfile, clear, xomfile, hqfloat: boolean;
-  ximg: TXImg;
+  FileName, OFilename, lafDir : String;
+  guid, help, schema, log, isxid, outfile,
+  clear, xomfile, hqfloat, islaf: Boolean;
+  XData: TDataInfo;
 
 procedure ExportXML(FileName: String; schmnode : TXmlNode);
 var
@@ -28,7 +29,7 @@ begin
   LoadedXom.LoadXomFileName(FileName);
   LoadedXom.LogXML:=log;
   LoadedXom.IsXid:=isxid;
-  LoadedXom.XImg:=XImg;
+  LoadedXom.XData:=XData;
   LoadedXom.hqFloat := hqFloat;
   XContainer := schmnode.NodeByName('XContainer');
 
@@ -157,6 +158,43 @@ begin
   NewXom.Free;
 end;
 
+procedure UnpackLaf(Filename, DirPath:String);
+var
+  FileStream: TFileStream;
+  Size, Offset, OldOffset: Longword;
+  Data: TMemoryStream;
+  Index: Integer;
+  NewFilename, DataName: string;
+begin
+  if DirPath <> '' then begin
+    if not DirectoryExists(DirPath) then CreateDir(DirPath);
+    DirPath := IncludeTrailingPathDelimiter(DirPath);
+  end;
+  Data := TMemoryStream.Create;
+  FileStream := TFileStream.Create(Filename, fmOpenRead);
+  DataName := DirPath + 'file_';
+  try
+    Index := 0;
+    Offset := 0;
+    while FileStream.Position < FileStream.Size do
+    begin
+      OldOffset := Offset;
+      FileStream.Seek(Offset,0);
+      FileStream.Read(Offset, SizeOf(Size));
+      Size:=Offset-OldOffset-4;
+      Data.CopyFrom(FileStream, Size);
+      NewFilename := DataName + IntToStr(Index) + '.bin';
+      Data.SaveToFile(NewFilename);
+      Writeln(NewFilename);
+      Data.Clear;
+      Inc(Index);
+    end;
+    Writeln('Files saved');
+  finally
+    FileStream.Free;
+  end;
+end;
+
 procedure ReadParamOption(var Option:String; const Name: String);
 var
  i: integer;
@@ -179,30 +217,41 @@ begin
   log := FindCmdLineSwitch('l');
   clear := FindCmdLineSwitch('cl');
   isxid := FindCmdLineSwitch('id');
-  schema := FindCmdLineSwitch('schm');
-  outfile := FindCmdLineSwitch('out');
-  xomfile := FindCmdLineSwitch('xom');
   hqfloat := FindCmdLineSwitch('xfloat');
-  ximg.isfile := FindCmdLineSwitch('ximg-file');
-  ximg.outfile := 'png';
-  ximg.isdir := FindCmdLineSwitch('ximg-dir');
   if clear then isxid := false;
   WUM := true;
   W3D := false;
-  schmfile := 'XOMSCHM.dat';
   Filename := '';
+  LafDir := '';
   for i:=1 to ParamCount do
   begin
      param := ParamStr(i);
      if (param[1]<>'-') then begin FileName:= param; break; end;
   end;
   OFilename := FileName;
+  schmfile := 'XOMSCHM.dat';
+  schema := FindCmdLineSwitch('schm');
   if schema then ReadParamOption(schmfile, '-schm');
+  xomfile := FindCmdLineSwitch('xom');
   if xomfile then ReadParamOption(FileName, '-xom');
+  outfile := FindCmdLineSwitch('out');
   if outfile then ReadParamOption(OFilename, '-out');
-  if ximg.isfile then ReadParamOption(ximg.outfile, '-ximg-file');
-  ximg.dir := ExtractFilePath(OFilename);
-  if ximg.isdir then ReadParamOption(ximg.dir, '-ximg-dir');
+  XData.outfile := 'bin';
+  XData.isfile := FindCmdLineSwitch('ximg-file');
+  if XData.isfile then ReadParamOption(XData.outfile, '-ximg-file')
+  else begin
+    XData.isfile := FindCmdLineSwitch('aud-file');
+    if XData.isfile then ReadParamOption(XData.outfile, '-aud-file');
+  end;
+  XData.dir := ExtractFilePath(OFilename);
+  XData.isdir := FindCmdLineSwitch('ximg-dir');
+  if XData.isdir then ReadParamOption(XData.dir, '-ximg-dir')
+  else begin
+    XData.isdir := FindCmdLineSwitch('aud-dir');
+    if XData.isdir then ReadParamOption(XData.dir, '-aud-dir')
+  end;
+  islaf := FindCmdLineSwitch('laf');
+  if islaf then ReadParamOption(lafDir, '-laf');
 
   if (Filename='') or help then begin
     // show help
@@ -233,14 +282,22 @@ begin
     Writeln('    -ximg-file tga      TGA format');
     Writeln('   -ximg-dir <dir>      Save XImages files in custom directory.');
     Writeln('                        The default is output folder for XML');
+    Writeln('   -aud-file <format>   Set SampleData in format:');
+    Writeln('    -aud-file bin       BIN data');
+    Writeln('    -aud-file wav       WAV audio');
+    Writeln('   -aud-dir <dir>       Save SampleData files in custom directory');
+//    Writeln('   -laf <dir>           Unpack laf file to xom files in custom directory');
 
    // Writeln('   -g       Save GUID info from xom as xml');
     Writeln;
 
   end;
-  if (FileExists(FileName) = true) then  begin
 
-  if (FileExists(schmfile) = false) then begin
+  if (FileExists(FileName) = true) then  begin
+  if islaf then begin
+    UnpackLaf(FileName, LafDir);
+    Exit;
+  end else if (FileExists(schmfile) = false) then begin
     Writeln('Scheme file not found');
     Exit;
   end else
@@ -257,8 +314,9 @@ begin
        else if Xgame='WF' then WF:=true
        else if Xgame='WB' then WB:=true
        else if Xgame='WR' then WR:=true
+       else if Xgame='WBI' then begin PSP:=true; WBI:=true; end
        else if Xgame='W3DGC' then W3DGC:=true
-       else if Xgame='PSP' then PSP:=true;
+       else if (Xgame='PSP') or (Xgame='WOW') then PSP:=true;
        Writeln('Xgame = ', Xgame);
      end else begin
        Writeln('Xgame not found.');
