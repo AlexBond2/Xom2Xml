@@ -14,9 +14,6 @@
   <XBaseResourceDescriptor guid="{4DCD7EFF-E238-4182-8828-CD940A39D137}" Xver="0" id="XRef" Xtype="XClass">
     <ResourceId>XString</ResourceId>
     <SectionId>XUInt8</SectionId>
-    <XCustomDescriptor guid="{754BA91E-A04B-4AE7-8677-E53055DBE1D9}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
-      <Flags>XUInt16</Flags>
-    </XCustomDescriptor>
     <XBitmapDescriptor guid="{87CF794F-A2AA-4C44-A9DB-7C9091245CB3}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
       <SpriteScene href="XContainer" />
       <ImageWidth>XUInt16</ImageWidth>
@@ -26,6 +23,9 @@
       <TextGroup href="XContainer" />
       <Char Index="XUInt16" MappedVal="XUInt16" Unicode="XUInt16" Xtype="XMapCollection" />
     </XTextDescriptor>
+    <XCustomDescriptor guid="{754BA91E-A04B-4AE7-8677-E53055DBE1D9}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <Flags>XUInt16</Flags>
+    </XCustomDescriptor>
     <XMeshDescriptor guid="{A8E8B2DB-0AC3-4BF0-A476-96F47CF924D2}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
       <GraphSet href="XContainer" />
       <Flags>XUInt16</Flags>
@@ -35,6 +35,53 @@
     </XSpriteSetDescriptor>
     <XNullDescriptor guid="{4B8E936F-864D-4227-B6E4-1914FC17D7C0}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc"></XNullDescriptor>
   </XBaseResourceDescriptor>
+  <XInternalSampleData guid="{E175CBDF-954D-4B70-8186-9F9444DC71A8}" Xver="0" NoCntr="true" id="XRef">
+    <Data Xtype="XDataCollection" Xpack="true">XBase64Byte</Data>
+    <LipSyncData Xtype="XDataCollection" Xpack="true">XBase64Byte</LipSyncData>
+    <NumChannels>XUInt</NumChannels>
+    <BytesPerSample>XUInt</BytesPerSample>
+  </XInternalSampleData>
+  <XSampleData guid="{21E5A5A8-7D50-4BA0-BC36-AB3BB9F51384}" Xver="0" NoCntr="true" id="XRef">
+    <Name>XString</Name>
+    <LipSyncData href="XInternalSampleData" />
+    <Looping>XBool</Looping>
+    <NumChannels>XUInt8</NumChannels>
+    <BytesPerSample>XUInt8</BytesPerSample>
+    <MaxDistance>XFloat</MaxDistance>
+    <MinDistance>XFloat</MinDistance>
+    <Frequency>XUInt</Frequency>
+    <Priority>XUInt</Priority>
+    <RandomFrequencyModifier>XFloat</RandomFrequencyModifier>
+    <RandomVolumeModifier>XFloat</RandomVolumeModifier>
+    <MaxVolume>XFloat</MaxVolume>
+    <MinVolume>XFloat</MinVolume>
+    <Group>XInt</Group>
+    <FadeInTimeMs>XUInt</FadeInTimeMs>
+    <FadeOutTimeMs>XUInt</FadeOutTimeMs>
+  </XSampleData>
+  <XSoundBank guid="{13A3A026-66D4-4FDE-9C96-F10A0C8CC6DE}" Xver="0" NoCntr="true" id="XRef">
+    <SoundData Xtype="XCollection" href="XContainer" />
+    <Name>XString</Name>
+  </XSoundBank>
+  <XStreamData guid="{F2E511A2-F1B7-406C-90D2-694A01D94493}" Xver="0" NoCntr="true" id="XRef">
+    <Name>XString</Name>
+    <Filename>XString</Filename>
+    <Frequency>XInt</Frequency>
+    <Volume>XFloat</Volume>
+    <Priority>XUInt</Priority>
+    <Looping>XBool</Looping>
+    <FadeIn>XFloat</FadeIn>
+    <FadeOut>XFloat</FadeOut>
+    <MinDistance>XFloat</MinDistance>
+    <MaxDistance>XFloat</MaxDistance>
+    <Tempo>XFloat</Tempo>
+    <NumChannels>XInt</NumChannels>
+    <InterleavedBufferSize>XInt</InterleavedBufferSize>
+    <Group>XUInt</Group>
+    <LipSyncData Xtype="XDataCollection" Xpack="true">XBase64Byte</LipSyncData>
+    <StartOffset>XInt</StartOffset>
+    <Length>XInt</Length>
+  </XStreamData>
   <XAnimClipLibrary guid="{FFC0E26A-719A-4819-9779-47CCF9BEF3B2}" NoCntr="true" Xver="0" id="XRef">
     <Name>XString</Name>
     <AttributeMap Field="XUInt8" Flags="XUInt16" SubEntry="XUInt8" NodePath="XString" Xtype="XMapCollection" />
@@ -1186,8 +1233,8 @@
     <ChatMessagesContainer guid="{90E0A02B-91B4-4F2F-BF26-474469134E6A}" Xver="0" id="XRef">
       <Sender Xtype="XCollection">XString</Sender>
       <Content Xtype="XCollection">XString</Content>
-      <SenderColour Xtype="XCollection" r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8"/>
-      <ContentColour Xtype="XCollection" r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8"/>
+      <SenderColour Xtype="XCollection" r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
+      <ContentColour Xtype="XCollection" r="XUInt8" g="XUInt8" b="XUInt8" a="XUInt8" />
       <Scope Xtype="XCollection">XUInt</Scope>
     </ChatMessagesContainer>
     <W3DLumpConnector guid="{1A12DD58-D8C7-424B-911B-FBFBDDCF27F4}" Xver="0" id="XRef">
@@ -1606,7 +1653,7 @@
           <PC_LandFrame guid="{513DD3FB-9ACE-4641-9547-33A67A7413C3}" Xver="0" id="XRef">
             <FloorRoofLightIndex Xtype="XCollection">XUInt8</FloorRoofLightIndex>
             <WallLightIndex Xtype="XCollection">XUInt8</WallLightIndex>
-            <TintedLighting href="XContainer" />
+            <TintedLighting href="XColorSet" />
             <Siblings Xtype="XCollection">XUInt16</Siblings>
             <MostSignificantMaterial>XUInt16</MostSignificantMaterial>
             <SolidVoxelCount>XUInt16</SolidVoxelCount>
@@ -1702,7 +1749,7 @@
           <Details href="DetailEntityStore" Xtype="XCollection" />
         </LandFrameStore>
         <XSkin guid="{428C389D-F4F7-41BD-AA94-359EAD62DF6E}" Xver="0" id="XRef">
-          <Skeleton href="XContainer" />
+          <Skeleton href="XNode" />
         </XSkin>
         <XBone guid="{0D0FFE87-0BED-47A4-A5EF-72E1F7496954}" Xver="0" id="XRef">
           <PoseMatrix>XMatrix</PoseMatrix>
@@ -1710,9 +1757,9 @@
           <Affine>XBool</Affine>
         </XBone>
         <XGroup guid="{DED0CDAE-4DB7-42E2-84A7-8BC056730BA7}" Xver="0" id="XRef">
-          <Core href="XContainer" />
+          <Core href="XCore" />
         </XGroup>
-        <Children href="XContainer" Xtype="XCollection" />
+        <Children href="XNode" Xtype="XCollection" />
       </XInteriorNode>
       <DetailEntityStore guid="{7522BAA6-3384-42B0-9000-990BD92940BB}" Xver="0" id="XRef">
         <Name>XString</Name>
@@ -1730,10 +1777,10 @@
           <Bones Xtype="XCollection" href="XBone" />
         </XSkinShape>
         <Flags>XUInt</Flags>
-        <Shader href="XContainer" />
-        <Geometry href="XContainer" />
+        <Shader href="XShader" />
+        <Geometry href="XGeometry" />
         <SortKey Xver="2">XUInt</SortKey>
-        <Parameters Xver="3" Xtype="XCollection" href="XContainer" />
+        <Parameters Xver="3" Xtype="XCollection" href="XParameterChunk" />
       </XShape>
       <Bounds x="XFloat" y="XFloat" z="XFloat" Radius="XFloat" />
       <BoundMode>XEnum</BoundMode>
@@ -1764,8 +1811,8 @@
           <CharCoords Xtype="XCollection" Xpack="true">XVector2f</CharCoords>
           <CharSizes Xtype="XCollection" Xpack="true">XVector2f</CharSizes>
         </XTexFont>
-        <TextureStages Xtype="XCollection" href="XContainer" />
-        <Attributes Xtype="XCollection" href="XContainer" />
+        <TextureStages Xtype="XCollection" href="XTextureStage" />
+        <Attributes Xtype="XCollection" href="XAttribute" />
       </XSimpleShader>
       <XMultiTexFontPage guid="{10003B16-5AA5-40E1-8959-F9BF067DD4BC}" Xver="0" id="XRef">
         <Texture href="XTextureStage" />
@@ -1837,7 +1884,7 @@
       <Offsets Xtype="XCollection" Xpack="true">XUInt</Offsets>
       <Format>XEnum</Format>
       <Data Xtype="XCollection" Xpack="true">XBase64Byte</Data>
-      <Palette href="XContainer" />
+      <Palette href="XPalette" />
     </XImage>
     <XPalette guid="{EBFCFD09-03F8-4C35-BB90-C3F84946A947}" Xver="0" id="XRef">
       <!-- <ApiHandle>XUInt</ApiHandle> -->
