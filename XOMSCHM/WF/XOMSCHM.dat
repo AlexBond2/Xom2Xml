@@ -14,6 +14,16 @@
   <XBaseResourceDescriptor guid="{4DCD7EFF-E238-4182-8828-CD940A39D137}" Xver="0" id="XRef" Xtype="XClass">
     <ResourceId>XString</ResourceId>
     <SectionId>XUInt8</SectionId>
+    <XCustomDescriptor guid="{754BA91E-A04B-4AE7-8677-E53055DBE1D9}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <Flags>XUInt16</Flags>
+    </XCustomDescriptor>
+    <XTextDescriptor guid="{A6953B5D-3893-48F6-94F1-B5FBEFA1C372}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <TextGroup href="XContainer" />
+      <Char Index="XUInt16" MappedVal="XUInt16" Unicode="XUInt16" Xtype="XMapCollection" />
+    </XTextDescriptor>
+    <XSpriteSetDescriptor guid="{28257394-F08F-43AA-AB26-D253D6707BCC}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
+      <SpriteSetGroup href="XContainer" />
+    </XSpriteSetDescriptor>
     <XBitmapDescriptor guid="{87CF794F-A2AA-4C44-A9DB-7C9091245CB3}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
       <SpriteScene href="XContainer" />
       <ImageWidth>XUInt16</ImageWidth>
@@ -23,16 +33,6 @@
       <GraphSet href="XContainer" />
       <Flags>XUInt16</Flags>
     </XMeshDescriptor>
-    <XSpriteSetDescriptor guid="{28257394-F08F-43AA-AB26-D253D6707BCC}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
-      <SpriteSetGroup href="XContainer" />
-    </XSpriteSetDescriptor>
-    <XCustomDescriptor guid="{754BA91E-A04B-4AE7-8677-E53055DBE1D9}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
-      <Flags>XUInt16</Flags>
-    </XCustomDescriptor>
-    <XTextDescriptor guid="{A6953B5D-3893-48F6-94F1-B5FBEFA1C372}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc">
-      <TextGroup href="XContainer" />
-      <Char Index="XUInt16" MappedVal="XUInt16" Unicode="XUInt16" Xtype="XMapCollection" />
-    </XTextDescriptor>
     <XNullDescriptor guid="{4B8E936F-864D-4227-B6E4-1914FC17D7C0}" NoCntr="true" Xver="0" id="XRef" Xtype="XDesc" />
   </XBaseResourceDescriptor>
   <XAnimClipLibrary guid="{FFC0E26A-719A-4819-9779-47CCF9BEF3B2}" NoCntr="true" Xver="0" id="XRef">
@@ -51,6 +51,53 @@
       </AnimChannel>
     </AnimClips>
   </XAnimClipLibrary>
+  <XInternalSampleData guid="{E175CBDF-954D-4B70-8186-9F9444DC71A8}" Xver="0" NoCntr="true" id="XRef">
+    <Data Xtype="XDataCollection" Xpack="true">XBase64Byte</Data>
+    <LipSyncData Xtype="XDataCollection" Xpack="true">XBase64Byte</LipSyncData>
+    <NumChannels>XUInt</NumChannels>
+    <BytesPerSample>XUInt</BytesPerSample>
+  </XInternalSampleData>
+  <XSampleData guid="{21E5A5A8-7D50-4BA0-BC36-AB3BB9F51384}" Xver="0" NoCntr="true" id="XRef">
+    <Name>XString</Name>
+    <LipSyncData href="XInternalSampleData" />
+    <Looping>XBool</Looping>
+    <NumChannels>XUInt8</NumChannels>
+    <BytesPerSample>XUInt8</BytesPerSample>
+    <MaxDistance>XFloat</MaxDistance>
+    <MinDistance>XFloat</MinDistance>
+    <Frequency>XUInt</Frequency>
+    <Priority>XUInt</Priority>
+    <RandomFrequencyModifier>XFloat</RandomFrequencyModifier>
+    <RandomVolumeModifier>XFloat</RandomVolumeModifier>
+    <MaxVolume>XFloat</MaxVolume>
+    <MinVolume>XFloat</MinVolume>
+    <Group>XInt</Group>
+    <FadeInTimeMs>XUInt</FadeInTimeMs>
+    <FadeOutTimeMs>XUInt</FadeOutTimeMs>
+  </XSampleData>
+  <XSoundBank guid="{13A3A026-66D4-4FDE-9C96-F10A0C8CC6DE}" Xver="0" NoCntr="true" id="XRef">
+    <SoundData Xtype="XCollection" href="XContainer" />
+    <Name>XString</Name>
+  </XSoundBank>
+  <XStreamData guid="{F2E511A2-F1B7-406C-90D2-694A01D94493}" Xver="0" NoCntr="true" id="XRef">
+    <Name>XString</Name>
+    <Filename>XString</Filename>
+    <Frequency>XInt</Frequency>
+    <Volume>XFloat</Volume>
+    <Priority>XUInt</Priority>
+    <Looping>XBool</Looping>
+    <FadeIn>XFloat</FadeIn>
+    <FadeOut>XFloat</FadeOut>
+    <MinDistance>XFloat</MinDistance>
+    <MaxDistance>XFloat</MaxDistance>
+    <Tempo>XFloat</Tempo>
+    <NumChannels>XInt</NumChannels>
+    <InterleavedBufferSize>XInt</InterleavedBufferSize>
+    <Group>XUInt</Group>
+    <LipSyncData Xtype="XDataCollection" Xpack="true">XBase64Byte</LipSyncData>
+    <StartOffset>XInt</StartOffset>
+    <Length>XInt</Length>
+  </XStreamData>
   <XContainer guid="{5E1CD446-48A3-44FE-A55A-E247B8F5E713}" Xver="0" id="XRef" Xtype="XClass">
     <Lock guid="{B6D831EB-6BB0-4A0A-BCF1-83DFEA8D3F44}" Xver="0" id="XRef" Xtype="XClass">
       <LevelLock guid="{1D425E91-3510-47D2-8366-3267D0C0BB94}" Xver="0" id="XRef">
