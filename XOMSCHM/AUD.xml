@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xomSCHM Xgame="W3D">
   <XInternalSampleData guid="{E175CBDF-954D-4B70-8186-9F9444DC71A8}" Xver="0" NoCntr="true" id="XRef">
     <Data Xtype="XDataCollection" Xpack="true">XBase64Byte</Data>
@@ -47,5 +47,4 @@
     <StartOffset>XInt</StartOffset>
     <Length>XInt</Length>
   </XStreamData>
-
 </xomSCHM>
