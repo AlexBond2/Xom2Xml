@@ -97,15 +97,15 @@
       <XGeoSet guid="{F1337197-F57E-4ACB-9770-63794A52DEAE}" Xver="0" Xtype="XClass">
         <XIndexedGeoSet guid="{7DD1BB1B-5A50-4266-BFD6-9C66CB7EEA47}" Xver="0" Xtype="XClass">
           <XIndexedTriangleSet guid="{99504FA1-C2D2-4E88-972C-38194B782488}" Xver="0" id="XRef" />
-          <IndexSet href="XContainer" />
+          <IndexSet href="XIndexArray" />
         </XIndexedGeoSet>
         <Flags>XUInt</Flags>
         <PrimitiveCount>XUInt</PrimitiveCount>
-        <CoordSet href="XContainer" />
-        <NormalSet href="XContainer" />
-        <ColorSet href="XContainer" />
-        <TexCoordSet href="XContainer" />
-        <WeightSet href="XContainer" />
+        <CoordSet href="XCoordSet" />
+        <NormalSet href="XNormalSet" />
+        <ColorSet href="XColorSet" />
+        <TexCoordSet href="XTexCoordSet" />
+        <WeightSet href="XWeightSet" />
       </XGeoSet>
       <XSpriteSet guid="{40EC7673-FB47-4B31-A3FC-F96EC0C4BBBA}" Xver="0" id="XRef" Xtype="XClass">
         <XBillboardSpriteSet guid="{4985D553-9683-4548-AAC6-A3C71E896C68}" Xver="0" id="XRef"></XBillboardSpriteSet>
@@ -126,7 +126,7 @@
       </XSpriteSet>
       <BoundBox>XBoundBox</BoundBox>
       <BoundMode>XEnum</BoundMode>
-      <VertexShader Xver="2" href="XContainer" />
+      <VertexShader Xver="2" href="XCgShaderProgram" />
     </XGeometry>
     <XVertexDataSet guid="{C5E4D088-A8CA-4A64-A6ED-A17534CB4271}" Xver="0" Xtype="XClass">
       <XCoordSet guid="{3F6F9329-3368-46C9-8C1F-5D7068E5B6FB}" Xver="0" Xtype="XClass">
@@ -178,7 +178,7 @@
     <XCollisionData guid="{A5B702B6-4871-4065-8252-01117916FC0C}" Xver="0" id="XRef">
       <SphereCentres x="XFloat" y="XFloat" z="XFloat" Xtype="XCollection" />
       <SphereRadii Xtype="XCollection">XFloat</SphereRadii>
-      <Geom Xtype="XCollection" href="XContainer" />
+      <Geom Xtype="XCollection" href="XCollisionGeometry" />
     </XCollisionData>
     <XPositionData guid="{DE034903-C8C5-451A-93A6-1353B47B69F9}" Xver="0" id="XRef">
       <Name Xtype="XCollection">XString</Name>
@@ -214,7 +214,7 @@
       <PhantomBoxPosition x="XFloat" y="XFloat" z="XFloat" Xtype="XCollection" />
       <PhantomSphereRadius Xtype="XCollection">XFloat</PhantomSphereRadius>
       <PhantomBoxExtents Xtype="XCollection" x="XFloat" y="XFloat" z="XFloat" />
-      <SceneryEffects Xver="3" Xtype="XCollection" href="XContainer" />
+      <SceneryEffects Xver="3" Xtype="XCollection" href="XSceneryEffectData" />
     </XFortsExportedData>
     <XDetailObjectsData guid="{110A17B3-B61F-4D34-B553-C46C14630BA7}" Xver="0" id="XRef">
       <DetailObjectFilePath Xtype="XCollection">XString</DetailObjectFilePath>
@@ -266,14 +266,14 @@
         <Scale x="XFloat" y="XFloat" z="XFloat" />
       </DetailEntityStore>
       <WXTemplateSet guid="{B8474110-5E5F-40F2-A991-E6BF7733E357}" Xver="0" id="XRef">
-        <Templates Xtype="XCollection" href="XContainer" />
+        <Templates Xtype="XCollection" href="WXTemplate" />
       </WXTemplateSet>
       <XInteriorNode guid="{8BE307A9-B705-4753-9D80-55F01B2122F8}" Xver="0" id="XRef" Xtype="XClass">
         <LandFrame guid="{1E112F77-E98A-4E02-9FE8-6E41F1FCBE4A}" Xver="0" id="XRef" Xtype="XClass">
           <PC_LandFrame guid="{513DD3FB-9ACE-4641-9547-33A67A7413C3}" Xver="0" id="XRef">
             <FloorRoofLightIndex Xtype="XCollection">XUInt8</FloorRoofLightIndex>
             <WallLightIndex Xtype="XCollection">XUInt8</WallLightIndex>
-            <TintedLighting href="XContainer" />
+            <TintedLighting href="XColorSet" />
             <Siblings Xtype="XCollection">XUInt16</Siblings>
             <MostSignificantMaterial>XUInt16</MostSignificantMaterial>
             <SolidVoxelCount>XUInt16</SolidVoxelCount>
@@ -319,8 +319,8 @@
         </LandFrame>
         <LandChunk guid="{39767997-3210-4A51-9A70-ED9D870679D0}" Xver="0" id="XRef" Xtype="XClass">
           <PC_LandChunk guid="{67F8C65A-1C0B-4B78-A84E-39981A0F43DC}" Xver="0" id="XRef">
-            <!-- <HighDetailGeometry href="XContainer" /> -->
-            <!-- <FringeGeometry href="XContainer" /> -->
+            <!-- <HighDetailGeometry href="XNode" /> -->
+            <!-- <FringeGeometry href="XNode" /> -->
             <!-- <Flags>XUInt8</Flags> -->
             <!-- <ShadowCache Xtype="XCollection">XUInt</ShadowCache> -->
             <!-- <ShadingVoxelIds Xtype="XCollection">XUInt16</ShadingVoxelIds> -->
@@ -328,8 +328,8 @@
             <!-- <VerticesToShadow>XUInt16</VerticesToShadow> -->
             <!-- <VertexCount>XUInt16</VertexCount> -->
             <!-- <SiblingVertexCount>XUInt16</SiblingVertexCount> -->
-            <!-- <QuickAccessColorSet href="XContainer" /> -->
-            <!-- <QuickAccessCoordSet href="XContainer" /> -->
+            <!-- <QuickAccessColorSet href="XColorSet" /> -->
+            <!-- <QuickAccessCoordSet href="XColorSet" /> -->
             <!-- <RoofFloorTextureCentre x="XFloat" y="XFloat" /> -->
             <!-- <WallTextureCentre x="XFloat" y="XFloat" /> -->
             <!-- <HeightmapShadowCoverage>XUInt</HeightmapShadowCoverage> -->
@@ -368,7 +368,7 @@
           <Details href="DetailEntityStore" Xtype="XCollection" />
         </LandFrameStore>
         <XSkin guid="{428C389D-F4F7-41BD-AA94-359EAD62DF6E}" Xver="0" id="XRef">
-          <Skeleton href="XContainer" />
+          <Skeleton href="XNode" />
         </XSkin>
         <XBone guid="{0D0FFE87-0BED-47A4-A5EF-72E1F7496954}" Xver="0" id="XRef">
           <PoseMatrix>XMatrix</PoseMatrix>
@@ -380,21 +380,21 @@
             <OpaqueModifier>XInt8</OpaqueModifier>
             <TransparentModifier>XInt8</TransparentModifier>
           </XBinModifier>
-          <Core href="XContainer" />
+          <Core href="XCore" />
         </XGroup>
-        <Children href="XContainer" Xtype="XCollection" />
+        <Children href="XNode" Xtype="XCollection" />
       </XInteriorNode>
       <XShape guid="{F39F012E-DE00-451B-9B10-CB09402F24B4}" Xver="4" id="XRef" Xtype="XClass">
         <XSkinShape guid="{C8ABC4B3-92A0-4E04-B537-F7C3A403FF5A}" Xver="0" id="XRef">
           <Bones Xtype="XCollection" href="XBone" />
         </XSkinShape>
         <Flags>XUInt</Flags>
-        <Shader href="XContainer" />
-        <Geometry href="XContainer" />
+        <Shader href="XShader" />
+        <Geometry href="XGeometry" />
         <SortKey>XUInt</SortKey>
-        <Parameters Xver="3" Xtype="XCollection" href="XContainer" />
-        <PreRenderFunc Xver="4" href="XContainer" />
-        <PostRenderFunc Xver="4" href="XContainer" />
+        <Parameters Xver="3" Xtype="XCollection" href="XParameterChunk" />
+        <PreRenderFunc Xver="4" href="XSceneFunc" />
+        <PostRenderFunc Xver="4" href="XSceneFunc" />
       </XShape>
       <Bounds x="XFloat" y="XFloat" z="XFloat" Radius="XFloat" />
       <!-- Bounding volume for this node (including children) -->
@@ -427,17 +427,17 @@
           <CharCoords Xtype="XCollection" Xpack="true">XVector2f</CharCoords>
           <CharSizes Xtype="XCollection" Xpack="true">XVector2f</CharSizes>
         </XTexFont>
-        <TextureStages Xtype="XCollection" href="XContainer" />
-        <Attributes Xtype="XCollection" href="XContainer" />
+        <TextureStages Xtype="XCollection" href="XTextureStage" />
+        <Attributes Xtype="XCollection" href="XAttribute" />
       </XSimpleShader>
       <XEnvironmentMapShader guid="{A8D20124-65FB-4EC2-AFCC-2C96BED783BD}" Xver="0" id="XRef">
-        <BaseTexture href="XContainer" />
-        <ReflectionTexture href="XContainer" />
-        <Attributes Xtype="XCollection" href="XContainer" />
+        <BaseTexture href="XTextureMap" />
+        <ReflectionTexture href="XTextureMap" />
+        <Attributes Xtype="XCollection" href="XAttribute" />
         <BlendType>XEnum</BlendType>
       </XEnvironmentMapShader>
       <XMultiTexFontPage guid="{10003B16-5AA5-40E1-8959-F9BF067DD4BC}" Xver="2" id="XRef">
-        <Texture href="XContainer" />
+        <Texture href="XTextureStage" />
         <CharacterMap Xtype="XCollection" Xpack="true">XUInt16</CharacterMap>
         <CharCoords Nver="2" Xtype="XCollection" Xpack="true">XVector2f</CharCoords>
         <CharSizes Nver="2" Xtype="XCollection" Xpack="true">XVector2f</CharSizes>
@@ -449,8 +449,8 @@
         <Advances Xver="2" Xtype="XCollection" Xpack="true">XFloat</Advances>
       </XMultiTexFontPage>
       <XMultiTexFont guid="{933DD818-FFC9-4034-BA1C-CFAC496E0281}" Xver="2" id="XRef">
-        <Attributes Xtype="XCollection" href="XContainer" />
-        <FontPages Xtype="XCollection" href="XContainer" />
+        <Attributes Xtype="XCollection" href="XAttribute" />
+        <FontPages Xtype="XCollection" href="XMultiTexFontPage" />
         <AsciiMap Xtype="XCollection" Xpack="true">XUInt16</AsciiMap>
         <CharacterMap Xtype="XCollection" Xpack="true">XUInt16</CharacterMap>
         <DesignScale Xver="2" x="XFloat" y="XFloat" />
@@ -460,7 +460,7 @@
       </XMultiTexFont>
       <Flags>XUInt</Flags>
       <Name>XString</Name>
-      <FragmentShader Xver="2" href="XContainer" />
+      <FragmentShader Xver="2" href="XCgShaderProgram" />
     </XShader>
     <XAttribute guid="{8CB8D55A-66B7-4FC6-8635-E74C3CEC029B}" Xver="0" Xtype="XClass">
       <XMaterial guid="{38CC48EC-6CAF-41FD-B74E-ED5C9E610BAE}" Xver="2" id="XRef">
@@ -517,7 +517,7 @@
       <Offsets Xtype="XCollection" Xpack="true">XUInt</Offsets>
       <Format>XEnum</Format>
       <Data Xtype="XCollection" Xpack="true">XBase64Byte</Data>
-      <Palette href="XContainer" />
+      <Palette href="XPalette" />
       <!-- <ApiHandle>XUInt</ApiHandle> -->
     </XImage>
     <XPalette guid="{EBFCFD09-03F8-4C35-BB90-C3F84946A947}" Xver="0" id="XRef">
@@ -533,7 +533,7 @@
           <Blend>XEnum</Blend>
           <BlendColor>XVector4f</BlendColor>
         </XOglTextureMap>
-        <Texture href="XContainer" />
+        <Texture href="XImage" />
       </XTextureMap>
       <MaxAnisotropy>XFloat</MaxAnisotropy>
       <!-- <FourCC Nver="2">XUInt</FourCC> -->
@@ -546,7 +546,7 @@
       <MinFilter>XEnum</MinFilter>
       <MipFilter>XEnum</MipFilter>
       <!-- <Matrix Nver="2">XMatrix4f</Matrix> -->
-      <TextureGen Xver="2" href="XContainer" />
+      <TextureGen Xver="2" href="XTextureGen" />
     </XTextureStage>
     <XTextureGen guid="{8A314940-920F-42EA-A576-9AEFD6D624D3}" Xver="0" Xtype="XClass">
       <XTextureMatrix guid="{9DE53889-C3F3-4D9A-8ACC-CE6D6CAAB8F0}" Xver="0" Xtype="XClass">
@@ -571,9 +571,9 @@
       <Type>XUInt8</Type>
     </WXLumpBoundBox>
     <WXTemplate guid="{2EF1C563-7A51-4824-B09D-97D2CEB1BECE}" Xver="0" id="XRef" Xtype="XClass">
-      <Connectors Xtype="XCollection" href="XContainer" />
-      <Bounds Xtype="XCollection" href="XContainer" />
-      <Outline href="XContainer" />
+      <Connectors Xtype="XCollection" href="WXLumpConnector" />
+      <Bounds Xtype="XCollection" href="WXLumpBoundBox" />
+      <Outline href="LandFrameStore" />
       <PreviewPos x="XFloat" y="XFloat" z="XFloat" />
       <PreviewOrientation x="XFloat" y="XFloat" z="XFloat" />
       <PreviewScale x="XFloat" y="XFloat" z="XFloat" />
