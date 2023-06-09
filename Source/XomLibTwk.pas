@@ -101,6 +101,8 @@ type
     procedure XPaletteDecode(XValue:String; Buf:TStream);
     function XSampleEncode(XName:String; Point:Pointer; Size: Integer):String;
     procedure XSampleDecode(XValue: String; Buf:TStream);
+    function FlagDataEncode(Point:Pointer; Size: Integer):String;
+    procedure FlagDataDecode(XValue: String; Buf:TStream);
     function XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
     procedure XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
     procedure LoadFromXML(xomTypes, xomObjects, XContainer:TXmlNode);
@@ -1528,11 +1530,29 @@ begin
 end;
 
 
+function IsExtPart(const XValue: String):Boolean;
+var
+  Len: Integer;
+  ExtPart: String;
+begin
+  Len := Length(XValue);
+  Result := false;
+  if Len > 4 then begin
+    ExtPart := Copy(XValue, len - 3, 1);
+    if ExtPart = '.' then Result := true;
+  end;
+end;
+
+function GetExtPart(const XValue: String): String;
+begin
+  Result := LowerCase(Copy(XValue, Length(XValue) - 2, 3));
+end;
+
 function TXom.XBitmapDecode(XValue: String; Buf: TStream): Boolean;
 var
   Mem: TMemoryStream;
   outfile: String;
-  len, dWidth, dHeight, i, x, y: integer;
+  dWidth, dHeight, i, x, y: integer;
 begin
  Result := false;
 
@@ -1544,8 +1564,8 @@ begin
        WriteLn(Format('Error: File %s not exist',[XValue]));
        Halt;
     end;
-    len := Length(XValue);
-    outfile := LowerCase(Copy(XValue, len - 2, 3));
+
+    outfile := GetExtPart(XValue);
     XBlockBitmap := TBitmap32.Create;
     Mem := TMemoryStream.Create;
     Mem.LoadFromFile(XValue);
@@ -1611,7 +1631,7 @@ begin
   if XData.outfile = 'png' then
      Bitmap.SaveToPNG(Mem)
   else if XData.outfile = 'tga' then
-     Bitmap.SaveToTGA(Mem, 32)
+     Bitmap.SaveToTGA(Mem, 32, 0)
   else if XData.outfile = 'dds' then
      Bitmap.SaveToDDS(Mem, 32);
   Mem.SaveToFile(XBlockName);
@@ -1656,19 +1676,12 @@ procedure TXom.XPaletteDecode(XValue:String; Buf:TStream);
 var
   Bitmap: TBitmap32;
   Mem: TMemoryStream;
-  isfile: Boolean;
-  ExtPart, FileName, outfile: String;
-  Len: Integer;
+  FileName, outfile: String;
 begin
 
   outfile := '';
-  Len := Length(XValue);
-  if Len > 4 then begin
-    ExtPart := Copy(XValue, len - 3, 1); // .tga
-    if ExtPart = '.' then begin
-    outfile := LowerCase(Copy(XValue, len - 2, 3));
-    end;
-  end;
+  if IsExtPart(XValue) then
+    outfile := GetExtPart(XValue);
 
   if outfile = 'tga' then begin
 
@@ -1713,20 +1726,9 @@ type
 procedure TXom.XSampleDecode(XValue: String; Buf: TStream);
 var
   Mem: TMemoryStream;
-  isfile: Boolean;
-  ExtPart, FileName, outfile: String;
-  Len: Integer;
+  FileName, outfile: String;
 begin
-
-  isfile := false;
-  outfile := '';
-  Len := Length(XValue);
-  if Len > 4 then begin
-    ExtPart := Copy(XValue, len - 3, 1); // .wav
-    if ExtPart = '.' then isfile:=true;
-  end;
-
-  if isfile then begin
+  if IsExtPart(XValue) then begin
     Mem:= TMemoryStream.Create;
     FileName := XValue;
     Mem.LoadFromFile(FileName);
@@ -1736,7 +1738,7 @@ begin
        Halt;
     end;
     Writeln('<< '+FileName);
-    outfile := LowerCase(Copy(XValue, len - 2, 3));
+    outfile := GetExtPart(XValue);
     if outfile = 'wav' then begin
       Mem.Position := SizeOf(WAVHDR);
       Buf.CopyFrom(Mem, Mem.Size - SizeOf(WAVHDR));
@@ -1815,6 +1817,89 @@ begin
 
 end;
 
+function TXom.FlagDataEncode(Point:Pointer; Size: Integer):String;
+var
+  Bitmap: TBitmap32;
+  Mem: TMemoryStream;
+  FileName: String;
+begin
+  if XData.isfile then begin
+    FileName := ChangeFileExt(XomFileName,'.'+XData.outfile);
+    if XData.dir <> '' then begin
+     if not DirectoryExists(XData.dir) then CreateDir(XData.dir);
+     XData.dir := IncludeTrailingPathDelimiter(XData.dir);
+    end;
+    FileName:= XData.dir + FileName;
+    Mem:= TMemoryStream.Create;
+    Bitmap:= TBitmap32.Create;
+    Bitmap.LoadFromBlock32(Point);
+
+    if XData.outfile = 'png' then
+      Bitmap.SaveToPNG(Mem)
+    else if XData.outfile = 'tga' then
+      Bitmap.SaveToTGA(Mem, 8, 16)
+    else if XData.outfile = 'dds' then
+      Bitmap.SaveToDDS(Mem, 32)
+    else
+      Mem.Write(Point^,Size);
+    Writeln('>> '+FileName);
+    Mem.SaveToFile(FileName);
+    Bitmap.Free;
+    Mem.Free;
+    Result := FileName;
+  end else
+    Result := EncodePointer(Point, Size);
+end;
+
+procedure TXom.FlagDataDecode(XValue: String; Buf:TStream);
+var
+  Bitmap: TBitmap32;
+  Mem: TMemoryStream;
+  FileName, outfile: String;
+begin
+
+  outfile := '';
+  if IsExtPart(XValue) then begin
+    outfile := GetExtPart(XValue);
+
+   if outfile = 'tga' then begin
+
+    if not FileExists(XValue) then
+    begin
+       WriteLn(Format('Error: File %s not exist',[XValue]));
+       Halt;
+    end;
+
+      Mem:= TMemoryStream.Create;
+      FileName := XValue;
+      Mem.LoadFromFile(FileName);
+      Writeln('<< '+FileName);
+      Bitmap:= TBitmap32.Create;
+      Bitmap.LoadFromTGA(Mem);
+      if (Bitmap.Width = 32) and (Bitmap.Height = 32) then
+        Bitmap.SaveBlock32(Buf)
+      else begin
+       WriteLn(Format('Error: File %s is not 32x32',[FileName]));
+       Halt;
+      end;
+      Mem.Position := 0;
+      if not Bitmap.LoadPaletteFromTGA(Mem, Buf) then
+      begin
+       WriteLn(Format('Error: File %s not have palette',[FileName]));
+       Halt;
+      end;
+      Bitmap.Free;
+      Mem.Free;
+   end else
+    begin
+       WriteLn(Format('Error: File %s not tga',[XValue]));
+       Halt;
+    end;
+
+  end else
+     DecodeStreamString(XValue, Buf);
+end;
+
 function TXom.XImageEncode(XImageNode: TXmlNode; Point:Pointer; Size: Integer):String;
 var
   Bitmap: TBitmap32;
@@ -1881,7 +1966,7 @@ begin
       if XData.outfile = 'png' then
         Bitmap.SaveToPNG(Mem)
       else if XData.outfile = 'tga' then
-        Bitmap.SaveToTGA(Mem, Bits)
+        Bitmap.SaveToTGA(Mem, Bits, 256)
       else if XData.outfile = 'dds' then begin
         if Bits = 8 then Bits := 32; // dds have not palette
         Bitmap.SaveToDDS(Mem, Bits);
@@ -1903,19 +1988,11 @@ procedure TXom.XImageDecode(XImageNode: TXmlNode; XValue: String; Buf:TStream);
 var
   Bitmap: TBitmap32;
   Mem: TMemoryStream;
-  isfile: Boolean;
-  Name, base64Data, ExtPart, FileName, outfile: String;
-  Width, Height, xFormat, Bits, MipMaps, Len, ps: Integer;
+  Name, base64Data, FileName, outfile: String;
+  Width, Height, xFormat, Bits, MipMaps, ps: Integer;
 begin
-  isfile := false;
-  outfile := '';
-  Len := Length(XValue);
-  if Len > 4 then begin
-    ExtPart := Copy(XValue, len - 3, 1); // .png
-    if ExtPart = '.' then begin isfile:=true;  end;
-  end;
 
-  if isfile then begin
+  if IsExtPart(XValue) then begin
 
     if not FileExists(XValue) then
     begin
@@ -1925,7 +2002,7 @@ begin
 
       Mem:= TMemoryStream.Create;
 
-      outfile := LowerCase(Copy(XValue, len - 2, 3));
+      outfile := GetExtPart(XValue);
       FileName := XValue;
       Mem.LoadFromFile(FileName);
       Writeln('<< '+FileName);
@@ -1988,7 +2065,6 @@ function CompareFloatHex(v1,v2:Single):Boolean;
 begin
     result:=  Int32Rec(v1).Cardinals = Int32Rec(v2).Cardinals;
 end;
-
 
 function TXom.AddXMLNode(XCntr:TContainer; XContainer:TXmlNode; XName:String;  XML:TNativeXml; xomObjects:TXmlNode):String;
 var
@@ -2129,7 +2205,9 @@ var
               s := XPaletteName
             else if (XCont.Name = 'XInternalSampleData') and
             (XNode.Name = 'Data') then
-             s := XSampleEncode(XName,p2, n)
+              s := XSampleEncode(XName, p2, n)
+            else if (XCont.Name = 'FlagData') then
+              s := FlagDataEncode(p2, n)
             else
               s := EncodePointer(p2,n);
             Inc(Longword(p2), n);
@@ -2654,7 +2732,7 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
 
   procedure WritePropPack(XSNode,XCont:TXmlNode; Buf:TMemoryStream; n: Integer);
   var
-  XValueType, XValue: UTF8String;
+  XValueType, XValue, Parent: UTF8String;
   XValues:TStringList;
   i,len,pstart:Integer;
   begin
@@ -2668,15 +2746,18 @@ procedure TXom.WriteXMLContaiter(index:integer;XCntr:TContainer;XContainer: TXml
             XValue :=sdReplaceString(TsdText(XCont.Nodes[1]).GetCoreValue);
           If XValueType = 'XBase64Byte' then begin
             pstart := Buf.Position;
-            if XCont.Parent.Name = 'XImage' then
+            Parent := XCont.Parent.Name;
+            if Parent = 'XImage' then
              XImageDecode(XCont.Parent, XValue, Buf)
-            else if XCont.Parent.Name = 'XPalette' then
+            else if Parent = 'XPalette' then
              XPaletteDecode(XValue, Buf)
-            else if (XCont.Parent.Name = 'XInternalSampleData') and
-             (XCont.Name = 'Data') then
+            else if (Parent = 'XInternalSampleData') and (XCont.Name = 'Data') then
              XSampleDecode(XValue, Buf)
+            else if Parent = 'FlagData' then
+             FlagDataDecode(XValue, Buf)
             else
              DecodeStreamString(XValue,Buf);
+
             if Buf.Position-pstart <> n then begin
               WriteLn(Format('Error: Wrong length %d <> %d in %s',[n, Buf.Position-pstart, XCont.Parent.Name]));
               Halt;
