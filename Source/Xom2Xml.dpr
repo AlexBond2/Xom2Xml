@@ -158,6 +158,78 @@ begin
   NewXom.Free;
 end;
 
+function CompareFileNames(Str: TStringList; Index1, Index2: Integer): Integer;
+var
+  Num1, Num2: Integer;
+  function GetNum(FileName:String):Integer;
+  begin
+    Delete(FileName, 1, 5);
+    Delete(FileName, Pos('.', FileName), 4);
+    Result := StrToIntDef(FileName, -1);
+  end;
+begin
+  Num1 := GetNum(Str[Index1]);
+  Num2 := GetNum(Str[Index2]);
+  if (Num1 = -1) or (Num2 = -1) then
+    Result := CompareText(Str[Index1], Str[Index2])
+  else
+    Result := Num1 - Num2;
+end;
+
+procedure PackLaf(DirPath:String);
+var
+ Files: TStringList;
+ FileStream, Data: TMemoryStream;
+ Size, Offset, OldOffset: Longword;
+ i: integer;
+ Filename: String;
+
+  function GetFiles(Dir: string): TStringList;
+  var
+    SR: TSearchRec;
+    f: Integer;
+    FileTempl: String;
+  begin
+    Result := TStringList.Create;
+    FileTempl := IncludeTrailingPathDelimiter(Dir) + 'file_*.*';
+    f := FindFirst(FileTempl, faAnyFile, SR);
+    while f = 0 do
+    begin
+      Result.Add(SR.Name);
+      f := FindNext(SR);
+    end;
+    FindClose(SR);
+    Result.CustomSort(CompareFileNames);
+  end;
+
+begin
+  Files := GetFiles(DirPath);
+  if Files.Count > 0 then begin
+    Data := TMemoryStream.Create;
+    FileStream := TMemoryStream.Create;
+    Offset := 0;
+    for i:=0 to Files.Count-1 do
+    begin
+      OldOffset := Offset;
+      Filename := IncludeTrailingPathDelimiter(DirPath) + Files.Strings[i];
+      FileStream.LoadFromFile(Filename);
+      Size := FileStream.Size;
+      Offset := OldOffset + Size + 4;
+      Data.Write(Offset,4);
+      FileStream.SaveToStream(Data);
+      FileStream.Clear;
+      //Data.CopyFrom(FileStream, Size);
+      Writeln('<< '+Filename);
+    end;
+   FileStream.Free;
+   Files.Free;
+   if not outfile then OFilename:='global.laf';
+   Data.SaveToFile(OFilename);
+   Data.Free;
+  end;
+  Writeln('... '+OFilename+' saved');
+end;
+
 procedure UnpackLaf(Filename, DirPath:String);
 var
   FileStream: TFileStream;
@@ -165,6 +237,19 @@ var
   Data: TMemoryStream;
   Index: Integer;
   NewFilename, DataName: string;
+
+  function GetFileExt(Data: TMemoryStream): string;
+  var Magic: array [0..3] of Char;
+  begin
+   Data.Position:=0;
+   Data.Read(Magic,4);
+   if Magic = 'MOIK' then Result := '.xom' else
+   if Magic = '‰PNG' then Result := '.png' else
+   if Magic = '////' then Result := '.txt' else
+   if Magic = 'RIFF' then Result := '.wav' else
+    Result := '.bin';
+  end;
+
 begin
   if DirPath <> '' then begin
     if not DirectoryExists(DirPath) then CreateDir(DirPath);
@@ -183,9 +268,9 @@ begin
       FileStream.Read(Offset, SizeOf(Size));
       Size:=Offset-OldOffset-4;
       Data.CopyFrom(FileStream, Size);
-      NewFilename := DataName + IntToStr(Index) + '.bin';
+      NewFilename := DataName + IntToStr(Index) + GetFileExt(Data);
       Data.SaveToFile(NewFilename);
-      Writeln(NewFilename);
+      Writeln('>> '+NewFilename);
       Data.Clear;
       Inc(Index);
     end;
@@ -286,22 +371,31 @@ begin
     Writeln('    -aud-file bin       BIN data');
     Writeln('    -aud-file wav       WAV audio');
     Writeln('   -aud-dir <dir>       Save SampleData files in custom directory');
-//    Writeln('   -laf <dir>           Unpack laf file to xom files in custom directory');
+    Writeln('   -laf <dir>           Unpack laf file to xom files in custom directory');
 
    // Writeln('   -g       Save GUID info from xom as xml');
     Writeln;
 
   end;
 
-  if (FileExists(FileName) = true) then  begin
   if islaf then begin
-    UnpackLaf(FileName, LafDir);
+    if (FileExists(FileName) = true) then
+        UnpackLaf(FileName, LafDir)
+    else begin
+      if DirectoryExists(LafDir) then
+        PackLaf(LafDir)
+      else
+        Writeln('Directory not exist');
+    end;
     Exit;
-  end else if (FileExists(schmfile) = false) then begin
+  end;
+
+  if (FileExists(FileName) = true) then  begin
+   if (FileExists(schmfile) = false) then begin
     Writeln('Scheme file not found');
     Exit;
-  end else
-  begin
+   end else
+   begin
      schmxml:=TNativeXml.CreateName('xomSCHM');
      schmxml.LoadFromFile(schmfile);
      schmnode:= schmxml.Root;
