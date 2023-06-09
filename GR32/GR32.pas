@@ -122,14 +122,16 @@ type
     destructor Destroy;
     procedure LoadFromData(Data: Pointer; Width, Height, ColorBits, MipMaps: Integer; Palette: Pointer);
     procedure LoadFromBlocks(Data: Pointer);
+    procedure LoadFromBlock32(Data: Pointer);
     procedure DrawBlock(X, Y: Integer; Bitmap: TBitmap32);
     procedure SaveBlock64(Data: TStream; X, Y :Integer);
+    procedure SaveBlock32(Data: TStream);
     function GenMipMaps: Integer;
     procedure FreeMipMaps;
     procedure SaveToStream(Data: TStream; ColorBits: Integer);
     function LoadPaletteFromTGA(Stream, Data: TStream): Boolean;
     procedure LoadFromTGA(Stream: TStream);
-    procedure SaveToTGA(Stream: TStream; ColorBits: Integer; RLE: Boolean = True);
+    procedure SaveToTGA(Stream: TStream; ColorBits, IndexColors: Integer; RLE: Boolean = True);
     procedure LoadFromPNG(Stream: TStream);
     procedure SaveToPNG(Stream: TStream);
     procedure LoadFromDDS(Stream: TStream);
@@ -336,7 +338,7 @@ begin
   Pixels := Compressed;
 end;
 
-procedure TBitmap32.SaveToTGA(Stream: TStream; ColorBits: Integer; RLE: Boolean = True);
+procedure TBitmap32.SaveToTGA(Stream: TStream; ColorBits, IndexColors: Integer; RLE: Boolean = True);
 var
   Tga: TGAHeader;
   x,y,p: Integer;
@@ -355,7 +357,7 @@ begin
     Tga.ImageType := Tga.ImageType or 1; // color-mapped image
     Tga.ColorMapType := 1;
     Tga.ColourMapOrigin := 0;
-    Tga.ColourMapLength := 256;
+    Tga.ColourMapLength := IndexColors;
     Tga.ColourMapDepth := 32;
   end;
 
@@ -368,7 +370,7 @@ begin
   SetLength(Pixels, FHeight * FWidth * PixelSize);
 
   if PixelSize = 1 then begin
-   for x:=0 to 255 do begin
+   for x:=0 to Tga.ColourMapLength-1 do begin
     Stream.Write(TColor32Entry(FPalette[x]).R, 1);
     Stream.Write(TColor32Entry(FPalette[x]).G, 1);
     Stream.Write(TColor32Entry(FPalette[x]).B, 1);
@@ -405,7 +407,7 @@ begin
   Stream.Read(Tga, sizeOf(TGAHeader));
   if Tga.ImageType and 1 = 1 then begin
   PixelSize := Tga.ColourMapDepth div 8;
-    for i := 0 to 255 do begin
+    for i := 0 to Tga.ColourMapLength-1 do begin
      Stream.Read(Color, PixelSize);
      Data.Write(Color.R, 1);
      Data.Write(Color.G, 1);
@@ -503,10 +505,10 @@ begin
   end
   else if Tga.ImageType and 1 = 1 then  // color-mapped image
   begin
-    SetLength(Palette, 256);
+    SetLength(Palette, Tga.ColourMapLength);
     SetLength(FIndexes, Tga.Height * Tga.Width);
     PalSize := Tga.ColourMapDepth div 8;
-    for i := 0 to 255 do
+    for i := 0 to Tga.ColourMapLength-1 do
      Stream.Read(Palette[i], PalSize);
     if Tga.ImageType and 8 = 8 then // RLE
        DecodeRLE(Stream, Pixels, Tga.Width, Tga.Height, PixelSize)
@@ -600,6 +602,47 @@ begin
           end;
 end;
 
+// block 32x32
+
+procedure TBitmap32.SaveBlock32(Data: TStream);
+var
+ i, j, Index : Integer;
+begin
+ for j := FHeight-1 downto 0 do
+   for i := 0 to FWidth-1 do
+     begin
+       Index := FIndexes[i + j * FWidth] + 128;
+       Data.Write(Index, 1);
+     end;
+end;
+
+procedure TBitmap32.LoadFromBlock32(Data: Pointer);
+var
+ i, j, xb, yb, Index: Integer;
+ Palette: Pointer;
+ Pixel: PColor32;
+ Color, PColor: TColor32Entry;
+begin
+ SetSize(32, 32);
+ SetLength(FIndexes, 32 * 32);
+ Palette:= Pointer(LongWord(Data)+Length(FIndexes));
+ FPalette := Palette;
+  for j:=31 downto 0 do
+    for i:=0 to 31 do
+      begin
+        Pixel := PixelPtr[i, j];
+        Index:= Byte(Data^) - 128;
+        FIndexes[i + j * 32] := Index;
+        PColor := TColor32Entry(FPalette[Index]);
+        Color.R := PColor.B;
+        Color.G := PColor.G;
+        Color.B := PColor.R;
+        Color.A := PColor.A;
+        Inc(LongWord(Data));
+        TColor32Entry(Pixel^) := Color;
+      end; 
+end;
+
 // BGR Image
 
 procedure TBitmap32.LoadFromData(Data: Pointer; Width, Height,
@@ -632,7 +675,7 @@ var
 
  procedure ReadDataBGRP(dWidth, dHeight:Integer);
  var
- x, y, i, j : Integer;
+ x, y, i, j, blockW, blockH : Integer;
  Pixel: PColor32;
  Color, PColor: TColor32Entry;
  Index: Byte;
@@ -643,18 +686,22 @@ var
   // PixelSize := (Palette.Size div 256);
    SetLength(FIndexes, dWidth * dHeight);
 
+   blockW := 16;
+   if FWidth < 16 then blockW := 8;
+   blockH := 8;
+
    FPalette := Palette;
-   bWidth := FWidth div 16;
-   bHeight := FHeight div 8;
+   bWidth := FWidth div blockW;
+   bHeight := FHeight div blockH;
 
    for y := bHeight - 1 downto 0 do
     for x := 0 to bWidth - 1 do
-     for j := 7 downto 0 do
-      for i := 0 to 15 do
+     for j := blockH-1 downto 0 do
+      for i := 0 to blockW-1 do
        begin
-      Pixel := PixelPtr[x * 16 + i, y * 8 + j];
+      Pixel := PixelPtr[x * blockW + i, y * blockH + j];
       Index := Byte(Data^);
-      FIndexes[x * 16 + i + (y * 8 + j)* dWidth] := Index;
+      FIndexes[x * blockW + i + (y * blockH + j)* dWidth] := Index;
       PColor := TColor32Entry(FPalette[Index]);
       Color.R := PColor.B;
       Color.G := PColor.G;
@@ -807,18 +854,23 @@ var
 
  procedure WriteBGRP(dWidth, dHeight: Integer);
  var
- i, j, x, y, bWidth, bHeight : Integer;
+ i, j, x, y, bWidth, bHeight, blockW, blockH : Integer;
  Index: Byte;
  begin
-   bWidth := dWidth div 16;
-   bHeight := dHeight div 8;
+
+  blockW := 16;
+  blockH := 8;
+  if dWidth < 16 then blockW := 8;
+
+   bWidth := dWidth div blockW;
+   bHeight := dHeight div blockH;
 
    for y := bHeight - 1 downto 0 do
     for x := 0 to bWidth - 1 do
-     for j := 7 downto 0 do
-      for i := 0 to 15 do
+     for j := blockH-1 downto 0 do
+      for i := 0 to blockW-1 do
        begin
-       Index := FIndexes[x * 16 + i + (y * 8 + j)* dWidth];
+       Index := FIndexes[x * blockW + i + (y * blockH + j)* dWidth];
        Data.Write(Index, 1);
        end;
 
